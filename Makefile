@@ -1,6 +1,6 @@
 CC=gcc
 
-all: five seven
+all: five six seven
 
 five: test/five.o src/libeval5.a
 	${CC} ${CFLAGS} $^ -o $@
