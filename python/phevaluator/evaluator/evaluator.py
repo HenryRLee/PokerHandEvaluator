@@ -1,13 +1,13 @@
 import numpy as np
 
-from src.dptables import CHOOSE, DP, SUITS
-from src.hash import hash_binary, hash_quinary
-from src.hashtable import FLUSH
-from src.hashtable5 import NO_FLUSH_5
-from src.hashtable6 import NO_FLUSH_6
-from src.hashtable7 import NO_FLUSH_7
-from src.hashtable8 import NO_FLUSH_8
-from src.hashtable9 import NO_FLUSH_9
+from evaluator.dptables import CHOOSE, DP, SUITS
+from evaluator.hash import hash_binary, hash_quinary
+from evaluator.hashtable import FLUSH
+from evaluator.hashtable5 import NO_FLUSH_5
+from evaluator.hashtable6 import NO_FLUSH_6
+from evaluator.hashtable7 import NO_FLUSH_7
+from evaluator.hashtable8 import NO_FLUSH_8
+from evaluator.hashtable9 import NO_FLUSH_9
 
 
 binaries_by_id = np.power(2, np.repeat(range(13), 4), dtype=np.short)
@@ -58,4 +58,3 @@ def evaluate_cards(*args):
 
 def evaluate_9cards(*args):
   pass
-

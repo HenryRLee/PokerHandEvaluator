@@ -1,4 +1,4 @@
-from src.dptables import DP, CHOOSE
+from evaluator.dptables import DP, CHOOSE
 
 
 def hash_quinary(q, length, k):
