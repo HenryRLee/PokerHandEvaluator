@@ -5,7 +5,7 @@ def hash_quinary(q, length, k):
   sum_numb = 0
 
   for i in range(0, length):
-    sum_numb += DP[int(q[i])][length - i - 1][k]
+    sum_numb += DP[q[i]][length - i - 1][k]
 
     k -= q[i]
 
@@ -18,7 +18,7 @@ def hash_binary(q, length, k):
   sum_numb = 0
 
   for i in range(0, length):
-    if int(q[i]):
+    if q[i]:
       if length - i - 1 >= k:
         sum_numb += CHOOSE[length - i - 1][k]
 
