@@ -24,6 +24,14 @@ def example1():
   print(f'The rank of the hand in player 2 is {p2}')
   print('Player 2 has a stronger hand')
 
+def example2():
+  p1 = evaluate_cards('9c', '4c', '4s', '9d', '4h', 'Qc', '6c')
+  p2 = evaluate_cards('9c', '4c', '4s', '9d', '4h', '2c', '9h')
 
-if __name__ == "__main__":
+  print(f'The rank of the hand in player 1 is {p1}')
+  print(f'The rank of the hand in player 2 is {p2}')
+  print('Player 2 has a stronger hand')
+
+if __name__ == '__main__':
   example1()
+  example2()
