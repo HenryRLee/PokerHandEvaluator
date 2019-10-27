@@ -10,7 +10,6 @@ from evaluator.hashtable7 import NO_FLUSH_7
 from evaluator.hashtable8 import NO_FLUSH_8
 from evaluator.hashtable9 import NO_FLUSH_9
 
-
 binaries_by_id = np.power(2, np.repeat(range(13), 4), dtype=np.short)
 suitbit_by_id = np.power(8, list(range(4)) * 13, dtype=np.short)
 
@@ -20,7 +19,7 @@ def evaluate_cards(*args):
   value_flush = 10000
   value_noflush = 10000
 
-  if len(cards) == 9:
+  if cards.size == 9:
     suit_counter = np.zeros(4, dtype=np.byte)
     for card in cards:
       suit_counter[np.bitwise_and(card, 0x3)] += 1
@@ -47,7 +46,7 @@ def evaluate_cards(*args):
 
       value_flush = FLUSH[suit_binary[SUITS[suit_hash]-1]]
       
-      if len(cards) < 8:
+      if cards.size < 8:
         return value_flush
 
   quinary = np.zeros(13, dtype=np.byte)
@@ -55,17 +54,17 @@ def evaluate_cards(*args):
   for card in cards:
     quinary[np.right_shift(card, 2)] += 1
 
-  hash_val = hash_quinary(quinary, 13, len(cards))
+  hash_val = hash_quinary(quinary, 13, cards.size)
 
-  if len(cards) == 5:
+  if cards.size == 5:
     return NO_FLUSH_5[hash_val]
-  elif len(cards) == 6:
+  elif cards.size == 6:
     return NO_FLUSH_6[hash_val]
-  elif len(cards) == 7:
+  elif cards.size == 7:
     return NO_FLUSH_7[hash_val]
-  elif len(cards) == 8:
+  elif cards.size == 8:
     value_noflush = NO_FLUSH_8[hash_val]
-  elif len(cards) == 9:
+  elif cards.size == 9:
     value_noflush = NO_FLUSH_9[hash_val]
 
   if value_flush < value_noflush:
