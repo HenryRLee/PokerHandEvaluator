@@ -1,4 +1,6 @@
 from dptables import *
+from hashtable import *
+from hash import hash_quinary
 
 
 BINARIES_BY_ID = [
@@ -43,4 +45,21 @@ def evaluate_5cards(a, b, c, d, e):
   suit_hash += SUITBIT_BY_ID[e]
 
   if SUITS[suit_hash]:
-    suit_binary = [0, 0, 0, 0]
+    suit_binary = [0] * 4
+    suit_binary[a & 0x3] |= BINARIES_BY_ID[a]
+    suit_binary[a & 0x3] |= BINARIES_BY_ID[b]
+    suit_binary[a & 0x3] |= BINARIES_BY_ID[c]
+    suit_binary[a & 0x3] |= BINARIES_BY_ID[d]
+    suit_binary[a & 0x3] |= BINARIES_BY_ID[e]
+
+    return FLUSH[suit_binary[SUITS[suit_hash]-1]]
+
+  quinary = [0] * 13
+  quinary[(a >> 2)] += 1
+  quinary[(b >> 2)] += 1
+  quinary[(c >> 2)] += 1
+  quinary[(d >> 2)] += 1
+  quinary[(e >> 2)] += 1
+  hash_ = hash_quinary(quinary, 13, 5)
+
+  return NOFLUSH5[hash_]
