@@ -1,20 +1,14 @@
 import unittest
 from itertools import combinations, combinations_with_replacement
 
-from dptables_from_cc import *
-from hashtables_from_cc import *
+from dptables import *
+from hashtable import *
 
 
 class TestSuitsTable(unittest.TestCase):
 
-  TABLE = [0] * len(SUITSFROMCC)
+  TABLE = [0] * len(SUITS)
   UPDATED = False
-  NUM2STRING = {
-    1: "Clover",
-    2: "Diamond",
-    3: "Heart",
-    4: "Spade",
-  }
 
   def setUp(self):
 
@@ -30,12 +24,10 @@ class TestSuitsTable(unittest.TestCase):
             idx = 0x1 * cnts[0] + 0x8 * cnts[1] + 0x40 * cnts[2] + 0x200 * cnts[3]
 
             # TODO: Need to check these cases:
-            #  There exist three cases that idxes are same
-            # for two different cnts in case of k=9. The 
-            # cases are 72, 520, 576.
-            if idx in [72, 520, 576] and SUITSFROMCC[idx] != suit+1:
-              # print(idx, cb, cnts)
-              # print("GT: ", SUITSFROMCC[idx], " Calc: ", suit+1)
+            #  There exist three cases that idxes are same.
+            #  For two different cnts in case of k=9. The
+            #  cases are 72, 520, 576.
+            if idx in [72, 520, 576] and SUITS[idx] != suit+1:
               continue
 
             table[idx] = suit+1
@@ -46,13 +38,13 @@ class TestSuitsTable(unittest.TestCase):
       self.UPDATED = True
 
   def test_suits_table(self):
-    self.assertListEqual(self.TABLE, SUITSFROMCC)
+    self.assertListEqual(self.TABLE, SUITS)
 
 
 class TestChooseTable(unittest.TestCase):
 
-  TABLE = [[0] * len(CHOOSEFROMCC[idx]) for idx in range(len(CHOOSEFROMCC))]
-  VISIT = [[0] * len(CHOOSEFROMCC[idx]) for idx in range(len(CHOOSEFROMCC))]
+  TABLE = [[0] * len(CHOOSE[idx]) for idx in range(len(CHOOSE))]
+  VISIT = [[0] * len(CHOOSE[idx]) for idx in range(len(CHOOSE))]
   UPDATED = False
 
   def nCr(self, n, r):
@@ -69,18 +61,16 @@ class TestChooseTable(unittest.TestCase):
 
   def setUp(self):
     if not self.UPDATED:
-      for row in range(len(CHOOSEFROMCC)):
-        for col in range(len(CHOOSEFROMCC[row])):
+      for row in range(len(CHOOSE)):
+        for col in range(len(CHOOSE[row])):
           self.nCr(row, col)
       self.UPDATED = True
 
   def test_choose_table(self):
-    self.assertListEqual(self.TABLE, CHOOSEFROMCC)
+    self.assertListEqual(self.TABLE, CHOOSE)
 
 
 class TestFlushTable(unittest.TestCase):
-  # This test_tables makes some duplicants but going to
-  # ignore them because the number is small.
 
   TABLE = [0] * len(FLUSH)
   VISIT = [0] * len(FLUSH)
@@ -154,12 +144,13 @@ class TestFlushTable(unittest.TestCase):
         self.TABLE[idx] = self.CUR_RANK
         self.VISIT[idx] = 1
   
-  def raise_rank(self):
+  def mark_four_of_a_kind(self):
     # Four of a kind
     # The rank of the four cards: 13C1
     # The rank of the other card: 12C1
     self.CUR_RANK += 13 * 12
 
+  def mark_full_house(self):
     # Full house
     # The rank of the cards of three of a kind: 13C1
     # The rank of the cards of a pair: 12C1
@@ -168,7 +159,8 @@ class TestFlushTable(unittest.TestCase):
   def setUp(self):
     if not self.UPDATED:
       self.mark_straight()
-      self.raise_rank()
+      self.mark_four_of_a_kind()
+      self.mark_full_house()
       self.mark_non_straight()
     self.UPDATED = True
 
@@ -178,7 +170,7 @@ class TestFlushTable(unittest.TestCase):
 
 class TestDpTable(unittest.TestCase):
 
-  TABLE = [[[0] * len(DPFROMCC[i][j]) for j in range(len(DPFROMCC[i]))] for i in range(len(DPFROMCC))]
+  TABLE = [[[0] * len(DP[i][j]) for j in range(len(DP[i]))] for i in range(len(DP))]
   UPDATED = False
 
   def fill_table(self):
@@ -220,17 +212,15 @@ class TestDpTable(unittest.TestCase):
       self.UPDATED = True
   
   def test_dp_table(self):
-    self.assertListEqual(self.TABLE, DPFROMCC)
+    self.assertListEqual(self.TABLE, DP)
            
 
 def hash_quinary(hand, lenbit, k):
   hash_ = 0
   hand = list(reversed(str(hand)))  # Reversed lexicographical order
-  # print(hand)
   for i in range(lenbit):
     cur_cnt = int(hand[i])
-    hash_ += DPFROMCC[cur_cnt][lenbit-i-1][k]
-    # print(cur_cnt, lenbit-i-1, k, hash_)
+    hash_ += DP[cur_cnt][lenbit-i-1][k]
     k -= cur_cnt
     if k <= 0:
       break
@@ -240,8 +230,8 @@ def hash_quinary(hand, lenbit, k):
 
 class TestNoFlush5Table(unittest.TestCase):
   
-  TABLE = [0] * len(NOFLUSH5FROMCC)
-  VISIT = [0] * len(NOFLUSH5FROMCC)
+  TABLE = [0] * len(NOFLUSH5)
+  VISIT = [0] * len(NOFLUSH5)
   UPDATED = False
   CUR_RANK = 1
   NUM_CARDS = 5
@@ -273,8 +263,6 @@ class TestNoFlush5Table(unittest.TestCase):
       hash_ = hash_quinary(idx, 13, self.NUM_CARDS)
       self.TABLE[hash_] = self.CUR_RANK
       self.VISIT[hash_] = 1
-
-      # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
       self.CUR_RANK += 1
 
     self.BINARIES = []
@@ -288,8 +276,6 @@ class TestNoFlush5Table(unittest.TestCase):
       hash_ = hash_quinary(idx, 13, self.NUM_CARDS)
       self.TABLE[hash_] = self.CUR_RANK
       self.VISIT[hash_] = 1
-
-      # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
       self.CUR_RANK += 1
 
     self.BINARIES = []
@@ -304,9 +290,6 @@ class TestNoFlush5Table(unittest.TestCase):
       hash_ = hash_quinary(idx, 13, self.NUM_CARDS)
       self.TABLE[hash_] = self.CUR_RANK
       self.VISIT[hash_] = 1
-
-      # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
-      # setting up for the next loop
       self.CUR_RANK += 1
 
     # Five High Straight Flush
@@ -330,8 +313,6 @@ class TestNoFlush5Table(unittest.TestCase):
       if self.VISIT[hash_] == 0:
         self.TABLE[hash_] = self.CUR_RANK
         self.VISIT[hash_] = 1
-
-        # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
         self.CUR_RANK += 1
 
     self.BINARIES = []
@@ -347,8 +328,6 @@ class TestNoFlush5Table(unittest.TestCase):
       if self.VISIT[hash_] == 0:
         self.TABLE[hash_] = self.CUR_RANK
         self.VISIT[hash_] = 1
-
-        # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
         self.CUR_RANK += 1
 
     self.BINARIES = []
@@ -365,8 +344,6 @@ class TestNoFlush5Table(unittest.TestCase):
       if self.VISIT[hash_] == 0:
         self.TABLE[hash_] = self.CUR_RANK
         self.VISIT[hash_] = 1
-
-        # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
         self.CUR_RANK += 1
 
     self.BINARIES = []
@@ -384,27 +361,25 @@ class TestNoFlush5Table(unittest.TestCase):
       if self.VISIT[hash_] == 0:
         self.TABLE[hash_] = self.CUR_RANK
         self.VISIT[hash_] = 1
-
-        # print("{}, {}, {}, {}".format(hash_, self.TABLE[hash_], NOFLUSH5FROMCC[hash_], base))
         self.CUR_RANK += 1
 
     self.BINARIES = []
 
-  def raise_rank_by_straight_flush(self):
+  def mark_straight_flush(self):
     # A-5 High Straight Flush: 10
     self.CUR_RANK += 10
 
-  def raise_rank_by_flush(self):
+  def mark_flush(self):
     # Selecting 5 cards in 13: 13C5
     # Need to exclude straight: -10
     self.CUR_RANK += 13*12*11*10*9 / (5*4*3*2) - 10
 
   def setUp(self):
     if not self.UPDATED:
-      self.raise_rank_by_straight_flush()
+      self.mark_straight_flush()
       self.mark_four_of_a_kind()
       self.mark_full_house()
-      self.raise_rank_by_flush()
+      self.mark_flush()
       self.mark_straight()
       self.mark_three_of_a_kind()
       self.mark_two_pair()
@@ -413,7 +388,7 @@ class TestNoFlush5Table(unittest.TestCase):
       self.UPDATED = True
   
   def test_noflush5_table(self):
-    self.assertListEqual(self.TABLE, NOFLUSH5FROMCC)
+    self.assertListEqual(self.TABLE, NOFLUSH5)
 
 
 if __name__ == "__main__":
