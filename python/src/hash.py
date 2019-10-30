@@ -1,4 +1,4 @@
-from dptables import *
+from src.dptables import *
 
 
 def hash_quinary(hand, lenbit, k):

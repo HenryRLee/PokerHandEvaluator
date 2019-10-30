@@ -1,4 +1,4 @@
-from hashtable5 import NOFLUSH5
+from src.hashtable5 import NOFLUSH5
 
 
 FLUSH = [
