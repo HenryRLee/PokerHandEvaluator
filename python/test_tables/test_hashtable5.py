@@ -29,7 +29,7 @@ class TestNoFlush5Table(unittest.TestCase):
         self.USED[i] = 0
 
   def mark_four_of_a_kind(self):
-    # Order 13C2 lexicograhically
+    # Order 13C2 lexicographically
     self.gen_quinary(2, 2)
     for base in self.QUINARIES:
       idx = 0
