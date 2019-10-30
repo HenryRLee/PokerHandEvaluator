@@ -1,7 +1,7 @@
 import unittest
 
 from src.hash import hash_quinary
-from src.hashtable import *
+from src.hashtable5 import *
 
 
 class TestNoFlush5Table(unittest.TestCase):
@@ -13,11 +13,11 @@ class TestNoFlush5Table(unittest.TestCase):
 
   CACHE = []
   USED = [0] * 13
-  BINARIES = []
+  QUINARIES = []
 
   def gen_quinary(self, k, n):
     if k == 0:
-      self.BINARIES.append(self.CACHE[:])
+      self.QUINARIES.append(self.CACHE[:])
     else:
       for i in range(12, -1, -1):
         if self.USED[i] > 0:
@@ -31,7 +31,7 @@ class TestNoFlush5Table(unittest.TestCase):
   def mark_four_of_a_kind(self):
     # Order 13C2 lexicograhically
     self.gen_quinary(2, 2)
-    for base in self.BINARIES:
+    for base in self.QUINARIES:
       idx = 0
       idx += (10 ** base[0]) * 4
       idx += 10 ** base[1]
@@ -40,11 +40,11 @@ class TestNoFlush5Table(unittest.TestCase):
       self.VISIT[hash_] = 1
       self.CUR_RANK += 1
 
-    self.BINARIES = []
+    self.QUINARIES = []
 
   def mark_full_house(self):
     self.gen_quinary(2, 2)
-    for base in self.BINARIES:
+    for base in self.QUINARIES:
       idx = 0
       idx += (10 ** base[0]) * 3
       idx += (10 ** base[1]) * 2
@@ -53,7 +53,7 @@ class TestNoFlush5Table(unittest.TestCase):
       self.VISIT[hash_] = 1
       self.CUR_RANK += 1
 
-    self.BINARIES = []
+    self.QUINARIES = []
 
   def mark_straight(self):
     for highest in range(12, 3, -1):  # From Ace to 6
@@ -79,7 +79,7 @@ class TestNoFlush5Table(unittest.TestCase):
 
   def mark_three_of_a_kind(self):
     self.gen_quinary(3, 3)
-    for base in self.BINARIES:
+    for base in self.QUINARIES:
       idx = 0
       idx += (10 ** base[0]) * 3
       idx += (10 ** base[1])
@@ -90,11 +90,11 @@ class TestNoFlush5Table(unittest.TestCase):
         self.VISIT[hash_] = 1
         self.CUR_RANK += 1
 
-    self.BINARIES = []
+    self.QUINARIES = []
 
   def mark_two_pair(self):
     self.gen_quinary(3, 3)
-    for base in self.BINARIES:
+    for base in self.QUINARIES:
       idx = 0
       idx += (10 ** base[0]) * 2
       idx += (10 ** base[1]) * 2
@@ -105,11 +105,11 @@ class TestNoFlush5Table(unittest.TestCase):
         self.VISIT[hash_] = 1
         self.CUR_RANK += 1
 
-    self.BINARIES = []
+    self.QUINARIES = []
 
   def mark_one_pair(self):
     self.gen_quinary(4, 4)
-    for base in self.BINARIES:
+    for base in self.QUINARIES:
       idx = 0
       idx += (10 ** base[0]) * 2
       idx += (10 ** base[1])
@@ -121,11 +121,11 @@ class TestNoFlush5Table(unittest.TestCase):
         self.VISIT[hash_] = 1
         self.CUR_RANK += 1
 
-    self.BINARIES = []
+    self.QUINARIES = []
 
   def mark_high_card(self):
     self.gen_quinary(5, 5)
-    for base in self.BINARIES:
+    for base in self.QUINARIES:
       idx = 0
       idx += (10 ** base[0])
       idx += (10 ** base[1])
@@ -138,7 +138,7 @@ class TestNoFlush5Table(unittest.TestCase):
         self.VISIT[hash_] = 1
         self.CUR_RANK += 1
 
-    self.BINARIES = []
+    self.QUINARIES = []
 
   def mark_straight_flush(self):
     # A-5 High Straight Flush: 10
