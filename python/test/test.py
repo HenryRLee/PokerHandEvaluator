@@ -1,9 +1,11 @@
 from ctypes import *
+import os.path as osp
 import unittest
 from src.evaluator5 import evaluate_5cards
 
+path_dylib = osp.join(osp.dirname(__file__), '..', '..', 'cpp', 'build', 'libpheval.dylib')
 # TODO: Find a proper way to include
-ph_eval = cdll.LoadLibrary("../../cpp/build/libpheval.dylib")
+ph_eval = cdll.LoadLibrary(path_dylib)
 
 
 class TestFiveCardHands(unittest.TestCase):
