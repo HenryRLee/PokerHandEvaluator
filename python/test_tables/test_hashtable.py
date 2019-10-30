@@ -100,3 +100,7 @@ class TestFlushTable(unittest.TestCase):
 
   def test_flush_table(self):
     self.assertListEqual(self.TABLE, FLUSH)
+
+
+if __name__ == "__main__":
+  unittest.main()
