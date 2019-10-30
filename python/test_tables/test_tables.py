@@ -1,8 +1,8 @@
 import unittest
 from itertools import combinations, combinations_with_replacement
 
-from dptables import *
-from hashtable import *
+from src.dptables import *
+from src.hashtable import *
 
 
 class TestSuitsTable(unittest.TestCase):

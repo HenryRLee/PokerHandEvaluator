@@ -1,14 +1,12 @@
 from ctypes import *
 import unittest
-from evaluator5 import evaluate_5cards
-
+from src.evaluator5 import evaluate_5cards
 
 # TODO: Find a proper way to include
 ph_eval = cdll.LoadLibrary("../../cpp/build/libpheval.dylib")
 
 
 class TestFiveCardHands(unittest.TestCase):
-
   TOTAL = 2598960
 
   def test_five_card_hands(self):
@@ -18,10 +16,10 @@ class TestFiveCardHands(unittest.TestCase):
     print("Start testing five-card hands")
 
     for a in range(48):
-      for b in range(a+1, 49):
-        for c in range(b+1, 50):
-          for d in range(c+1, 51):
-            for e in range(d+1, 52):
+      for b in range(a + 1, 49):
+        for c in range(b + 1, 50):
+          for d in range(c + 1, 51):
+            for e in range(d + 1, 52):
               cpp_eval = ph_eval.evaluate_5cards(a, b, c, d, e)
               py_eval = evaluate_5cards(a, b, c, d, e)
 
