@@ -1,10 +1,10 @@
 import unittest
 
 from src.hash import hash_quinary
+from src.hashtable5 import NOFLUSH5
 
 
 class BaseTestNoFLushTable(unittest.TestCase):
-  TOCOMPARE = NotImplementedError
   TABLE = NotImplementedError
   VISIT = NotImplementedError
   UPDATED = False
@@ -50,7 +50,7 @@ class BaseTestNoFLushTable(unittest.TestCase):
       base_idx = 0
       for i in range(len(ks)):
         base_idx += (10 ** base[i]) * ks[i]
-      base_rank = self.BASERANKTABLE[hash_quinary(base_idx, 13, self.NUM_CARDS - 1)]
+      base_rank = NOFLUSH5[hash_quinary(base_idx, 13, 5)]
       for additional in additionals:
         idx = base_idx
         for i in additional:
@@ -60,6 +60,7 @@ class BaseTestNoFLushTable(unittest.TestCase):
           continue
         self.TABLE[hash_] = base_rank
         self.VISIT[hash_] = 1
+
     self.QUINARIES = []
 
   def mark_four_of_a_kind(self):
@@ -88,7 +89,7 @@ class BaseTestNoFLushTable(unittest.TestCase):
       for pos in base:
         base_idx += (10 ** pos)
         self.USED[pos] = 1
-      base_rank = self.BASERANKTABLE[hash_quinary(base_idx, 13, self.NUM_CARDS - 1)]
+      base_rank = NOFLUSH5[hash_quinary(base_idx, 13, 5)]
       self.get_additional(self.NUM_CARDS - 5)
       additionals = self.QUINARIES_ADDITIONAL[:]
       self.QUINARIES_ADDITIONAL = []
