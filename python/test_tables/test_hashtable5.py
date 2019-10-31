@@ -147,7 +147,7 @@ class TestNoFlush5Table(unittest.TestCase):
   def mark_flush(self):
     # Selecting 5 cards in 13: 13C5
     # Need to exclude straight: -10
-    self.CUR_RANK += 13 * 12 * 11 * 10 * 9 / (5 * 4 * 3 * 2) - 10
+    self.CUR_RANK += int(13 * 12 * 11 * 10 * 9 / (5 * 4 * 3 * 2)) - 10
 
   def setUp(self):
     if not self.UPDATED:
