@@ -46,10 +46,10 @@ def evaluate_5cards(a, b, c, d, e):
   if SUITS[suit_hash]:
     suit_binary = [0] * 4
     suit_binary[a & 0x3] |= BINARIES_BY_ID[a]
-    suit_binary[a & 0x3] |= BINARIES_BY_ID[b]
-    suit_binary[a & 0x3] |= BINARIES_BY_ID[c]
-    suit_binary[a & 0x3] |= BINARIES_BY_ID[d]
-    suit_binary[a & 0x3] |= BINARIES_BY_ID[e]
+    suit_binary[b & 0x3] |= BINARIES_BY_ID[b]
+    suit_binary[c & 0x3] |= BINARIES_BY_ID[c]
+    suit_binary[d & 0x3] |= BINARIES_BY_ID[d]
+    suit_binary[e & 0x3] |= BINARIES_BY_ID[e]
 
     return FLUSH[suit_binary[SUITS[suit_hash] - 1]]
 

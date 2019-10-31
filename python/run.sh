@@ -11,6 +11,8 @@ elif [[ "$1" == "hashtable" ]]; then
   python -m test_tables.test_hashtable
 elif [[ "$1" == "hashtable5" ]]; then
   python -m test_tables.test_hashtable5
+elif [[ "$1" == "hashtable6" ]]; then
+  python -m test_tables.test_hashtable6
 else
   echo "Unknown argument"
 fi
