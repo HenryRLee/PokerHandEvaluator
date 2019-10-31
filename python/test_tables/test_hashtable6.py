@@ -6,7 +6,6 @@ from src.hashtable import *
 
 class TestNoFlush6Table(BaseTestNoFLushTable):
   TOCOMPARE = NOFLUSH6
-  BASERANKTABLE = NOFLUSH5
   TABLE = [0] * len(TOCOMPARE)
   VISIT = [0] * len(TOCOMPARE)
   NUM_CARDS = 6
