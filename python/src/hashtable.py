@@ -1,6 +1,7 @@
 from src.hashtable5 import NOFLUSH5
 from src.hashtable6 import NOFLUSH6
 from src.hashtable7 import NOFLUSH7
+from src.hashtable8 import NOFLUSH8
 
 
 FLUSH = [
