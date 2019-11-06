@@ -59,6 +59,7 @@ set(CMAKE_CXX_STANDARD 11)
 # Now simply link against gtest or gtest_main as needed. Eg
 add_library(pheval SHARED
   src/dptables.c
+  src/evaluator.cc
   src/evaluator5.c
   src/evaluator6.c
   src/evaluator7.c

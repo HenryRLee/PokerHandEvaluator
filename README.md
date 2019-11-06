@@ -72,6 +72,11 @@ EvaluateAllNineCardHands  132522346551 ns   132511341434 ns            1
   so the memory used measure currently is the maximum of the 5 evaluators.
   This will be fixed in the future.
 
+## Python Implementation
+
+The [python](python) subdirectory has the latest python implementation, which is
+still in active development. Contributions are welcome.
+
 ## Other Implementations
 
 There is a [javascript implementation](https://github.com/thlorenz/phe) using
