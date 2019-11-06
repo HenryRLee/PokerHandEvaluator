@@ -1,7 +1,4 @@
-import numpy as np
-
-
-class Card(np.byte):
+class Card(int):
   def __new__(cls, value):
     rank_map = {
       '2': 0,
