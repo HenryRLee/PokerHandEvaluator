@@ -32,6 +32,10 @@ For example:
 g++ -I include/ -std=c++11 libpheval.dylib your_source_code.cc your_binary
 ```
 
+In the [examples](examples) directory, there is a small example on how to
+use the library in both C and C++ languages. Run `make` can build the library
+and link the library with the example source files.
+
 ### C methods
 
 PH Evaluator was originally coded in C, so it still preserves the C functions.
