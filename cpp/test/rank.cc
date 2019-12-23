@@ -38,7 +38,7 @@ TEST(RankTest, TestRankCategory) {
   ASSERT_EQ(b.describeCategory(), "Straight Flush");
 }
 
-TEST(RankTestStraights, TestRankDescriptionStraights) {
+TEST(RankTest, TestRankDescription) {
   Rank a = EvaluateCards("9c", "4c", "4s", "9d", "4h");
 	Rank b = EvaluateCards("As", "Ks", "Qs", "Js", "Ts");
 
@@ -52,14 +52,14 @@ TEST(RankTestStraights, TestRankDescriptionStraights) {
   ASSERT_TRUE(b.isFlush());
 }
 
-TEST(RankTest,TestRankDescription){
+TEST(RankTestStraights,TestRankDescriptionStraights){
   Rank a=EvaluateCards("As","Kc","Qd","Jd","Th");
   Rank b=EvaluateCards("Ks","Qc","Jd","Td","9h");
   Rank c =EvaluateCards("5h","4d","3d","2c","As");
 
   ASSERT_EQ(a.describeRank(),"Ace-High Straight");
   ASSERT_EQ(b.describeRank(),"King-High Straight");
-  ASSERT_EQ(b.describeRank(),"Five-High Straight");
+  ASSERT_EQ(c.describeRank(),"Five-High Straight");
 
   ASSERT_EQ(a.category(), STRAIGHT);
   ASSERT_EQ(b.category(), STRAIGHT);
