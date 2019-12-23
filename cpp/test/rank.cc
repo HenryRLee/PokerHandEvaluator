@@ -38,7 +38,7 @@ TEST(RankTest, TestRankCategory) {
   ASSERT_EQ(b.describeCategory(), "Straight Flush");
 }
 
-TEST(RankTest, TestRankDescription) {
+TEST(RankTestStraights, TestRankDescriptionStraights) {
   Rank a = EvaluateCards("9c", "4c", "4s", "9d", "4h");
 	Rank b = EvaluateCards("As", "Ks", "Qs", "Js", "Ts");
 
