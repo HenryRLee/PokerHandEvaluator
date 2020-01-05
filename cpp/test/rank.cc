@@ -52,7 +52,7 @@ TEST(RankTest, TestRankDescription) {
   ASSERT_TRUE(b.isFlush());
 }
 
-TEST(RankTestStraights, TestRankDescriptionStraights)
+TEST(RankTest, TestRankDescriptionStraights)
 {
   Rank a = EvaluateCards("As", "Kc", "Qd", "Jd", "Th");
   Rank b = EvaluateCards("Ks", "Qc", "Jd", "Td", "9h");
