@@ -15,7 +15,7 @@ TEST(EvaluationTest, TestFiveCards) {
   int progress = 0;
   const int total = 2598960;
 
-  std::vector<int> indexCount(7463,0);
+  std::vector<bool> indexPresent(7463,0);
   std::printf("Start testing five cards\n");
   for(int a = 0; a < 48; a++)
   {
@@ -29,7 +29,7 @@ TEST(EvaluationTest, TestFiveCards) {
           {
             int ph_eval = EvaluateCards(a, b, c, d, e).value(); // C++ method
             int kev_eval = kev_eval_5cards(a, b, c, d, e); // Kev's method
-            indexCount[ph_eval]++;
+            indexPresent[ph_eval] = true;
             EXPECT_EQ(ph_eval, kev_eval);
 
             Hand hand({a, b, c, d, e});
@@ -51,7 +51,7 @@ TEST(EvaluationTest, TestFiveCards) {
   }
 
   for (int i=1;i<7463;i++){
-      ASSERT_TRUE(indexCount[i] > 0);
+      ASSERT_TRUE(indexPresent[i]);
   }
   
   std::printf("Complete testing five cards.\n");
@@ -110,7 +110,9 @@ TEST(EvaluationTest, TestSevenCards) {
   int progress = 0;
   const int total = 133784560;
 
-  std::vector<int> indexCount(7415,0);
+  std::vector<bool> indexPresent(7415,0);
+  int minIndex = 9999;
+  int maxIndex = -9999;
   std::printf("Start testing seven cards\n");
 
   for(int a = 0; a < 46; a ++)
@@ -129,9 +131,15 @@ TEST(EvaluationTest, TestSevenCards) {
               {
                 int ph_eval = EvaluateCards(a, b, c, d, e, f, g).value();
                 int kev_eval = kev_eval_7cards(a, b, c, d, e, f, g);
-                indexCount[ph_eval]++;
+                indexPresent[ph_eval] = true;
                 EXPECT_EQ(ph_eval, kev_eval);
 
+                if (ph_eval < minIndex){
+                  minIndex = ph_eval;
+                }
+                if (ph_eval > maxIndex){
+                  maxIndex = ph_eval;
+                }
                 Hand hand({a, b, c, d, e, f, g});
                 int ph_hand_eval = EvaluateHand(hand).value();
                 EXPECT_EQ(ph_hand_eval, kev_eval);
@@ -152,10 +160,16 @@ TEST(EvaluationTest, TestSevenCards) {
     }
   }
 
+  EXPECT_EQ(minIndex, 1);
+  EXPECT_EQ(maxIndex, 7414);
+  int unUsedIndex = 0;
   for (int i=1;i<7415;i++){
-      ASSERT_TRUE(indexCount[i] > 0);
+      if (indexPresent[i] == 0){
+        unUsedIndex++;
+      };
   }
+  EXPECT_EQ(unUsedIndex, 0);
+
   std::printf("Complete testing seven cards.\n");
   std::printf("Tested %d hands in total\n", count);
 }
-
