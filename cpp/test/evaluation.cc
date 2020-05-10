@@ -152,7 +152,7 @@ TEST(EvaluationTest, TestSevenCards) {
     }
   }
 
-  for (int i=1;i<7464;i++){
+  for (int i=1;i<7415;i++){
       ASSERT_TRUE(indexCount[i] > 0);
   }
   std::printf("Complete testing seven cards.\n");
