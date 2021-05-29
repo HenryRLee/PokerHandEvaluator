@@ -9,7 +9,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_C_STANDARD 99)
 
-option(BUILD_TEST     "Build test ON/OFF"     ON)
+option(BUILD_TESTS     "Build test ON/OFF"     ON)
 option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
 
 # Add the PokerHandEvaluator library
