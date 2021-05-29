@@ -1,3 +1,5 @@
+dist: focal
+
 jobs:
   include:
     - language: cpp
