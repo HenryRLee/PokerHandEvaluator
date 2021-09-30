@@ -5,6 +5,7 @@ from evaluator.hashtable_omaha import FLUSH_OMAHA
 from evaluator.hash import hash_quinary
 from evaluator.hash import hash_binary
 
+# fmt: off
 binaries_by_id = [
   0x1,  0x1,  0x1,  0x1,
   0x2,  0x2,  0x2,  0x2,
@@ -21,6 +22,7 @@ binaries_by_id = [
   0x1000,  0x1000,  0x1000,  0x1000,
 ]
 suitbit_by_id = [0x1,  0x8,  0x40,  0x200,] * 13
+# fmt: on
 
 # The first five parameters are the community cards
 # The later four parameters are the player hole cards

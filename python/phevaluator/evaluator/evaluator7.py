@@ -3,6 +3,7 @@ from evaluator.hashtable import FLUSH
 from evaluator.hashtable7 import NO_FLUSH_7
 from evaluator.hash import hash_quinary
 
+# fmt: off
 binaries_by_id = [
   0x1,  0x1,  0x1,  0x1,
   0x2,  0x2,  0x2,  0x2,
@@ -19,6 +20,7 @@ binaries_by_id = [
   0x1000,  0x1000,  0x1000,  0x1000,
 ]
 suitbit_by_id = [0x1,  0x8,  0x40,  0x200,] * 13
+# fmt: on
 
 def evaluate_7cards(a, b, c, d, e, f, g):
   suit_hash = 0

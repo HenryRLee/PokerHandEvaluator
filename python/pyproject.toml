@@ -1,0 +1,7 @@
+[tool.black]
+extend-exclude = '''
+(
+  evaluator/hashtable.*
+  |evaluator/dptables\.py
+)
+'''
