@@ -16,7 +16,7 @@ To run the unit test:
 
 ```
 cd phevaluator
-python3 -m unittest tests.test_evaluator
+python3 -m unittest discover tests
 ```
 
 There are also test code for testing the hash tables

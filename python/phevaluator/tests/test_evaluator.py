@@ -3,6 +3,7 @@ import json
 import os
 
 from evaluator.evaluator import evaluate_cards
+from evaluator.card import Card
 
 CARDS_FILE_5 = os.path.join(os.path.dirname(__file__), "cardfiles/5cards.json")
 CARDS_FILE_6 = os.path.join(os.path.dirname(__file__), "cardfiles/6cards.json")
@@ -47,3 +48,16 @@ class TestEvaluator(unittest.TestCase):
             hand_dict = json.load(read_file)
             for key, value in hand_dict.items():
                 self.assertEqual(evaluate_cards(*key.split()), value)
+
+    def test_evaluator_interface(self):
+        # int, str and Card can be passed to evaluate_cards()
+        p1 = evaluate_cards(1, 2, 3, 32, 48)
+        p2 = evaluate_cards("2d", "2h", "2s", "Tc", "Ac")
+        p3 = evaluate_cards("2D", "2H", "2S", "TC", "AC")
+        p4 = evaluate_cards(Card("2d"), Card("2h"), Card("2s"), Card("Tc"), Card("Ac"))
+        p5 = evaluate_cards(1, "2h", "2S", Card(32), Card("Ac"))
+
+        self.assertEqual(p1, p2)
+        self.assertEqual(p1, p3)
+        self.assertEqual(p1, p4)
+        self.assertEqual(p1, p5)
