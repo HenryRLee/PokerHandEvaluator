@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  cpp_standard:
+    name: C++ Standard Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run before script
+        run: |
+          mkdir -p cpp/build
+          cd cpp/build
+          cmake .. ; make
+      - name: Run script
+        run: |
+          cd cpp/build
+          ./c_example
+          ./cpp_example
+          ./omaha_example
+          ./unit_tests
+  cpp_benchmark:
+    name: C++ Benchmark
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run before script
+        run: |
+          mkdir -p cpp/build
+          cd cpp/build
+          cmake .. ; make
+      - name: Run script
+        run: |
+          cd cpp/build
+          ./benchmark_phevaluator
+  python-test:
+    name: Python test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - name: Install dependencies
+        run: |
+          cd python
+          pip install -r requirements.txt
+      - name: Run script
+        run: |
+          cd python/phevaluator
+          python -m unittest tests.test_evaluator
