@@ -21,6 +21,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <array>
 
 namespace phevaluator {
 const static std::unordered_map<char, int> rankMap = {
@@ -32,17 +33,15 @@ const static std::unordered_map<char, int> suitMap = {
   {'C', 0}, {'D', 1}, {'H', 2}, {'S', 3},
   {'c', 0}, {'d', 1}, {'h', 2}, {'s', 3},
 };
-const static std::unordered_map<int, char> rankReverseMap = {
-  {0, '2'}, {1, '3'}, {2, '4'}, {3, '5'},
-  {4, '6'}, {5, '7'}, {6, '8'}, {7, '9'},
-  {8, 'T'}, {9, 'J'}, {10, 'Q'}, {11, 'K'}, {12, 'A'},
+const static std::array<char, 13> rankReverseArray = {
+  '2', '3', '4', '5',
+  '6', '7', '8', '9',
+  'T', 'J', 'Q', 'K', 'A',
 };
-const static std::unordered_map<int, char> suitReverseMap = {
-  {0, 'c'}, {1, 'd'}, {2, 'h'}, {3, 's'},
-};
+const static std::array<char, 4> suitReverseArray = { 'c', 'd', 'h', 's' };
 
 class Card {
- public:
+public:
   Card() {}
 
   Card(int id) : id_(id) {}
@@ -57,13 +56,9 @@ class Card {
 
   Card(const char name[]) : Card(std::string(name)) {}
 
-  char describeRank(void) const {
-    return rankReverseMap.at(id_ / 4);
-  }
+  char describeRank(void) const { return rankReverseArray[id_ / 4]; }
 
-  char describeSuit(void) const {
-    return suitReverseMap.at(id_ % 4);
-  }
+  char describeSuit(void) const { return suitReverseArray[id_ % 4]; }
 
   std::string describeCard(void) const {
     return std::string{ describeRank(), describeSuit() };
@@ -73,7 +68,7 @@ class Card {
 
   operator std::string() const { return describeCard(); }
 
- private:
+private:
   int id_;
 };
 
