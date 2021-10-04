@@ -1,4 +1,5 @@
 import unittest
+from itertools import permutations, combinations, combinations_with_replacement
 
 from evaluator.hash import hash_quinary
 from evaluator.hashtable5 import NO_FLUSH_5
@@ -28,6 +29,18 @@ class BaseTestNoFlushTable(unittest.TestCase):
         cls.mark_two_pair()
         cls.mark_one_pair()
         cls.mark_high_card()
+
+    @staticmethod
+    def quinary_permutations(n):
+        return permutations(range(13)[::-1], n)
+
+    @staticmethod
+    def quinary_combinations(n):
+        return combinations(range(13)[::-1], n)
+
+    @staticmethod
+    def quinary_combinations_with_replacement(n):
+        return combinations_with_replacement(range(13)[::-1], n)
 
     @classmethod
     def gen_quinary(cls, ks, cur, additional):
@@ -101,11 +114,41 @@ class BaseTestNoFlushTable(unittest.TestCase):
 
     @classmethod
     def mark_one_pair(cls):
-        cls.mark_template((2, 1, 1, 1))
+        for paired_card in range(13)[::-1]:
+            for other_cards in cls.quinary_combinations(cls.NUM_CARDS - 2):
+                if paired_card in other_cards:
+                    continue
+                hand = [0] * 13
+                hand[paired_card] = 2
+                hand[other_cards[0]] = 1
+                hand[other_cards[1]] = 1
+                hand[other_cards[2]] = 1
+                base_hash = hash_quinary(hand, 13, 5)
+                base_rank = NO_FLUSH_5[base_hash]
+                for i in range(3, cls.NUM_CARDS - 2):
+                    hand[other_cards[i]] = 1
+                hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+                if cls.VISIT[hash_] == 0:
+                    cls.VISIT[hash_] = 1
+                    cls.TABLE[hash_] = base_rank
 
     @classmethod
     def mark_high_card(cls):
-        cls.mark_template((1, 1, 1, 1, 1))
+        for base in cls.quinary_combinations(cls.NUM_CARDS):
+            hand = [0] * 13
+            hand[base[0]] = 1
+            hand[base[1]] = 1
+            hand[base[2]] = 1
+            hand[base[3]] = 1
+            hand[base[4]] = 1
+            base_hash = hash_quinary(hand, 13, 5)
+            base_rank = NO_FLUSH_5[base_hash]
+            for i in range(5, cls.NUM_CARDS):
+                hand[base[i]] = 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            if cls.VISIT[hash_] == 0:
+                cls.VISIT[hash_] = 1
+                cls.TABLE[hash_] = base_rank
 
     @classmethod
     def mark_straight(cls):
@@ -124,7 +167,9 @@ class BaseTestNoFlushTable(unittest.TestCase):
 
         for hand in hands:
             base_rank = NO_FLUSH_5[hash_quinary(hand, 13, 5)]
-            for additional in cls.quinary_combinations(cls.NUM_CARDS - 5):
+            for additional in cls.quinary_combinations_with_replacement(
+                cls.NUM_CARDS - 5
+            ):
                 for i in additional:
                     hand[i] += 1
 
