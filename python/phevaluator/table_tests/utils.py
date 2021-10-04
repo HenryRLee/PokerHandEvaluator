@@ -63,17 +63,19 @@ class BaseTestNoFlushTable(unittest.TestCase):
     def mark_template(cls, ks):
         cls.gen_quinary(ks, 0, cls.NUM_CARDS - 5)
         for base, additionals in cls.QUINARIES:
-            base_idx = 0
-            for i in range(len(ks)):
-                base_idx += (10 ** base[i]) * ks[i]
-            hand = list(map(int, reversed("{:013d}".format(base_idx))))
+            hand = [0] * 13
+            for i, k in enumerate(ks):
+                hand[base[i]] = k
             base_rank = NO_FLUSH_5[hash_quinary(hand, 13, 5)]
             for additional in additionals:
-                idx = base_idx
                 for i in additional:
-                    idx += 10 ** i
-                hand = list(map(int, reversed("{:013d}".format(idx))))
+                    hand[i] += 1
+
                 hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+
+                for i in additional:
+                    hand[i] -= 1
+
                 if cls.VISIT[hash_] > 0:
                     continue
                 cls.TABLE[hash_] = base_rank
@@ -107,26 +109,29 @@ class BaseTestNoFlushTable(unittest.TestCase):
 
     @classmethod
     def mark_straight(cls):
-        cases = [[highest - i for i in range(5)] for highest in range(12, 3, -1)]
-        cases.append([12, 3, 2, 1, 0])
-        for base in cases:
-            base_idx = 0
-            for pos in base:
-                base_idx += 10 ** pos
-                cls.USED[pos] = 1
-            hand = list(map(int, reversed("{:013d}".format(base_idx))))
+        hands = []
+        for lowest in range(9)[::-1]:  # From 10 to 2
+            hand = [0] * 13
+            for i in range(lowest, lowest + 5):
+                hand[i] = 1
+            hands.append(hand)
+        # Five High Straight Flush
+        base = [12, 3, 2, 1, 0]
+        hand = [0] * 13
+        for i in base:
+            hand[i] = 1
+        hands.append(hand)
+
+        for hand in hands:
             base_rank = NO_FLUSH_5[hash_quinary(hand, 13, 5)]
-            cls.get_additional(cls.NUM_CARDS - 5)
-            additionals = cls.QUINARIES_ADDITIONAL[:]
-            cls.QUINARIES_ADDITIONAL = []
-            cls.USED = [0] * 13
-            for additional in additionals:
-                idx = base_idx
+            for additional in cls.quinary_combinations(cls.NUM_CARDS - 5):
                 for i in additional:
-                    idx += 10 ** i
-                hand = list(map(int, reversed("{:013d}".format(idx))))
+                    hand[i] += 1
+
                 hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
-                if cls.VISIT[hash_] > 0:
-                    continue
-                cls.TABLE[hash_] = base_rank
-                cls.VISIT[hash_] = 1
+                if cls.VISIT[hash_] == 0:
+                    cls.TABLE[hash_] = base_rank
+                    cls.VISIT[hash_] = 1
+
+                for i in additional:
+                    hand[i] -= 1

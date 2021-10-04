@@ -1,4 +1,5 @@
 import unittest
+from itertools import permutations
 
 from evaluator.hash import hash_quinary
 from evaluator.hashtable5 import NO_FLUSH_5
@@ -45,10 +46,9 @@ class TestNoFlush5Table(unittest.TestCase):
         # Order 13C2 lexicographically
         cls.gen_quinary(2, 2)
         for base in cls.QUINARIES:
-            idx = 0
-            idx += (10 ** base[0]) * 4
-            idx += 10 ** base[1]
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand = [0] * 13
+            hand[base[0]] += 4
+            hand[base[1]] += 1
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
@@ -60,10 +60,9 @@ class TestNoFlush5Table(unittest.TestCase):
     def mark_full_house(cls):
         cls.gen_quinary(2, 2)
         for base in cls.QUINARIES:
-            idx = 0
-            idx += (10 ** base[0]) * 3
-            idx += (10 ** base[1]) * 2
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand = [0] * 13
+            hand[base[0]] += 3
+            hand[base[1]] += 2
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
@@ -73,24 +72,19 @@ class TestNoFlush5Table(unittest.TestCase):
 
     @classmethod
     def mark_straight(cls):
-        for highest in range(12, 3, -1):  # From Ace to 6
-            # k=5 case for base
-            base = [highest - i for i in range(5)]
-            idx = 0
-            for pos in base:
-                idx += 10 ** pos
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+        for lowest in range(9)[::-1]:  # From 10 to 2
+            hand = [0] * 13
+            for i in range(lowest, lowest + 5):
+                hand[i] = 1
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
-
         # Five High Straight Flush
         base = [12, 3, 2, 1, 0]
-        idx = 0
+        hand = [0] * 13
         for pos in base:
-            idx += 10 ** pos
-        hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand[pos] = 1
         hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
         cls.TABLE[hash_] = cls.CUR_RANK
         cls.VISIT[hash_] = 1
@@ -100,11 +94,10 @@ class TestNoFlush5Table(unittest.TestCase):
     def mark_three_of_a_kind(cls):
         cls.gen_quinary(3, 3)
         for base in cls.QUINARIES:
-            idx = 0
-            idx += (10 ** base[0]) * 3
-            idx += 10 ** base[1]
-            idx += 10 ** base[2]
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand = [0] * 13
+            hand[base[0]] += 3
+            hand[base[1]] += 1
+            hand[base[2]] += 1
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
@@ -117,11 +110,10 @@ class TestNoFlush5Table(unittest.TestCase):
     def mark_two_pair(cls):
         cls.gen_quinary(3, 3)
         for base in cls.QUINARIES:
-            idx = 0
-            idx += (10 ** base[0]) * 2
-            idx += (10 ** base[1]) * 2
-            idx += 10 ** base[2]
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand = [0] * 13
+            hand[base[0]] += 2
+            hand[base[1]] += 2
+            hand[base[2]] += 1
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
@@ -134,12 +126,11 @@ class TestNoFlush5Table(unittest.TestCase):
     def mark_one_pair(cls):
         cls.gen_quinary(4, 4)
         for base in cls.QUINARIES:
-            idx = 0
-            idx += (10 ** base[0]) * 2
-            idx += 10 ** base[1]
-            idx += 10 ** base[2]
-            idx += 10 ** base[3]
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand = [0] * 13
+            hand[base[0]] += 2
+            hand[base[1]] += 1
+            hand[base[2]] += 1
+            hand[base[3]] += 1
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
@@ -152,13 +143,12 @@ class TestNoFlush5Table(unittest.TestCase):
     def mark_high_card(cls):
         cls.gen_quinary(5, 5)
         for base in cls.QUINARIES:
-            idx = 0
-            idx += 10 ** base[0]
-            idx += 10 ** base[1]
-            idx += 10 ** base[2]
-            idx += 10 ** base[3]
-            idx += 10 ** base[4]
-            hand = list(map(int, reversed("{:013d}".format(idx))))
+            hand = [0] * 13
+            hand[base[0]] += 1
+            hand[base[1]] += 1
+            hand[base[2]] += 1
+            hand[base[3]] += 1
+            hand[base[4]] += 1
             hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
