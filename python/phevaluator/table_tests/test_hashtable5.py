@@ -1,13 +1,12 @@
 import unittest
 
 from evaluator.hash import hash_quinary
-from evaluator.hashtable5 import *
+from evaluator.hashtable5 import NO_FLUSH_5
 
 
 class TestNoFlush5Table(unittest.TestCase):
     TABLE = [0] * len(NO_FLUSH_5)
     VISIT = [0] * len(NO_FLUSH_5)
-    UPDATED = False
     CUR_RANK = 1
     NUM_CARDS = 5
 
@@ -15,49 +14,65 @@ class TestNoFlush5Table(unittest.TestCase):
     USED = [0] * 13
     QUINARIES = []
 
-    def gen_quinary(self, k, n):
+    @classmethod
+    def setUpClass(cls):
+        cls.mark_straight_flush()
+        cls.mark_four_of_a_kind()
+        cls.mark_full_house()
+        cls.mark_flush()
+        cls.mark_straight()
+        cls.mark_three_of_a_kind()
+        cls.mark_two_pair()
+        cls.mark_one_pair()
+        cls.mark_high_card()
+
+    @classmethod
+    def gen_quinary(cls, k, n):
         if k == 0:
-            self.QUINARIES.append(self.CACHE[:])
+            cls.QUINARIES.append(cls.CACHE[:])
         else:
             for i in range(12, -1, -1):
-                if self.USED[i] > 0:
+                if cls.USED[i] > 0:
                     continue
-                self.CACHE.append(i)
-                self.USED[i] = 1
-                self.gen_quinary(k - 1, n)
-                self.CACHE.remove(i)
-                self.USED[i] = 0
+                cls.CACHE.append(i)
+                cls.USED[i] = 1
+                cls.gen_quinary(k - 1, n)
+                cls.CACHE.remove(i)
+                cls.USED[i] = 0
 
-    def mark_four_of_a_kind(self):
+    @classmethod
+    def mark_four_of_a_kind(cls):
         # Order 13C2 lexicographically
-        self.gen_quinary(2, 2)
-        for base in self.QUINARIES:
+        cls.gen_quinary(2, 2)
+        for base in cls.QUINARIES:
             idx = 0
             idx += (10 ** base[0]) * 4
             idx += 10 ** base[1]
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            self.TABLE[hash_] = self.CUR_RANK
-            self.VISIT[hash_] = 1
-            self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            cls.TABLE[hash_] = cls.CUR_RANK
+            cls.VISIT[hash_] = 1
+            cls.CUR_RANK += 1
 
-        self.QUINARIES = []
+        cls.QUINARIES = []
 
-    def mark_full_house(self):
-        self.gen_quinary(2, 2)
-        for base in self.QUINARIES:
+    @classmethod
+    def mark_full_house(cls):
+        cls.gen_quinary(2, 2)
+        for base in cls.QUINARIES:
             idx = 0
             idx += (10 ** base[0]) * 3
             idx += (10 ** base[1]) * 2
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            self.TABLE[hash_] = self.CUR_RANK
-            self.VISIT[hash_] = 1
-            self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            cls.TABLE[hash_] = cls.CUR_RANK
+            cls.VISIT[hash_] = 1
+            cls.CUR_RANK += 1
 
-        self.QUINARIES = []
+        cls.QUINARIES = []
 
-    def mark_straight(self):
+    @classmethod
+    def mark_straight(cls):
         for highest in range(12, 3, -1):  # From Ace to 6
             # k=5 case for base
             base = [highest - i for i in range(5)]
@@ -65,10 +80,10 @@ class TestNoFlush5Table(unittest.TestCase):
             for pos in base:
                 idx += 10 ** pos
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            self.TABLE[hash_] = self.CUR_RANK
-            self.VISIT[hash_] = 1
-            self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            cls.TABLE[hash_] = cls.CUR_RANK
+            cls.VISIT[hash_] = 1
+            cls.CUR_RANK += 1
 
         # Five High Straight Flush
         base = [12, 3, 2, 1, 0]
@@ -76,63 +91,67 @@ class TestNoFlush5Table(unittest.TestCase):
         for pos in base:
             idx += 10 ** pos
         hand = list(map(int, reversed("{:013d}".format(idx))))
-        hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-        self.TABLE[hash_] = self.CUR_RANK
-        self.VISIT[hash_] = 1
-        self.CUR_RANK += 1
+        hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+        cls.TABLE[hash_] = cls.CUR_RANK
+        cls.VISIT[hash_] = 1
+        cls.CUR_RANK += 1
 
-    def mark_three_of_a_kind(self):
-        self.gen_quinary(3, 3)
-        for base in self.QUINARIES:
+    @classmethod
+    def mark_three_of_a_kind(cls):
+        cls.gen_quinary(3, 3)
+        for base in cls.QUINARIES:
             idx = 0
             idx += (10 ** base[0]) * 3
             idx += 10 ** base[1]
             idx += 10 ** base[2]
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            if self.VISIT[hash_] == 0:
-                self.TABLE[hash_] = self.CUR_RANK
-                self.VISIT[hash_] = 1
-                self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            if cls.VISIT[hash_] == 0:
+                cls.TABLE[hash_] = cls.CUR_RANK
+                cls.VISIT[hash_] = 1
+                cls.CUR_RANK += 1
 
-        self.QUINARIES = []
+        cls.QUINARIES = []
 
-    def mark_two_pair(self):
-        self.gen_quinary(3, 3)
-        for base in self.QUINARIES:
+    @classmethod
+    def mark_two_pair(cls):
+        cls.gen_quinary(3, 3)
+        for base in cls.QUINARIES:
             idx = 0
             idx += (10 ** base[0]) * 2
             idx += (10 ** base[1]) * 2
             idx += 10 ** base[2]
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            if self.VISIT[hash_] == 0:
-                self.TABLE[hash_] = self.CUR_RANK
-                self.VISIT[hash_] = 1
-                self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            if cls.VISIT[hash_] == 0:
+                cls.TABLE[hash_] = cls.CUR_RANK
+                cls.VISIT[hash_] = 1
+                cls.CUR_RANK += 1
 
-        self.QUINARIES = []
+        cls.QUINARIES = []
 
-    def mark_one_pair(self):
-        self.gen_quinary(4, 4)
-        for base in self.QUINARIES:
+    @classmethod
+    def mark_one_pair(cls):
+        cls.gen_quinary(4, 4)
+        for base in cls.QUINARIES:
             idx = 0
             idx += (10 ** base[0]) * 2
             idx += 10 ** base[1]
             idx += 10 ** base[2]
             idx += 10 ** base[3]
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            if self.VISIT[hash_] == 0:
-                self.TABLE[hash_] = self.CUR_RANK
-                self.VISIT[hash_] = 1
-                self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            if cls.VISIT[hash_] == 0:
+                cls.TABLE[hash_] = cls.CUR_RANK
+                cls.VISIT[hash_] = 1
+                cls.CUR_RANK += 1
 
-        self.QUINARIES = []
+        cls.QUINARIES = []
 
-    def mark_high_card(self):
-        self.gen_quinary(5, 5)
-        for base in self.QUINARIES:
+    @classmethod
+    def mark_high_card(cls):
+        cls.gen_quinary(5, 5)
+        for base in cls.QUINARIES:
             idx = 0
             idx += 10 ** base[0]
             idx += 10 ** base[1]
@@ -140,35 +159,24 @@ class TestNoFlush5Table(unittest.TestCase):
             idx += 10 ** base[3]
             idx += 10 ** base[4]
             hand = list(map(int, reversed("{:013d}".format(idx))))
-            hash_ = hash_quinary(hand, 13, self.NUM_CARDS)
-            if self.VISIT[hash_] == 0:
-                self.TABLE[hash_] = self.CUR_RANK
-                self.VISIT[hash_] = 1
-                self.CUR_RANK += 1
+            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            if cls.VISIT[hash_] == 0:
+                cls.TABLE[hash_] = cls.CUR_RANK
+                cls.VISIT[hash_] = 1
+                cls.CUR_RANK += 1
 
-        self.QUINARIES = []
+        cls.QUINARIES = []
 
-    def mark_straight_flush(self):
+    @classmethod
+    def mark_straight_flush(cls):
         # A-5 High Straight Flush: 10
-        self.CUR_RANK += 10
+        cls.CUR_RANK += 10
 
-    def mark_flush(self):
+    @classmethod
+    def mark_flush(cls):
         # Selecting 5 cards in 13: 13C5
         # Need to exclude straight: -10
-        self.CUR_RANK += int(13 * 12 * 11 * 10 * 9 / (5 * 4 * 3 * 2)) - 10
-
-    def setUp(self):
-        if not self.UPDATED:
-            self.mark_straight_flush()
-            self.mark_four_of_a_kind()
-            self.mark_full_house()
-            self.mark_flush()
-            self.mark_straight()
-            self.mark_three_of_a_kind()
-            self.mark_two_pair()
-            self.mark_one_pair()
-            self.mark_high_card()
-            self.UPDATED = True
+        cls.CUR_RANK += int(13 * 12 * 11 * 10 * 9 / (5 * 4 * 3 * 2)) - 10
 
     def test_noflush5_table(self):
         self.assertListEqual(self.TABLE, NO_FLUSH_5)
