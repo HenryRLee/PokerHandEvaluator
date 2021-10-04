@@ -1,72 +1,66 @@
 import unittest
 from itertools import combinations_with_replacement
 
-from evaluator.dptables import *
+from evaluator.dptables import CHOOSE, DP, SUITS
 
 
 class TestSuitsTable(unittest.TestCase):
     DP = [0] * len(SUITS)
-    UPDATED = False
 
-    def setUp(self):
-        def update_k(table, k):
-            iterable = list(range(0, k + 1))
-            cbs = combinations_with_replacement(iterable, 3)
+    @classmethod
+    def setUpClass(cls):
+        for k in [5, 6, 7, 8, 9]:
+            cls.update_k(cls.DP, k)
 
-            for cb in cbs:
-                # cb is in lexicographically sorted order
-                cnts = (cb[0], cb[1] - cb[0], cb[2] - cb[1], k - cb[2])
-                for suit, cnt in enumerate(cnts):
-                    if cnt >= 5:
-                        idx = (
-                            0x1 * cnts[0]
-                            + 0x8 * cnts[1]
-                            + 0x40 * cnts[2]
-                            + 0x200 * cnts[3]
-                        )
+    @staticmethod
+    def update_k(table, k):
+        iterable = list(range(0, k + 1))
+        cbs = combinations_with_replacement(iterable, 3)
 
-                        # TODO: Need to check these cases:
-                        #  There exist three cases that idxes are same.
-                        #  For two different cnts in case of k=9. The
-                        #  cases are 72, 520, 576.
-                        if idx in [72, 520, 576] and SUITS[idx] != suit + 1:
-                            continue
+        for cb in cbs:
+            # cb is in lexicographically sorted order
+            cnts = (cb[0], cb[1] - cb[0], cb[2] - cb[1], k - cb[2])
+            for suit, cnt in enumerate(cnts):
+                if cnt >= 5:
+                    idx = (
+                        0x1 * cnts[0] + 0x8 * cnts[1] + 0x40 * cnts[2] + 0x200 * cnts[3]
+                    )
 
-                        table[idx] = suit + 1
+                    # TODO: Need to check these cases:
+                    #  There exist three cases that idxes are same.
+                    #  For two different cnts in case of k=9. The
+                    #  cases are 72, 520, 576.
+                    if idx in [72, 520, 576] and SUITS[idx] != suit + 1:
+                        continue
 
-        if not self.UPDATED:
-            for k in [5, 6, 7, 8, 9]:
-                update_k(self.DP, k)
-            self.UPDATED = True
+                    table[idx] = suit + 1
 
     def test_suits_table(self):
         self.assertListEqual(self.DP, SUITS)
 
 
 class TestChooseTable(unittest.TestCase):
-
     DP = [[0] * len(CHOOSE[idx]) for idx in range(len(CHOOSE))]
     VISIT = [[0] * len(CHOOSE[idx]) for idx in range(len(CHOOSE))]
-    UPDATED = False
 
-    def nCr(self, n, r):
+    @classmethod
+    def setUpClass(cls):
+        for row in range(len(CHOOSE)):
+            for col in range(len(CHOOSE[row])):
+                cls.nCr(row, col)
+
+    @classmethod
+    def nCr(cls, n, r):
         if n < r:
             return 0
         elif r == 0:
-            self.DP[n][r] = 1
+            cls.DP[n][r] = 1
             return 1
         else:
-            if self.VISIT[n][r] == 0:
-                self.DP[n][r] = self.nCr(n - 1, r) + self.nCr(n - 1, r - 1)
-                self.VISIT[n][r] = 1
-            return self.DP[n][r]
-
-    def setUp(self):
-        if not self.UPDATED:
-            for row in range(len(CHOOSE)):
-                for col in range(len(CHOOSE[row])):
-                    self.nCr(row, col)
-            self.UPDATED = True
+            if cls.VISIT[n][r] == 0:
+                cls.DP[n][r] = cls.nCr(n - 1, r) + cls.nCr(n - 1, r - 1)
+                cls.VISIT[n][r] = 1
+            return cls.DP[n][r]
 
     def test_choose_table(self):
         self.assertListEqual(self.DP, CHOOSE)
@@ -74,9 +68,13 @@ class TestChooseTable(unittest.TestCase):
 
 class TestDpTable(unittest.TestCase):
     DP = [[[0] * len(DP[i][j]) for j in range(len(DP[i]))] for i in range(len(DP))]
-    UPDATED = False
 
-    def fill_table(self):
+    @classmethod
+    def setUpClass(cls):
+        cls.fill_table()
+
+    @classmethod
+    def fill_table(cls):
         # Recursion formula:
         # dp[l][i][j] = dp[l-1][i][j] + dp[1][i][j-l+1]
         #
@@ -94,25 +92,20 @@ class TestDpTable(unittest.TestCase):
 
         # Make base cases
         for j in range(0, 5):
-            self.DP[1][1][j] = 1
+            cls.DP[1][1][j] = 1
         for i in range(2, 14):
             for j in range(10):
                 for q in range(5):
                     if j - q >= 0:
-                        self.DP[1][i][j] += self.DP[1][i - 1][j - q]
+                        cls.DP[1][i][j] += cls.DP[1][i - 1][j - q]
 
         # Make recursion
         for l in range(2, 5):
             for i in range(14):
                 for j in range(10):
-                    self.DP[l][i][j] = self.DP[l - 1][i][j]
+                    cls.DP[l][i][j] = cls.DP[l - 1][i][j]
                     if j - l + 1 >= 0:
-                        self.DP[l][i][j] += self.DP[1][i][j - l + 1]
-
-    def setUp(self):
-        if not self.UPDATED:
-            self.fill_table()
-            self.UPDATED = True
+                        cls.DP[l][i][j] += cls.DP[1][i][j - l + 1]
 
     def test_dp_table(self):
         self.assertListEqual(self.DP, DP)

@@ -10,6 +10,10 @@ class TestNoFlush6Table(BaseTestNoFlushTable):
     VISIT = [0] * len(TOCOMPARE)
     NUM_CARDS = 6
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
     def test_noflush6_table(self):
         self.assertListEqual(self.TABLE, self.TOCOMPARE)
 
