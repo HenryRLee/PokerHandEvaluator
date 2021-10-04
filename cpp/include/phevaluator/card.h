@@ -22,6 +22,7 @@
 #include <unordered_map>
 #include <string>
 #include <array>
+#include <functional>
 
 namespace phevaluator {
 const static std::unordered_map<char, int> rankMap = {
@@ -73,6 +74,16 @@ private:
 };
 
 } // namespace phevaluator
+
+
+namespace std {
+template <>
+struct hash<phevaluator::Card> {
+  size_t operator()(const phevaluator::Card& card) const {
+    return hash<int>()(int(card)); // usually identical to `return int(card)`
+  }
+};
+} // namespace std
 
 #endif // __cplusplus
 
