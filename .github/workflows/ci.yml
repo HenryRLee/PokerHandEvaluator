@@ -54,4 +54,5 @@ jobs:
       - name: Run script
         run: |
           cd python/phevaluator
-          python -m unittest tests.test_evaluator
+          python -m unittest discover tests
+          python -m unittest discover table_tests
