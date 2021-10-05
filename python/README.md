@@ -22,11 +22,7 @@ python3 -m unittest tests.test_evaluator
 There are also test code for testing the hash tables
 ```
 cd phevaluator
-python3 -m table_tests.test_dptables
-python3 -m table_tests.test_hashtable
-python3 -m table_tests.test_hashtable5
-python3 -m table_tests.test_hashtable6
-python3 -m table_tests.test_hashtable7
+python3 -m unittest discover table_tests
 ```
 
 ## Using the library
