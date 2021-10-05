@@ -54,6 +54,7 @@ class TestNoFlush5Table(unittest.TestCase):
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
 
+
     @classmethod
     def mark_straight(cls):
         for lowest in range(9)[::-1]:  # From 10 to 2
@@ -64,11 +65,13 @@ class TestNoFlush5Table(unittest.TestCase):
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
+
         # Five High Straight Flush
         base = [12, 3, 2, 1, 0]
         hand = [0] * 13
         for pos in base:
             hand[pos] = 1
+
         hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
         cls.TABLE[hash_] = cls.CUR_RANK
         cls.VISIT[hash_] = 1
@@ -86,6 +89,7 @@ class TestNoFlush5Table(unittest.TestCase):
                 cls.TABLE[hash_] = cls.CUR_RANK
                 cls.VISIT[hash_] = 1
                 cls.CUR_RANK += 1
+
 
     @classmethod
     def mark_two_pair(cls):

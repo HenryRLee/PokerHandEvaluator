@@ -82,6 +82,7 @@ class BaseTestNoFlushTable(unittest.TestCase):
             base_rank = NO_FLUSH_5[hash_quinary(hand, 13, 5)]
             for additional in additionals:
                 for i in additional:
+
                     hand[i] += 1
 
                 hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
