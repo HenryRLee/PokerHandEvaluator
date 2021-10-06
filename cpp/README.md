@@ -109,7 +109,7 @@ the `describeRank` or the `describeSampleHand` method.
 Let's see a sample hand from the `rank2`:
 
 ```C++
-assert(rank2.describeSampleHand() == "9 9 9 4 4");
+assert(rank2.describeSampleHand() == "99944");
 ```
 
 As we can see, the best 5-card hand from player 2 is 9-9-9-4-4. Suit

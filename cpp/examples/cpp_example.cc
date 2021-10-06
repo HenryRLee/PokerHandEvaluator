@@ -30,7 +30,7 @@ int main()
   assert(rank2.describeRank() == "Nines Full over Fours");
   std::cout << "More specifically, player 2 has a " << rank2.describeCategory() << std::endl;
 
-  assert(rank2.describeSampleHand() == "9 9 9 4 4");
+  assert(rank2.describeSampleHand() == "99944");
   assert(!rank2.isFlush());
   std::cout << "The best hand from player 2 is " << rank2.describeSampleHand() <<
     (rank2.isFlush() ? " in flush" : "") << std::endl;
