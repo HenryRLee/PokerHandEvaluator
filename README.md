@@ -1,6 +1,6 @@
 # PH Evaluator
 
-[![Build Status](https://travis-ci.org/HenryRLee/PokerHandEvaluator.svg?branch=master)](https://travis-ci.org/HenryRLee/PokerHandEvaluator)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/CI?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/ci.yml)
 
 A Poker Hand Evaluator based on a Pefect Hash Algorithm
 
