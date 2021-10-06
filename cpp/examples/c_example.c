@@ -80,7 +80,7 @@ int main()
   const char* rank_sample_hand = describe_sample_hand(rank2);
   printf("The best hand from player 2 is %s %s\n",
       rank_sample_hand, is_flush(rank2) ? "flush": "");
-  assert(strcmp(rank_sample_hand, "9 9 9 4 4") == 0);
+  assert(strcmp(rank_sample_hand, "99944") == 0);
   assert(!is_flush(rank2));
 
 	return 0;

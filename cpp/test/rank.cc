@@ -171,8 +171,8 @@ TEST(RankTest, TestRankDescription) {
   ASSERT_EQ(a.describeRank(), "Fours Full over Nines");
   ASSERT_EQ(b.describeRank(), "Royal Flush");
 
-  ASSERT_EQ(a.describeSampleHand(), "4 4 4 9 9");
-  ASSERT_EQ(b.describeSampleHand(), "A K Q J T");
+  ASSERT_EQ(a.describeSampleHand(), "44499");
+  ASSERT_EQ(b.describeSampleHand(), "AKQJT");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_TRUE(b.isFlush());
@@ -188,9 +188,9 @@ TEST(RankTest, TestRankDescriptionStraightFlushes)
   ASSERT_EQ(b.describeRank(), "Queen-High Straight Flush");
   ASSERT_EQ(c.describeRank(), "Eight-High Straight Flush");
 
-  ASSERT_EQ(a.describeSampleHand(), "6 5 4 3 2");
-  ASSERT_EQ(b.describeSampleHand(), "Q J T 9 8");
-  ASSERT_EQ(c.describeSampleHand(), "8 7 6 5 4");
+  ASSERT_EQ(a.describeSampleHand(), "65432");
+  ASSERT_EQ(b.describeSampleHand(), "QJT98");
+  ASSERT_EQ(c.describeSampleHand(), "87654");
 
   ASSERT_TRUE(a.isFlush());
   ASSERT_TRUE(b.isFlush());
@@ -207,9 +207,9 @@ TEST(RankTest, TestRankDescriptionFourOfAKinds)
   ASSERT_EQ(b.describeRank(), "Four Queens");
   ASSERT_EQ(c.describeRank(), "Four Treys");
 
-  ASSERT_EQ(a.describeSampleHand(), "A A A A 2");
-  ASSERT_EQ(b.describeSampleHand(), "Q Q Q Q 3");
-  ASSERT_EQ(c.describeSampleHand(), "3 3 3 3 8");
+  ASSERT_EQ(a.describeSampleHand(), "AAAA2");
+  ASSERT_EQ(b.describeSampleHand(), "QQQQ3");
+  ASSERT_EQ(c.describeSampleHand(), "33338");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
@@ -226,9 +226,9 @@ TEST(RankTest, TestRankDescriptionFullHouses)
   ASSERT_EQ(b.describeRank(), "Treys Full over Queens");
   ASSERT_EQ(c.describeRank(), "Eights Full over Sevens");
 
-  ASSERT_EQ(a.describeSampleHand(), "A A A 2 2");
-  ASSERT_EQ(b.describeSampleHand(), "3 3 3 Q Q");
-  ASSERT_EQ(c.describeSampleHand(), "8 8 8 7 7");
+  ASSERT_EQ(a.describeSampleHand(), "AAA22");
+  ASSERT_EQ(b.describeSampleHand(), "333QQ");
+  ASSERT_EQ(c.describeSampleHand(), "88877");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
@@ -245,9 +245,9 @@ TEST(RankTest, TestRankDescriptionFlushes)
   ASSERT_EQ(b.describeRank(), "Queen-High Flush");
   ASSERT_EQ(c.describeRank(), "Eight-High Flush");
 
-  ASSERT_EQ(a.describeSampleHand(), "A T 7 3 2");
-  ASSERT_EQ(b.describeSampleHand(), "Q T 7 4 2");
-  ASSERT_EQ(c.describeSampleHand(), "8 5 4 3 2");
+  ASSERT_EQ(a.describeSampleHand(), "AT732");
+  ASSERT_EQ(b.describeSampleHand(), "QT742");
+  ASSERT_EQ(c.describeSampleHand(), "85432");
 
   ASSERT_TRUE(a.isFlush());
   ASSERT_TRUE(b.isFlush());
@@ -264,9 +264,9 @@ TEST(RankTest, TestRankDescriptionStraights)
   ASSERT_EQ(b.describeRank(), "King-High Straight");
   ASSERT_EQ(c.describeRank(), "Five-High Straight");
 
-  ASSERT_EQ(a.describeSampleHand(), "A K Q J T");
-  ASSERT_EQ(b.describeSampleHand(), "K Q J T 9");
-  ASSERT_EQ(c.describeSampleHand(), "5 4 3 2 A");
+  ASSERT_EQ(a.describeSampleHand(), "AKQJT");
+  ASSERT_EQ(b.describeSampleHand(), "KQJT9");
+  ASSERT_EQ(c.describeSampleHand(), "5432A");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
@@ -287,9 +287,9 @@ TEST(RankTest, TestRankDescriptionThreeOfAKinds)
   ASSERT_EQ(b.describeRank(), "Three Sixes");
   ASSERT_EQ(c.describeRank(), "Three Nines");
 
-  ASSERT_EQ(a.describeSampleHand(), "A A A T 2");
-  ASSERT_EQ(b.describeSampleHand(), "6 6 6 4 2");
-  ASSERT_EQ(c.describeSampleHand(), "9 9 9 8 4");
+  ASSERT_EQ(a.describeSampleHand(), "AAAT2");
+  ASSERT_EQ(b.describeSampleHand(), "66642");
+  ASSERT_EQ(c.describeSampleHand(), "99984");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
@@ -306,9 +306,9 @@ TEST(RankTest, TestRankDescriptionTwoPairs)
   ASSERT_EQ(b.describeRank(), "Sixes and Fours");
   ASSERT_EQ(c.describeRank(), "Nines and Sevens");
 
-  ASSERT_EQ(a.describeSampleHand(), "A A T T 2");
-  ASSERT_EQ(b.describeSampleHand(), "6 6 4 4 2");
-  ASSERT_EQ(c.describeSampleHand(), "9 9 7 7 A");
+  ASSERT_EQ(a.describeSampleHand(), "AATT2");
+  ASSERT_EQ(b.describeSampleHand(), "66442");
+  ASSERT_EQ(c.describeSampleHand(), "9977A");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
@@ -325,9 +325,9 @@ TEST(RankTest, TestRankDescriptionOnePairs)
   ASSERT_EQ(b.describeRank(), "Pair of Treys");
   ASSERT_EQ(c.describeRank(), "Pair of Tens");
 
-  ASSERT_EQ(a.describeSampleHand(), "Q Q T 3 2");
-  ASSERT_EQ(b.describeSampleHand(), "3 3 6 5 2");
-  ASSERT_EQ(c.describeSampleHand(), "T T A Q 7");
+  ASSERT_EQ(a.describeSampleHand(), "QQT32");
+  ASSERT_EQ(b.describeSampleHand(), "33652");
+  ASSERT_EQ(c.describeSampleHand(), "TTAQ7");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
@@ -344,9 +344,9 @@ TEST(RankTest, TestRankDescriptionHighCards)
   ASSERT_EQ(b.describeRank(), "Ace-High");
   ASSERT_EQ(c.describeRank(), "Ten-High");
 
-  ASSERT_EQ(a.describeSampleHand(), "7 6 4 3 2");
-  ASSERT_EQ(b.describeSampleHand(), "A K Q 3 2");
-  ASSERT_EQ(c.describeSampleHand(), "T 9 7 4 2");
+  ASSERT_EQ(a.describeSampleHand(), "76432");
+  ASSERT_EQ(b.describeSampleHand(), "AKQ32");
+  ASSERT_EQ(c.describeSampleHand(), "T9742");
 
   ASSERT_FALSE(a.isFlush());
   ASSERT_FALSE(b.isFlush());
