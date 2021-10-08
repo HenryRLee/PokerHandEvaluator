@@ -1,7 +1,7 @@
 import unittest
 from itertools import combinations
 
-from phevaluator.hashtable import FLUSH
+from phevaluator.tables import FLUSH
 
 
 class TestFlushTable(unittest.TestCase):

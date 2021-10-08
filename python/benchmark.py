@@ -1,7 +1,6 @@
-from phevaluator.evaluator5 import evaluate_5cards
-from phevaluator.evaluator import evaluate_cards
-
 import time
+
+from phevaluator import evaluate_cards
 
 
 def evaluate_all_five_card_hands():

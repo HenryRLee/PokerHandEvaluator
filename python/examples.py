@@ -1,4 +1,4 @@
-from phevaluator.evaluator import evaluate_cards
+from phevaluator import evaluate_cards
 
 
 def example1():
@@ -39,14 +39,17 @@ def example2():
 
 def example3():
     print("Example 3: An Omaha poker example")
-
+    # fmt: off
     p1 = evaluate_cards(
-        "4c", "5c", "6c", "7s", "8s", "2c", "9c", "As", "Kd"  # community cards
-    )  # player hole cards
+        "4c", "5c", "6c", "7s", "8s", # community cards
+        "2c", "9c", "As", "Kd",       # player hole cards
+    )
 
     p2 = evaluate_cards(
-        "4c", "5c", "6c", "7s", "8s", "6s", "9s", "Ts", "Js"  # community cards
-    )  # player hole cards
+        "4c", "5c", "6c", "7s", "8s", # community cards
+        "6s", "9s", "Ts", "Js",       # player hole cards
+    )
+    # fmt: on
 
     print(f"The rank of the hand in player 1 is {p1}")  # expected 1578
     print(f"The rank of the hand in player 2 is {p2}")  # expected 1604

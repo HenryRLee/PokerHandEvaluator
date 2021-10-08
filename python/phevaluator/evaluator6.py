@@ -1,7 +1,5 @@
-from phevaluator.dptables import SUITS
-from phevaluator.hashtable import FLUSH
-from phevaluator.hashtable6 import NO_FLUSH_6
-from phevaluator.hash import hash_quinary
+from .hash import hash_quinary
+from .tables import FLUSH, NO_FLUSH_6, SUITS
 
 # fmt: off
 binaries_by_id = [

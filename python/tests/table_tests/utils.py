@@ -1,8 +1,8 @@
 import unittest
-from itertools import permutations, combinations, combinations_with_replacement
+from itertools import combinations, combinations_with_replacement, permutations
 
 from phevaluator.hash import hash_quinary
-from phevaluator.hashtable5 import NO_FLUSH_5
+from phevaluator.tables import NO_FLUSH_5
 
 
 class BaseTestNoFlushTable(unittest.TestCase):

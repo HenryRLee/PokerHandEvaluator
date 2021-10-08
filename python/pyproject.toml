@@ -1,8 +1,7 @@
 [tool.black]
 extend-exclude = '''
 (
-  phevaluator/hashtable.*
-  |phevaluator/dptables\.py
+  phevaluator/tables/.*
 )
 '''
 

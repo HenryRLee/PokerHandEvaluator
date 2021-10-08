@@ -1,9 +1,5 @@
-from phevaluator.dptables import SUITS
-from phevaluator.hashtable import FLUSH
-from phevaluator.hashtable_omaha import NO_FLUSH_OMAHA
-from phevaluator.hashtable_omaha import FLUSH_OMAHA
-from phevaluator.hash import hash_quinary
-from phevaluator.hash import hash_binary
+from .hash import hash_binary, hash_quinary
+from .tables import FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
 
 # fmt: off
 binaries_by_id = [

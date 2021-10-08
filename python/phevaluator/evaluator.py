@@ -1,10 +1,10 @@
 from typing import Iterable, Union
 
-from phevaluator.card import Card
-from phevaluator.evaluator5 import evaluate_5cards
-from phevaluator.evaluator6 import evaluate_6cards
-from phevaluator.evaluator7 import evaluate_7cards
-from phevaluator.evaluator_omaha import evaluate_omaha_cards
+from .card import Card
+from .evaluator5 import evaluate_5cards
+from .evaluator6 import evaluate_6cards
+from .evaluator7 import evaluate_7cards
+from .evaluator_omaha import evaluate_omaha_cards
 
 
 def evaluate_cards(*args: Iterable[Union[int, str, Card]]) -> int:

@@ -1,9 +1,8 @@
-import unittest
 import json
 import os
+import unittest
 
-from phevaluator.evaluator import evaluate_cards
-from phevaluator.card import Card
+from phevaluator import Card, evaluate_cards
 
 CARDS_FILE_5 = os.path.join(os.path.dirname(__file__), "cardfiles/5cards.json")
 CARDS_FILE_6 = os.path.join(os.path.dirname(__file__), "cardfiles/6cards.json")
@@ -20,13 +19,17 @@ class TestEvaluator(unittest.TestCase):
         self.assertLess(p2, p1)
 
     def test_omaha_example(self):
+        # fmt: off
         p1 = evaluate_cards(
-            "4c", "5c", "6c", "7s", "8s", "2c", "9c", "As", "Kd"  # community cards
-        )  # player hole cards
+            "4c", "5c", "6c", "7s", "8s", # community cards
+            "2c", "9c", "As", "Kd",       # player hole cards
+        )
 
         p2 = evaluate_cards(
-            "4c", "5c", "6c", "7s", "8s", "6s", "9s", "Ts", "Js"  # community cards
-        )  # player hole cards
+            "4c", "5c", "6c", "7s", "8s", # community cards
+            "6s", "9s", "Ts", "Js",       # player hole cards
+        )
+        # fmt: on
 
         self.assertEqual(p1, 1578)
         self.assertEqual(p2, 1604)
