@@ -5,3 +5,20 @@ extend-exclude = '''
   |evaluator/dptables\.py
 )
 '''
+
+[tool.poetry]
+authors = ["Henry Lee <lee0906@hotmail.com>"]
+description = "Poker-Hand-Evaluator: An efficient poker hand evaluation algorithm and its implementation, supporting 7-card poker and Omaha poker evaluation"
+license = "Apache-2.0"
+name = "phevaluator"
+version = "0.4.0"
+
+[tool.poetry.dependencies]
+numpy = "^1.21.0"
+python = "^3.9"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0"]
