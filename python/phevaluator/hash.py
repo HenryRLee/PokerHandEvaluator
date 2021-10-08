@@ -1,5 +1,5 @@
-from evaluator.dptables import DP
-from evaluator.dptables import CHOOSE
+from phevaluator.dptables import DP
+from phevaluator.dptables import CHOOSE
 
 
 def hash_quinary(q, length, k):

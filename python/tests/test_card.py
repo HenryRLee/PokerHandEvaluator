@@ -1,7 +1,7 @@
 import unittest
 import os
 
-from evaluator.card import Card
+from phevaluator.card import Card
 
 
 class TestCard(unittest.TestCase):
@@ -19,8 +19,12 @@ class TestCard(unittest.TestCase):
         for name, capital_name, number in self.testcases:
             # equality between cards
             self.assertEqual(Card(name), Card(number))  # e.g. Card("2c") == Card(0)
-            self.assertEqual(Card(capital_name), Card(number))  # e.g. Card("2C") == Card(0)
-            self.assertEqual(Card(Card(number)), Card(number))  # e.g. Card(Card(0)) == Card(0)
+            self.assertEqual(
+                Card(capital_name), Card(number)
+            )  # e.g. Card("2C") == Card(0)
+            self.assertEqual(
+                Card(Card(number)), Card(number)
+            )  # e.g. Card(Card(0)) == Card(0)
             # equality between Card and int
             self.assertEqual(Card(number), number)  # e.g. Card(0) == 0
 

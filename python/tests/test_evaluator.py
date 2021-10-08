@@ -2,8 +2,8 @@ import unittest
 import json
 import os
 
-from evaluator.evaluator import evaluate_cards
-from evaluator.card import Card
+from phevaluator.evaluator import evaluate_cards
+from phevaluator.card import Card
 
 CARDS_FILE_5 = os.path.join(os.path.dirname(__file__), "cardfiles/5cards.json")
 CARDS_FILE_6 = os.path.join(os.path.dirname(__file__), "cardfiles/6cards.json")

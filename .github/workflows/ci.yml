@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   cpp_standard:
@@ -53,6 +53,5 @@ jobs:
           pip install -r requirements.txt
       - name: Run script
         run: |
-          cd python/phevaluator
-          python -m unittest discover tests
-          python -m unittest discover table_tests
+          cd python
+          python -m unittest discover

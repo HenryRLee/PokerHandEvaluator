@@ -1,7 +1,7 @@
 import unittest
 
-from table_tests.utils import BaseTestNoFlushTable
-from evaluator.hashtable7 import NO_FLUSH_7
+from .utils import BaseTestNoFlushTable
+from phevaluator.hashtable7 import NO_FLUSH_7
 
 
 class TestNoFlush7Table(BaseTestNoFlushTable):

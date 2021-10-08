@@ -1,5 +1,5 @@
-from evaluator.evaluator5 import evaluate_5cards
-from evaluator.evaluator import evaluate_cards
+from phevaluator.evaluator5 import evaluate_5cards
+from phevaluator.evaluator import evaluate_cards
 
 import time
 
