@@ -45,11 +45,11 @@ There are 1000 random examples tested for each type of hand (5 cards, 6 cards, a
 
 - with current environment
     ```shell
-    python3 -m unittest discover
+    python3 -m unittest discover -v
     ```
 - with isolated environment of `Poetry`
     ```shell
-    poetry run python -m unittest discover
+    poetry run python -m unittest discover -v
     ```
 
 ## Development

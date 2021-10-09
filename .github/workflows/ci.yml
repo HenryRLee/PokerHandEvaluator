@@ -58,4 +58,4 @@ jobs:
       - name: Run script
         run: |
           cd python
-          python -m unittest discover
+          python -m unittest discover -v
