@@ -1,7 +1,5 @@
-from evaluator.dptables import SUITS
-from evaluator.hashtable import FLUSH
-from evaluator.hashtable5 import NO_FLUSH_5
-from evaluator.hash import hash_quinary
+from .hash import hash_quinary
+from .tables import FLUSH, NO_FLUSH_5, SUITS
 
 # fmt: off
 binaries_by_id = [

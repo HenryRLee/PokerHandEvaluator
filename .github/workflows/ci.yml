@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   cpp_standard:
@@ -46,13 +46,16 @@ jobs:
       - name: Set up Python 3.x
         uses: actions/setup-python@v2
         with:
-          python-version: '3.7'
+          python-version: "3.9"
       - name: Install dependencies
         run: |
           cd python
           pip install -r requirements.txt
+      - name: Install package
+        run: |
+          cd python
+          pip install .
       - name: Run script
         run: |
-          cd python/phevaluator
-          python -m unittest discover tests
-          python -m unittest discover table_tests
+          cd python
+          python -m unittest discover -v

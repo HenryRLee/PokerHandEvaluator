@@ -1,7 +1,10 @@
-from evaluator.evaluator5 import evaluate_5cards
-from evaluator.evaluator6 import evaluate_6cards
-from evaluator.evaluator7 import evaluate_7cards
-from evaluator.evaluator_omaha import evaluate_omaha_cards
+from typing import Iterable, Union
+
+from .card import Card
+from .evaluator5 import evaluate_5cards
+from .evaluator6 import evaluate_6cards
+from .evaluator7 import evaluate_7cards
+from .evaluator_omaha import evaluate_omaha_cards
 
 rank_map = {
     "2": 0,

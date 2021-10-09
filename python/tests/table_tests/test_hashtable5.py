@@ -1,8 +1,8 @@
 import unittest
-from itertools import permutations, combinations
+from itertools import combinations, permutations
 
-from evaluator.hash import hash_quinary
-from evaluator.hashtable5 import NO_FLUSH_5
+from phevaluator.hash import hash_quinary
+from phevaluator.tables import NO_FLUSH_5
 
 
 class TestNoFlush5Table(unittest.TestCase):
@@ -54,7 +54,6 @@ class TestNoFlush5Table(unittest.TestCase):
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
 
-
     @classmethod
     def mark_straight(cls):
         for lowest in range(9)[::-1]:  # From 10 to 2
@@ -89,7 +88,6 @@ class TestNoFlush5Table(unittest.TestCase):
                 cls.TABLE[hash_] = cls.CUR_RANK
                 cls.VISIT[hash_] = 1
                 cls.CUR_RANK += 1
-
 
     @classmethod
     def mark_two_pair(cls):

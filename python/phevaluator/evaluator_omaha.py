@@ -1,9 +1,5 @@
-from evaluator.dptables import SUITS
-from evaluator.hashtable import FLUSH
-from evaluator.hashtable_omaha import NO_FLUSH_OMAHA
-from evaluator.hashtable_omaha import FLUSH_OMAHA
-from evaluator.hash import hash_quinary
-from evaluator.hash import hash_binary
+from .hash import hash_binary, hash_quinary
+from .tables import FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
 
 # fmt: off
 binaries_by_id = [

@@ -1,20 +1,21 @@
 import unittest
 
-from table_tests.utils import BaseTestNoFlushTable
-from evaluator.hashtable6 import NO_FLUSH_6
+from phevaluator.tables import NO_FLUSH_7
+
+from .utils import BaseTestNoFlushTable
 
 
-class TestNoFlush6Table(BaseTestNoFlushTable):
-    TOCOMPARE = NO_FLUSH_6
+class TestNoFlush7Table(BaseTestNoFlushTable):
+    TOCOMPARE = NO_FLUSH_7
     TABLE = [0] * len(TOCOMPARE)
     VISIT = [0] * len(TOCOMPARE)
-    NUM_CARDS = 6
+    NUM_CARDS = 7
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
 
-    def test_noflush6_table(self):
+    def test_noflush7_table(self):
         self.assertListEqual(self.TABLE, self.TOCOMPARE)
 
 

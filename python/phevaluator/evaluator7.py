@@ -1,11 +1,9 @@
-from evaluator.dptables import SUITS
-from evaluator.hashtable import FLUSH
-from evaluator.hashtable6 import NO_FLUSH_6
-from evaluator.hash import hash_quinary
+from .hash import hash_quinary
+from .tables import FLUSH, NO_FLUSH_7, SUITS
 
 # fmt: off
 binaries_by_id = [
-    0x0, 0x1, 0x1, 0x1,
+    0x1, 0x1, 0x1, 0x1,
     0x2, 0x2, 0x2, 0x2,
     0x4, 0x4, 0x4, 0x4,
     0x8, 0x8, 0x8, 0x8,
@@ -23,7 +21,7 @@ suitbit_by_id = [0x1, 0x8, 0x40, 0x200,] * 13
 # fmt: on
 
 
-def evaluate_6cards(a, b, c, d, e, f):
+def evaluate_7cards(a, b, c, d, e, f, g):
     suit_hash = 0
 
     suit_hash += suitbit_by_id[a]
@@ -32,6 +30,7 @@ def evaluate_6cards(a, b, c, d, e, f):
     suit_hash += suitbit_by_id[d]
     suit_hash += suitbit_by_id[e]
     suit_hash += suitbit_by_id[f]
+    suit_hash += suitbit_by_id[g]
 
     if SUITS[suit_hash]:
         suit_binary = [0] * 4
@@ -42,6 +41,7 @@ def evaluate_6cards(a, b, c, d, e, f):
         suit_binary[d & 0x3] |= binaries_by_id[d]
         suit_binary[e & 0x3] |= binaries_by_id[e]
         suit_binary[f & 0x3] |= binaries_by_id[f]
+        suit_binary[g & 0x3] |= binaries_by_id[g]
 
         return FLUSH[suit_binary[SUITS[suit_hash] - 1]]
 
@@ -53,5 +53,6 @@ def evaluate_6cards(a, b, c, d, e, f):
     quinary[d >> 2] += 1
     quinary[e >> 2] += 1
     quinary[f >> 2] += 1
+    quinary[g >> 2] += 1
 
-    return NO_FLUSH_6[hash_quinary(quinary, 13, 6)]
+    return NO_FLUSH_7[hash_quinary(quinary, 13, 7)]
