@@ -64,3 +64,4 @@ class TestEvaluator(unittest.TestCase):
         self.assertEqual(p1, p3)
         self.assertEqual(p1, p4)
         self.assertEqual(p1, p5)
+
