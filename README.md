@@ -85,12 +85,31 @@ of accessing the pre-generated random samples in the memory.
 
 ## Python Implementation
 
-The [python](python) subdirectory has the latest Python implementation, which is
-still in active development. Contributions are welcome.
+The [python](python) subdirectory has the latest Python implementation.
+
+Currently it supports 5-card, 6-card and 7-card poker hands evaluation, as well
+as Omaha poker hands evaluation.
+
+Thanks to the community for contributing to the Python implementations. Especially
+[azriel1rf](https://github.com/azriel1rf),
+[ohwi](https://github.com/ohwi),
+and [bensi94](https://github.com/bensi94).
 
 ## Other Implementations
 
 [PHE](https://github.com/thlorenz/phe) is a Javascript port, developed by Thorsten Lorenz.
 
 [41Poker](https://github.com/41semicolon/41poker) is another Javascript port, developed by 41semicolon.
+
+## Awesome Use Cases
+
+### A simple Hold'em pre-flop equity estimator
+
+A reddit user coded a Hold'em pre-flop equity estimator in C++ using the PHEvaluator library.
+
+https://www.reddit.com/r/poker/comments/okk5qn/i_ran_1m_runouts_of_random_play_to_get_a_sense_of/
+
+The source code can be found in [sim.cc](https://gist.github.com/bwasti/c2ca972c57f4fb581813f82f010c7cb2).
+
+![pre-flop equity estimator](https://i.redd.it/ibav59awmab71.jpg)
 
