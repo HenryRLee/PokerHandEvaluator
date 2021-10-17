@@ -1,4 +1,4 @@
-# PH Evaluator Python package (pheval)
+# PH Evaluator Python package (phevaluator)
 
 ## Description
 
@@ -16,26 +16,6 @@ The library requires Python 3.
     ```shell
     pip install .
     ```
-- with `Poetry`
-    ```shell
-    poetry install
-    ```
-
-(advanced)
-- `pip`
-    - install dependencies only
-        ```shell
-        pip install -r requirements.txt
-        ```
-- `Poetry`
-    - check validity of `pyproject.toml`
-        ```shell
-        poetry check
-        ```
-    - install dependencies only
-        ```shell
-        poetry install --no-root
-        ```
 
 ## Using the library
 The main function is the `evaluate_cards` function.
@@ -57,10 +37,6 @@ There are 1000 random examples tested for each type of hand (5 cards, 6 cards, a
 - with current environment
     ```shell
     python3 -m unittest discover -v
-    ```
-- with isolated environment of `Poetry`
-    ```shell
-    poetry run python -m unittest discover -v
     ```
 
 ## Development
