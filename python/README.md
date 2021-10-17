@@ -1,4 +1,15 @@
-# phevaluator: PokerHandEvaluator (Python Implementation)
+# PH Evaluator Python package (pheval)
+
+## Description
+
+[PH Evaluator](https://github.com/HenryRLee/PokerHandEvaluator) is designed
+for evaluating poker hands with more than 5 cards. Instead of traversing all
+the combinations, it uses a perfect hash algorithm to get the hand strength
+from a pre-computed hash table, which only costs very few CPU cycles and
+considerably small memory (~100kb for the 7 card evaluation). With slight
+modification, the same algorithm can be also applied to evaluating Omaha
+poker hands.
+
 ## Installation
 The library requires Python 3.
 - with `pip`

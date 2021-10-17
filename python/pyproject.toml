@@ -10,7 +10,7 @@ authors = ["Henry Lee <lee0906@hotmail.com>"]
 description = "Poker-Hand-Evaluator: An efficient poker hand evaluation algorithm and its implementation, supporting 7-card poker and Omaha poker evaluation"
 license = "Apache-2.0"
 name = "phevaluator"
-version = "0.4.0.1"
+version = "0.4.0.2"
 
 [tool.poetry.dependencies]
 numpy = "^1.21.0"
