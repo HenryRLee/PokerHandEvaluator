@@ -1,8 +1,6 @@
-import warnings
 from typing import Iterable, Union
 
 from .card import Card
-from .evaluator_omaha import evaluate_omaha_cards
 from .hash import hash_quinary
 from .tables import (
     BINARIES_BY_ID,
@@ -19,16 +17,10 @@ MAX_CARDS = 7
 
 NO_FLUSHES = {5: NO_FLUSH_5, 6: NO_FLUSH_6, 7: NO_FLUSH_7}
 
-warnings.filterwarnings("default", category=DeprecationWarning)
-
 
 def evaluate_cards(*cards: Iterable[Union[int, str, Card]]) -> int:
     cards = list(map(Card, cards))
     hand_size = len(cards)
-
-    if hand_size == 9:
-        warnings.warn( "Use evaluate_omaha_cards instead.", DeprecationWarning)
-        return evaluate_omaha_cards(*cards)
 
     if (not (MIN_CARDS <= hand_size <= MAX_CARDS)) or (hand_size not in NO_FLUSHES):
         raise ValueError(
