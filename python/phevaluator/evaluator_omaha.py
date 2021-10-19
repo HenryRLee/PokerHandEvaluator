@@ -1,24 +1,6 @@
 from .hash import hash_binary, hash_quinary
-from .tables import FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
+from .tables import BINARIES_BY_ID, FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
 
-# fmt: off
-binaries_by_id = [
-    0x1, 0x1, 0x1, 0x1,
-    0x2, 0x2, 0x2, 0x2,
-    0x4, 0x4, 0x4, 0x4,
-    0x8, 0x8, 0x8, 0x8,
-    0x10, 0x10, 0x10, 0x10,
-    0x20, 0x20, 0x20, 0x20,
-    0x40, 0x40, 0x40, 0x40,
-    0x80, 0x80, 0x80, 0x80,
-    0x100, 0x100, 0x100, 0x100,
-    0x200, 0x200, 0x200, 0x200,
-    0x400, 0x400, 0x400, 0x400,
-    0x800, 0x800, 0x800, 0x800,
-    0x1000, 0x1000, 0x1000, 0x1000,
-]
-suitbit_by_id = [0x1, 0x8, 0x40, 0x200,] * 13
-# fmt: on
 
 # The first five parameters are the community cards
 # The later four parameters are the player hole cards
@@ -43,17 +25,17 @@ def evaluate_omaha_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4):
         if suit_count_board[i] >= 3 and suit_count_hole[i] >= 2:
             suit_binary_board = [0, 0, 0, 0]
 
-            suit_binary_board[c1 & 0x3] |= binaries_by_id[c1]
-            suit_binary_board[c2 & 0x3] |= binaries_by_id[c2]
-            suit_binary_board[c3 & 0x3] |= binaries_by_id[c3]
-            suit_binary_board[c4 & 0x3] |= binaries_by_id[c4]
-            suit_binary_board[c5 & 0x3] |= binaries_by_id[c5]
+            suit_binary_board[c1 & 0x3] |= BINARIES_BY_ID[c1]
+            suit_binary_board[c2 & 0x3] |= BINARIES_BY_ID[c2]
+            suit_binary_board[c3 & 0x3] |= BINARIES_BY_ID[c3]
+            suit_binary_board[c4 & 0x3] |= BINARIES_BY_ID[c4]
+            suit_binary_board[c5 & 0x3] |= BINARIES_BY_ID[c5]
 
             suit_binary_hole = [0, 0, 0, 0]
-            suit_binary_hole[h1 & 0x3] |= binaries_by_id[h1]
-            suit_binary_hole[h2 & 0x3] |= binaries_by_id[h2]
-            suit_binary_hole[h3 & 0x3] |= binaries_by_id[h3]
-            suit_binary_hole[h4 & 0x3] |= binaries_by_id[h4]
+            suit_binary_hole[h1 & 0x3] |= BINARIES_BY_ID[h1]
+            suit_binary_hole[h2 & 0x3] |= BINARIES_BY_ID[h2]
+            suit_binary_hole[h3 & 0x3] |= BINARIES_BY_ID[h3]
+            suit_binary_hole[h4 & 0x3] |= BINARIES_BY_ID[h4]
 
             if suit_count_board[i] == 3 and suit_count_hole[i] == 2:
                 value_flush = FLUSH[suit_binary_board[i] | suit_binary_hole[i]]
@@ -84,8 +66,8 @@ def evaluate_omaha_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4):
     quinary_hole[(h3 >> 2)] += 1
     quinary_hole[(h4 >> 2)] += 1
 
-    board_hash = hash_quinary(quinary_board, 13, 5)
-    hole_hash = hash_quinary(quinary_hole, 13, 4)
+    board_hash = hash_quinary(quinary_board, 5)
+    hole_hash = hash_quinary(quinary_hole, 4)
 
     value_noflush = NO_FLUSH_OMAHA[board_hash * 1820 + hole_hash]
 

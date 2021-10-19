@@ -38,7 +38,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand = [0] * 13
             hand[base[0]] = 4
             hand[base[1]] = 1
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
@@ -49,7 +49,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand = [0] * 13
             hand[base[0]] = 3
             hand[base[1]] = 2
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
@@ -60,7 +60,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand = [0] * 13
             for i in range(lowest, lowest + 5):
                 hand[i] = 1
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             cls.TABLE[hash_] = cls.CUR_RANK
             cls.VISIT[hash_] = 1
             cls.CUR_RANK += 1
@@ -71,7 +71,7 @@ class TestNoFlush5Table(unittest.TestCase):
         for pos in base:
             hand[pos] = 1
 
-        hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+        hash_ = hash_quinary(hand, cls.NUM_CARDS)
         cls.TABLE[hash_] = cls.CUR_RANK
         cls.VISIT[hash_] = 1
         cls.CUR_RANK += 1
@@ -83,7 +83,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand[base[0]] = 3
             hand[base[1]] = 1
             hand[base[2]] = 1
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
                 cls.VISIT[hash_] = 1
@@ -96,7 +96,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand[base[0]] = 2
             hand[base[1]] = 2
             hand[base[2]] = 1
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
                 cls.VISIT[hash_] = 1
@@ -110,7 +110,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand[base[1]] = 1
             hand[base[2]] = 1
             hand[base[3]] = 1
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
                 cls.VISIT[hash_] = 1
@@ -125,7 +125,7 @@ class TestNoFlush5Table(unittest.TestCase):
             hand[base[2]] = 1
             hand[base[3]] = 1
             hand[base[4]] = 1
-            hash_ = hash_quinary(hand, 13, cls.NUM_CARDS)
+            hash_ = hash_quinary(hand, cls.NUM_CARDS)
             if cls.VISIT[hash_] == 0:
                 cls.TABLE[hash_] = cls.CUR_RANK
                 cls.VISIT[hash_] = 1
