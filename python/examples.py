@@ -1,4 +1,4 @@
-from phevaluator import evaluate_cards
+from phevaluator import evaluate_cards, evaluate_omaha_cards
 
 
 def example1():
@@ -40,12 +40,12 @@ def example2():
 def example3():
     print("Example 3: An Omaha poker example")
     # fmt: off
-    p1 = evaluate_cards(
+    p1 = evaluate_omaha_cards(
         "4c", "5c", "6c", "7s", "8s", # community cards
         "2c", "9c", "As", "Kd",       # player hole cards
     )
 
-    p2 = evaluate_cards(
+    p2 = evaluate_omaha_cards(
         "4c", "5c", "6c", "7s", "8s", # community cards
         "6s", "9s", "Ts", "Js",       # player hole cards
     )

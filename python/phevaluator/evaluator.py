@@ -30,7 +30,7 @@ def evaluate_cards(*cards: Iterable[Union[int, str, Card]]) -> int:
         warnings.warn( "Use evaluate_omaha_cards instead.", DeprecationWarning)
         return evaluate_omaha_cards(*cards)
 
-    elif (not (MIN_CARDS <= hand_size <= MAX_CARDS)) or (hand_size not in NO_FLUSHES):
+    if (not (MIN_CARDS <= hand_size <= MAX_CARDS)) or (hand_size not in NO_FLUSHES):
         raise ValueError(
             f"The number of cards must be between {MIN_CARDS} and {MAX_CARDS}."
             f"passed size: {hand_size}"

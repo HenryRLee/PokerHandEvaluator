@@ -2,7 +2,7 @@ import json
 import os
 import unittest
 
-from phevaluator import Card, evaluate_cards
+from phevaluator import Card, evaluate_cards, evaluate_omaha_cards
 
 CARDS_FILE_5 = os.path.join(os.path.dirname(__file__), "cardfiles/5cards.json")
 CARDS_FILE_6 = os.path.join(os.path.dirname(__file__), "cardfiles/6cards.json")
@@ -20,12 +20,12 @@ class TestEvaluator(unittest.TestCase):
 
     def test_omaha_example(self):
         # fmt: off
-        p1 = evaluate_cards(
+        p1 = evaluate_omaha_cards(
             "4c", "5c", "6c", "7s", "8s", # community cards
             "2c", "9c", "As", "Kd",       # player hole cards
         )
 
-        p2 = evaluate_cards(
+        p2 = evaluate_omaha_cards(
             "4c", "5c", "6c", "7s", "8s", # community cards
             "6s", "9s", "Ts", "Js",       # player hole cards
         )
