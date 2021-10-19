@@ -1,3 +1,7 @@
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools", "wheel"]
+
 [tool.black]
 extend-exclude = '''
 (
@@ -5,6 +9,5 @@ extend-exclude = '''
 )
 '''
 
-[build-system]
-build-backend = "setuptools.build_meta"
-requires = ["setuptools", "wheel"]
+[tool.isort]
+profile = "black"
