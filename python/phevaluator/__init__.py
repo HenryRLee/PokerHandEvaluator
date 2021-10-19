@@ -1,6 +1,6 @@
 from . import hash, tables
 from .card import Card
-from .evaluator import evaluate_5cards, evaluate_6cards, evaluate_7cards, evaluate_cards
+from .evaluator import evaluate_cards
 from .evaluator_omaha import evaluate_omaha_cards
 
 __all__ = [

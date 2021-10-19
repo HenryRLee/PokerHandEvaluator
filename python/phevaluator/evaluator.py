@@ -58,27 +58,3 @@ def evaluate_cards(*cards: Iterable[Union[int, str, Card]]) -> int:
         hand_quinary[card // 4] += 1
 
     return NO_FLUSH[hash_quinary(hand_quinary, hand_size)]
-
-
-def evaluate_5cards(*cards: Iterable[int]) -> int:
-    warnings.warn(
-        "evaluate_5cards will be deprecated. Use evaluate_cards instead.",
-        DeprecationWarning,
-    )
-    return evaluate_cards(*cards)
-
-
-def evaluate_6cards(*cards: Iterable[int]) -> int:
-    warnings.warn(
-        "evaluate_6cards will be deprecated. Use evaluate_cards instead.",
-        DeprecationWarning,
-    )
-    return evaluate_cards(*cards)
-
-
-def evaluate_7cards(*cards: Iterable[int]) -> int:
-    warnings.warn(
-        "evaluate_7cards will be deprecated. Use evaluate_cards instead.",
-        DeprecationWarning,
-    )
-    return evaluate_cards(*cards)
