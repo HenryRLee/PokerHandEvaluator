@@ -22,7 +22,7 @@ class Card:
     id_: int
 
     def __init__(self, other: Union[int, str, Card]):
-        id_ = self.to_id(other)
+        id_ = Card.to_id(other)
         # use superclass assignment because assignment to this class is protected
         super.__setattr__(self, "id_", id_)  # equivalent to `self.id_ = id_`
 
