@@ -1,9 +1,7 @@
-from typing import Iterable
-
 from .tables import CHOOSE, DP
 
 
-def hash_quinary(q: Iterable[int], k: int) -> int:
+def hash_quinary(q: list[int], k: int) -> int:
     sum_numb = 0
     length = len(q)
 

@@ -6,15 +6,15 @@ from .hashtable7 import NO_FLUSH_7
 from .hashtable_omaha import FLUSH_OMAHA, NO_FLUSH_OMAHA
 
 __all__ = [
-    BINARIES_BY_ID,
-    CHOOSE,
-    DP,
-    SUITBIT_BY_ID,
-    SUITS,
-    FLUSH,
-    NO_FLUSH_5,
-    NO_FLUSH_6,
-    NO_FLUSH_7,
-    FLUSH_OMAHA,
-    NO_FLUSH_OMAHA,
+    "BINARIES_BY_ID",
+    "CHOOSE",
+    "DP",
+    "SUITBIT_BY_ID",
+    "SUITS",
+    "FLUSH",
+    "NO_FLUSH_5",
+    "NO_FLUSH_6",
+    "NO_FLUSH_7",
+    "FLUSH_OMAHA",
+    "NO_FLUSH_OMAHA",
 ]

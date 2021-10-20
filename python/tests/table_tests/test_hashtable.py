@@ -9,8 +9,8 @@ class TestFlushTable(unittest.TestCase):
     VISIT = [0] * len(FLUSH)
     CUR_RANK = 1
 
-    CACHE = []
-    BINARIES = []
+    CACHE: list[int] = []
+    BINARIES: list[int] = []
 
     @classmethod
     def setUpClass(cls):

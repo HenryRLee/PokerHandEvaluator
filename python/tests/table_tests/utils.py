@@ -6,9 +6,9 @@ from phevaluator.tables import NO_FLUSH_5
 
 
 class BaseTestNoFlushTable(unittest.TestCase):
-    TABLE = NotImplementedError
-    VISIT = NotImplementedError
-    NUM_CARDS = NotImplementedError
+    TABLE: list[int] = NotImplemented
+    VISIT: list[int] = NotImplemented
+    NUM_CARDS: int = NotImplemented
 
     @classmethod
     def setUpClass(cls):

@@ -8,16 +8,18 @@ from .tables import BINARIES_BY_ID, FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
 # The first five parameters are the community cards
 # The later four parameters are the player hole cards
 def evaluate_omaha_cards(*cards: Union[int, str, Card]) -> int:
-    cards = list(map(Card.to_int, cards))
+    int_cards = list(map(Card.to_int, cards))
     hand_size = len(cards)
 
     if hand_size != 9:
         raise ValueError(f"The number of cards must be 9. passed size: {hand_size}")
 
-    return _evaluate_omaha_cards(*cards)
+    return _evaluate_omaha_cards(*int_cards)
 
 
-def _evaluate_omaha_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4) -> int:
+def _evaluate_omaha_cards(
+    c1: int, c2: int, c3: int, c4: int, c5: int, h1: int, h2: int, h3: int, h4: int
+) -> int:
     value_flush = 10000
     value_noflush = 10000
     suit_count_board = [0, 0, 0, 0]

@@ -30,7 +30,7 @@ class Card:
         elif isinstance(other, str):
             if len(other) != 2:
                 raise ValueError(f"The length of value must be 2. passed: {other}")
-            rank, suit = other
+            rank, suit, *_ = tuple(other)
             return rank_map[rank] * 4 + suit_map[suit]
         elif isinstance(other, Card):
             return other.id_
