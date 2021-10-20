@@ -1,6 +1,6 @@
 import time
 
-from phevaluator import evaluate_cards
+from phevaluator import _evaluate_cards
 
 
 def evaluate_all_five_card_hands():
@@ -9,7 +9,7 @@ def evaluate_all_five_card_hands():
             for c in range(b + 1, 50):
                 for d in range(c + 1, 51):
                     for e in range(d + 1, 52):
-                        evaluate_cards(a, b, c, d, e)
+                        _evaluate_cards(a, b, c, d, e)
 
 
 def evaluate_all_six_card_hands():
@@ -19,7 +19,7 @@ def evaluate_all_six_card_hands():
                 for d in range(c + 1, 50):
                     for e in range(d + 1, 51):
                         for f in range(e + 1, 52):
-                            evaluate_cards(a, b, c, d, e, f)
+                            _evaluate_cards(a, b, c, d, e, f)
 
 
 def evaluate_all_seven_card_hands():
@@ -30,7 +30,7 @@ def evaluate_all_seven_card_hands():
                     for e in range(d + 1, 50):
                         for f in range(e + 1, 51):
                             for g in range(f + 1, 52):
-                                evaluate_cards(a, b, c, d, e, f, g)
+                                _evaluate_cards(a, b, c, d, e, f, g)
 
 
 def benchmark():

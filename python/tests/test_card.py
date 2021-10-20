@@ -34,7 +34,7 @@ class TestCard(unittest.TestCase):
         c_assign = c_source
         c_construct = Card(c_source)
 
-        c_source += 1
+        c_source = Card(2)
 
         self.assertNotEqual(c_source, Card(1))
         self.assertEqual(c_assign, Card(1))

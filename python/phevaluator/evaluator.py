@@ -1,4 +1,4 @@
-from typing import Iterable, Union
+from typing import Union
 
 from .card import Card
 from .hash import hash_quinary
@@ -18,8 +18,8 @@ MAX_CARDS = 7
 NO_FLUSHES = {5: NO_FLUSH_5, 6: NO_FLUSH_6, 7: NO_FLUSH_7}
 
 
-def evaluate_cards(*cards: Iterable[Union[int, str, Card]]) -> int:
-    cards = list(map(Card, cards))
+def evaluate_cards(*cards: Union[int, str, Card]) -> int:
+    cards = list(map(Card.to_int, cards))
     hand_size = len(cards)
 
     if (not (MIN_CARDS <= hand_size <= MAX_CARDS)) or (hand_size not in NO_FLUSHES):
@@ -28,6 +28,11 @@ def evaluate_cards(*cards: Iterable[Union[int, str, Card]]) -> int:
             f"passed size: {hand_size}"
         )
 
+    return _evaluate_cards(*cards)
+
+
+def _evaluate_cards(*cards: int) -> int:
+    hand_size = len(cards)
     NO_FLUSH = NO_FLUSHES[hand_size]
 
     suit_hash = 0
