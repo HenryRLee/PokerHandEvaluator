@@ -15,11 +15,11 @@ class TestSuitsTable(unittest.TestCase):
     @staticmethod
     def update_k(table, k):
         iterable = list(range(0, k + 1))
-        cbs = combinations_with_replacement(iterable, 3)
+        combs = combinations_with_replacement(iterable, 3)
 
-        for cb in cbs:
-            # cb is in lexicographically sorted order
-            cnts = (cb[0], cb[1] - cb[0], cb[2] - cb[1], k - cb[2])
+        for comb in combs:
+            # comb is in lexicographically sorted order
+            cnts = (comb[0], comb[1] - comb[0], comb[2] - comb[1], k - comb[2])
             for suit, cnt in enumerate(cnts):
                 if cnt >= 5:
                     idx = (
@@ -45,9 +45,9 @@ class TestChooseTable(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        for row in range(len(CHOOSE)):
-            for col in range(len(CHOOSE[row])):
-                cls.nCr(row, col)
+        for n, row in enumerate(CHOOSE):
+            for r in range(len(row)):
+                cls.nCr(n, r)
 
     @classmethod
     def nCr(cls, n, r):

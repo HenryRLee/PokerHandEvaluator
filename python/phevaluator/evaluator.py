@@ -22,7 +22,7 @@ def evaluate_cards(*cards: Union[int, str, Card]) -> int:
     int_cards = list(map(Card.to_int, cards))
     hand_size = len(cards)
 
-    if (not (MIN_CARDS <= hand_size <= MAX_CARDS)) or (hand_size not in NO_FLUSHES):
+    if not (MIN_CARDS <= hand_size <= MAX_CARDS) or (hand_size not in NO_FLUSHES):
         raise ValueError(
             f"The number of cards must be between {MIN_CARDS} and {MAX_CARDS}."
             f"passed size: {hand_size}"
@@ -33,7 +33,7 @@ def evaluate_cards(*cards: Union[int, str, Card]) -> int:
 
 def _evaluate_cards(*cards: int) -> int:
     hand_size = len(cards)
-    NO_FLUSH = NO_FLUSHES[hand_size]
+    no_flush = NO_FLUSHES[hand_size]
 
     suit_hash = 0
     for card in cards:
@@ -54,4 +54,4 @@ def _evaluate_cards(*cards: int) -> int:
     for card in cards:
         hand_quinary[card // 4] += 1
 
-    return NO_FLUSH[hash_quinary(hand_quinary, hand_size)]
+    return no_flush[hash_quinary(hand_quinary, hand_size)]

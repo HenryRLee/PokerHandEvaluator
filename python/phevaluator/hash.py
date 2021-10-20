@@ -1,11 +1,11 @@
 from .tables import CHOOSE, DP
 
 
-def hash_quinary(q: list[int], k: int) -> int:
+def hash_quinary(quinary: list[int], k: int) -> int:
     sum_numb = 0
-    length = len(q)
+    length = len(quinary)
 
-    for rank, cnt in enumerate(q):
+    for rank, cnt in enumerate(quinary):
         if cnt == 0:
             continue
 

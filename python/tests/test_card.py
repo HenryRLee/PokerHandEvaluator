@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from phevaluator import Card
@@ -29,7 +28,8 @@ class TestCard(unittest.TestCase):
             self.assertEqual(Card(number), number)  # e.g. Card(0) == 0
 
     def test_card_immutability(self):
-        # Once a Card is assigned or constructed from another Card, it's not affected by any changes to source variable
+        # Once a Card is assigned or constructed from another Card,
+        # it's not affected by any changes to source variable
         c_source = Card(1)
         c_assign = c_source
         c_construct = Card(c_source)
