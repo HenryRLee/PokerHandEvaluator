@@ -4,8 +4,8 @@ project(PokerHandEvaluator VERSION 0.5.0)
 
 set(CMAKE_BUILD_TYPE  "Release")
 
-# Use C++ 11 Standard to compile
-set(CMAKE_CXX_STANDARD 11)
+# Use C++ 20 Standard to compile
+set(CMAKE_CXX_STANDARD 20)
 
 set(CMAKE_C_STANDARD 99)
 
