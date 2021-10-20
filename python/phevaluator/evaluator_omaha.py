@@ -1,3 +1,5 @@
+from typing import Union
+
 from .card import Card
 from .hash import hash_binary, hash_quinary
 from .tables import BINARIES_BY_ID, FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
@@ -5,17 +7,17 @@ from .tables import BINARIES_BY_ID, FLUSH, FLUSH_OMAHA, NO_FLUSH_OMAHA
 
 # The first five parameters are the community cards
 # The later four parameters are the player hole cards
-def evaluate_omaha_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4) -> int:
-    c1 = Card(c1)
-    c2 = Card(c2)
-    c3 = Card(c3)
-    c4 = Card(c4)
-    c5 = Card(c5)
-    h1 = Card(h1)
-    h2 = Card(h2)
-    h3 = Card(h3)
-    h4 = Card(h4)
+def evaluate_omaha_cards(*cards: Union[int, str, Card]) -> int:
+    cards = list(map(Card.to_id, cards))
+    hand_size = len(cards)
 
+    if hand_size != 9:
+        raise ValueError(f"The number of cards must be 9. passed size: {hand_size}")
+
+    return _evaluate_omaha_cards(*cards)
+
+
+def _evaluate_omaha_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4) -> int:
     value_flush = 10000
     value_noflush = 10000
     suit_count_board = [0, 0, 0, 0]
