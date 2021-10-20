@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
       - name: Run before script
         run: |
           mkdir -p cpp/build
@@ -29,6 +34,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Set up GCC
+        uses: egor-tensin/setup-gcc@v1
+        with:
+          version: 10
+          platform: x64
       - name: Run before script
         run: |
           mkdir -p cpp/build
