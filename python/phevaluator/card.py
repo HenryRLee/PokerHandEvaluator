@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Union
+from typing import Any, Union
 
 # fmt: off
 rank_map = {
@@ -19,12 +19,15 @@ suit_reverse_map = {value: key for key, value in suit_map.items() if key.islower
 
 class Card:
     __slots__ = ["id_"]
+    id_: int
 
     def __init__(self, other: Union[int, str, Card]):
-        self.id_ = self.to_int(other)
+        id_ = Card.to_id(other)
+        # use superclass assignment because assignment to this class is protected
+        super.__setattr__(self, "id_", id_)  # equivalent to `self.id_ = id_`
 
     @staticmethod
-    def to_int(other: Union[int, str, Card]) -> int:
+    def to_id(other: Union[int, str, Card]) -> int:
         if isinstance(other, int):
             return other
         elif isinstance(other, str):
@@ -36,7 +39,7 @@ class Card:
             return other.id_
 
         raise TypeError(
-            f"Type of paramete must be int, str or Card. passed: {type(other)}"
+            f"Type of parameter must be int, str or Card. passed: {type(other)}"
         )
 
     def describe_rank(self) -> str:
@@ -52,7 +55,9 @@ class Card:
         if isinstance(other, int):
             return int(self) == other
         if isinstance(other, str):
-            return str(self) == other
+            # Card("2c") == 2c -> True
+            # Card("2c") == 2C -> True
+            return str(self).lower() == other.lower()
         if isinstance(other, Card):
             return self.id_ == other.id_
         return self.id_ == other
@@ -68,3 +73,11 @@ class Card:
 
     def __hash__(self) -> int:
         return hash(self.id_)
+
+    # prevent assignment to member variable
+    def __setattr__(self, name: str, value: Any) -> None:
+        raise TypeError("Card object does not support assignment to member variable")
+
+    # prevent member variable deletion
+    def __delattr__(self, name: str) -> None:
+        raise TypeError("Card object does not support deletion of member variable")

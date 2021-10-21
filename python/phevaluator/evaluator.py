@@ -19,7 +19,7 @@ NO_FLUSHES = {5: NO_FLUSH_5, 6: NO_FLUSH_6, 7: NO_FLUSH_7}
 
 
 def evaluate_cards(*cards: Union[int, str, Card]) -> int:
-    int_cards = list(map(Card.to_int, cards))
+    int_cards = list(map(Card.to_id, cards))
     hand_size = len(cards)
 
     if not (MIN_CARDS <= hand_size <= MAX_CARDS) or (hand_size not in NO_FLUSHES):
