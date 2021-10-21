@@ -39,7 +39,7 @@ class Card:
             return other.id_
 
         raise TypeError(
-            f"Type of paramete must be int, str or Card. passed: {type(other)}"
+            f"Type of parameter must be int, str or Card. passed: {type(other)}"
         )
 
     def describe_rank(self) -> str:
