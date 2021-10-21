@@ -1,10 +1,10 @@
-from . import hash, tables
+from . import hash as hash_  # FIXME: `hash` collides to built-in function
+from . import tables
 from .card import Card
 from .evaluator import _evaluate_cards, evaluate_cards
-from .evaluator_omaha import evaluate_omaha_cards
+from .evaluator_omaha import _evaluate_omaha_cards, evaluate_omaha_cards
 
 __all__ = [
-    "hash",
     "tables",
     "Card",
     "evaluate_cards",
