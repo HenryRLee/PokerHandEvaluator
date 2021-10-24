@@ -139,9 +139,11 @@ We use 0 for the clubs, 1 for the diamonds, 2 for the hearts, and 3 for the
 spades.
 
 And the rank values are:
-
 deuce = 0, trey = 1, four = 2, five = 3, six = 4, seven = 5, eight = 6,
 nine = 7, ten = 8, jack = 9, queen = 10, king = 11, ace = 12.
+
+And the suits are:
+club = 0, diamond = 1, heart = 2, spade = 3
 
 The mapping of a Card and its integer value can be found in [Card Id](#cardid).
 
@@ -225,22 +227,22 @@ And the suits are:
 club = 0, diamond = 1, heart = 2, spade = 3
 
 So that you can use `rank * 4 + suit` to get the card ID.
- 
+
 The complete card Id mapping can be found below. The rows are the ranks
 from 2 to Ace, and the columns are the suits: club, diamond, heart and spade.
 
-|   | C | D | H | S |
-|---|---|---|---|---|
-| 2 | 0 | 1 | 2 | 3 |
-| 3 | 4 | 5 | 6 | 7 |
-| 4 | 8 | 9 | 10| 11|
-| 5 | 12| 13| 14| 15|
-| 6 | 16| 17| 18| 19|
-| 7 | 20| 21| 22| 23|
-| 8 | 24| 25| 26| 27|
-| 9 | 28| 29| 30| 31|
-| T | 32| 33| 34| 35|
-| J | 36| 37| 38| 39|
-| Q | 40| 41| 42| 43|
-| K | 44| 45| 46| 47|
-| A | 48| 49| 50| 51|
+|      |    C |    D |    H |    S |
+| ---: | ---: | ---: | ---: | ---: |
+|    2 |    0 |    1 |    2 |    3 |
+|    3 |    4 |    5 |    6 |    7 |
+|    4 |    8 |    9 |   10 |   11 |
+|    5 |   12 |   13 |   14 |   15 |
+|    6 |   16 |   17 |   18 |   19 |
+|    7 |   20 |   21 |   22 |   23 |
+|    8 |   24 |   25 |   26 |   27 |
+|    9 |   28 |   29 |   30 |   31 |
+|    T |   32 |   33 |   34 |   35 |
+|    J |   36 |   37 |   38 |   39 |
+|    Q |   40 |   41 |   42 |   43 |
+|    K |   44 |   45 |   46 |   47 |
+|    A |   48 |   49 |   50 |   51 |
