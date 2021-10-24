@@ -1,7 +1,28 @@
+"""Module hashing cards."""
 from .tables import CHOOSE, DP
 
 
-def hash_quinary(quinary: list[int], k: int) -> int:
+def hash_quinary(quinary: list[int], num_cards: int) -> int:
+    """Hash list of cards.
+
+    Args:
+        quinary (list[int]): List of the count of the cards.
+        num_cards (int): The number of cards.
+
+    Returns:
+        int: hash value
+
+    Examples:
+        The cards `6 5 4 3 2` is expressed as {
+            "quinary": [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+            "num_cards": 5
+        }
+
+        The cards `A A K K Q Q` is expressed as {
+            "quinary": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2],
+            "num_cards": 6
+        }
+    """
     sum_numb = 0
     length = len(quinary)
 
@@ -9,26 +30,46 @@ def hash_quinary(quinary: list[int], k: int) -> int:
         if cnt == 0:
             continue
 
-        sum_numb += DP[cnt][length - rank - 1][k]
+        sum_numb += DP[cnt][length - rank - 1][num_cards]
 
-        k -= cnt
-        if k <= 0:
+        num_cards -= cnt
+        if num_cards <= 0:
             break
 
     return sum_numb
 
 
-def hash_binary(binary: int, k: int) -> int:
+def hash_binary(binary: int, num_cards: int) -> int:
+    """Hash binary.
+
+    Args:
+        binary (int): The binary expressing combination of the cards.
+        num_cards (int): The number of the cards.
+
+    Returns:
+        int: hash value
+
+    Examples:
+        The cards `6 5 4 3 2` is expressed as {
+            "binary": 0b11111,
+            "num_cards": 5
+        }
+
+        The cards `A K Q J T 2` is expressed as {
+            "binary": 0b1111100000001,
+            "num_cards": 6
+        }
+    """
     sum_numb = 0
     length = 15
 
     for rank in range(length):
         if binary & (1 << rank):
-            if length - rank - 1 >= k:
-                sum_numb += CHOOSE[length - rank - 1][k]
+            if length - rank - 1 >= num_cards:
+                sum_numb += CHOOSE[length - rank - 1][num_cards]
 
-            k -= 1
-            if k == 0:
+            num_cards -= 1
+            if num_cards == 0:
                 break
 
     return sum_numb

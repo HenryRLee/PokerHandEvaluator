@@ -1,3 +1,4 @@
+"""Pre-calculated tables."""
 from .dptables import BINARIES_BY_ID, CHOOSE, DP, SUITBIT_BY_ID, SUITS
 from .hashtable import FLUSH
 from .hashtable5 import NO_FLUSH_5

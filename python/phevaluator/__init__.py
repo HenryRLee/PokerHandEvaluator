@@ -1,3 +1,4 @@
+"""Package for evaluating a poker hand."""
 from . import hash as hash_  # FIXME: `hash` collides to built-in function
 from . import tables
 from .card import Card
@@ -10,3 +11,5 @@ __all__ = [
     "evaluate_cards",
     "evaluate_omaha_cards",
 ]
+
+__docformat__ = "google"

@@ -1,3 +1,4 @@
+"""Module evaluating cards."""
 from typing import Union
 
 from .card import Card
@@ -19,6 +20,28 @@ NO_FLUSHES = {5: NO_FLUSH_5, 6: NO_FLUSH_6, 7: NO_FLUSH_7}
 
 
 def evaluate_cards(*cards: Union[int, str, Card]) -> int:
+    """Evaluate cards for the best five cards.
+
+    This function selects the best combination of the five cards from given cards and
+    return its rank.
+    The number of cards must be between 5 and 7.
+
+    Args:
+        cards(Union[int, str, Card]): List of cards
+
+    Raises:
+        ValueError: Unsupported size of the cards
+
+    Returns:
+        int: The rank of the given cards with the best five cards. Smaller is stronger.
+
+    Examples:
+        >>> rank1 = evaluate_cards("Ac", "Ad", "Ah", "As", "Kc")
+        >>> rank2 = evaluate_cards("Ac", "Ad", "Ah", "As", "Kd")
+        >>> rank3 = evaluate_cards("Ac", "Ad", "Ah", "As", "Kc", "Qh")
+        >>> rank1 == rank2 == rank3 # Those three are evaluated by `A A A A K`
+        True
+    """
     int_cards = list(map(Card.to_id, cards))
     hand_size = len(cards)
 
