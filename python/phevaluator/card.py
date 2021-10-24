@@ -18,13 +18,18 @@ suit_reverse_map = {value: key for key, value in suit_map.items() if key.islower
 
 
 class Card:
-    __slots__ = ["id_"]
-    id_: int
+    __slots__ = ["__id"]
+    __id: int
 
     def __init__(self, other: Union[int, str, Card]):
-        id_ = Card.to_id(other)
+        card_id = Card.to_id(other)
         # use superclass assignment because assignment to this class is protected
-        super.__setattr__(self, "id_", id_)  # equivalent to `self.id_ = id_`
+        # equivalent to `self.__id = card_id`
+        super.__setattr__(self, "_Card__id", card_id)
+
+    @property
+    def id_(self) -> int:
+        return self.__id
 
     @staticmethod
     def to_id(other: Union[int, str, Card]) -> int:
