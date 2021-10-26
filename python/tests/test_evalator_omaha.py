@@ -15,10 +15,8 @@ def sample_card(size: int) -> list[int]:
     return random.sample(range(52), k=size)
 
 
-def evaluate_omaha_exhaustive(*cards: int) -> int:
+def evaluate_omaha_exhaustive(community_cards: list[int], hole_cards: list[int]) -> int:
     """Evaluate omaha cards with `_evaluate_cards`."""
-    community_cards = cards[:5]
-    hole_cards = cards[5:]
     best_rank = min(
         _evaluate_cards(*selected_c_cards, *selected_h_cards)
         for selected_c_cards in combinations(community_cards, 3)
@@ -33,9 +31,12 @@ class TestEvaluatorOmaha(unittest.TestCase):
         total = 10000
         for _ in range(total):
             cards = sample_card(9)
+            community_cards = cards[:5]
+            hole_cards = cards[5:]
             with self.subTest(cards):
                 self.assertEqual(
-                    _evaluate_omaha_cards(*cards), evaluate_omaha_exhaustive(*cards)
+                    _evaluate_omaha_cards(community_cards, hole_cards),
+                    evaluate_omaha_exhaustive(community_cards, hole_cards),
                 )
 
     def test_evaluator_interface(self):
