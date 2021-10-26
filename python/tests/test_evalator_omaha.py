@@ -1,4 +1,3 @@
-import random
 import unittest
 from itertools import combinations
 
@@ -7,12 +6,8 @@ from phevaluator import (
     _evaluate_cards,
     _evaluate_omaha_cards,
     evaluate_omaha_cards,
+    sample_cards,
 )
-
-
-def sample_card(size: int) -> list[int]:
-    """Sample random cards with size."""
-    return random.sample(range(52), k=size)
 
 
 def evaluate_omaha_exhaustive(community_cards: list[int], hole_cards: list[int]) -> int:
@@ -30,7 +25,7 @@ class TestEvaluatorOmaha(unittest.TestCase):
         """Compare the evaluation between `_evaluate_omaha_cards` and `_evaluate_cards`"""
         total = 10000
         for _ in range(total):
-            cards = sample_card(9)
+            cards = sample_cards(9)
             community_cards = cards[:5]
             hole_cards = cards[5:]
             with self.subTest(cards):
