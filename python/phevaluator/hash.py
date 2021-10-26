@@ -59,12 +59,8 @@ def hash_binary(binary: int, num_cards: int) -> int:
     length = 15
 
     for rank in range(length):
-        if binary & (1 << rank):
-            if length - rank - 1 >= num_cards:
-                sum_numb += CHOOSE[length - rank - 1][num_cards]
-
+        if (binary >> rank) % 2:
+            sum_numb += CHOOSE[length - rank - 1][num_cards]
             num_cards -= 1
-            if num_cards == 0:
-                break
 
     return sum_numb
