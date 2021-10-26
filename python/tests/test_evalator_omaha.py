@@ -18,9 +18,9 @@ def sample_card(size: int) -> list[int]:
 def evaluate_omaha_exhaustive(community_cards: list[int], hole_cards: list[int]) -> int:
     """Evaluate omaha cards with `_evaluate_cards`."""
     best_rank = min(
-        _evaluate_cards(*selected_c_cards, *selected_h_cards)
-        for selected_c_cards in combinations(community_cards, 3)
-        for selected_h_cards in combinations(hole_cards, 2)
+        _evaluate_cards(c1, c2, c3, h1, h2)
+        for c1, c2, c3 in combinations(community_cards, 3)
+        for h1, h2 in combinations(hole_cards, 2)
     )
     return best_rank
 

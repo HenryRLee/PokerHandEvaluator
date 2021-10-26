@@ -14,79 +14,69 @@ def evaluate_omaha_cards(*cards: Union[int, str, Card]) -> int:
     if hand_size != 9:
         raise ValueError(f"The number of cards must be 9. passed size: {hand_size}")
 
-    return _evaluate_omaha_cards(*int_cards)
+    community_cards = int_cards[:5]
+    hole_cards = int_cards[5:]
+    return _evaluate_omaha_cards(community_cards, hole_cards)
 
 
-def _evaluate_omaha_cards(
-    c1: int, c2: int, c3: int, c4: int, c5: int, h1: int, h2: int, h3: int, h4: int
-) -> int:
+def _evaluate_omaha_cards(community_cards: list[int], hole_cards: list[int]) -> int:
     value_flush = 10000
     value_noflush = 10000
-    suit_count_board = [0, 0, 0, 0]
-    suit_count_hole = [0, 0, 0, 0]
+    suit_count_board = [0] * 4
+    suit_count_hole = [0] * 4
 
-    suit_count_board[c1 & 0x3] += 1
-    suit_count_board[c2 & 0x3] += 1
-    suit_count_board[c3 & 0x3] += 1
-    suit_count_board[c4 & 0x3] += 1
-    suit_count_board[c5 & 0x3] += 1
+    for community_card in community_cards:
+        suit_count_board[community_card % 4] += 1
 
-    suit_count_hole[h1 & 0x3] += 1
-    suit_count_hole[h2 & 0x3] += 1
-    suit_count_hole[h3 & 0x3] += 1
-    suit_count_hole[h4 & 0x3] += 1
+    for hole_card in hole_cards:
+        suit_count_hole[hole_card % 4] += 1
 
+    flush_suit = -1
     for i in range(4):
         if suit_count_board[i] >= 3 and suit_count_hole[i] >= 2:
-            suit_binary_board = [0, 0, 0, 0]
-
-            suit_binary_board[c1 & 0x3] |= BINARIES_BY_ID[c1]
-            suit_binary_board[c2 & 0x3] |= BINARIES_BY_ID[c2]
-            suit_binary_board[c3 & 0x3] |= BINARIES_BY_ID[c3]
-            suit_binary_board[c4 & 0x3] |= BINARIES_BY_ID[c4]
-            suit_binary_board[c5 & 0x3] |= BINARIES_BY_ID[c5]
-
-            suit_binary_hole = [0, 0, 0, 0]
-            suit_binary_hole[h1 & 0x3] |= BINARIES_BY_ID[h1]
-            suit_binary_hole[h2 & 0x3] |= BINARIES_BY_ID[h2]
-            suit_binary_hole[h3 & 0x3] |= BINARIES_BY_ID[h3]
-            suit_binary_hole[h4 & 0x3] |= BINARIES_BY_ID[h4]
-
-            if suit_count_board[i] == 3 and suit_count_hole[i] == 2:
-                value_flush = FLUSH[suit_binary_board[i] | suit_binary_hole[i]]
-            else:
-                padding = [0x0000, 0x2000, 0x6000]
-
-                suit_binary_board[i] |= padding[5 - suit_count_board[i]]
-                suit_binary_hole[i] |= padding[4 - suit_count_hole[i]]
-
-                board_hash = hash_binary(suit_binary_board[i], 5)
-                hole_hash = hash_binary(suit_binary_hole[i], 4)
-
-                value_flush = FLUSH_OMAHA[board_hash * 1365 + hole_hash]
-
+            flush_suit = i
             break
+
+    if flush_suit != -1:
+        flush_count_board = suit_count_board[flush_suit]
+        flush_count_hole = suit_count_hole[flush_suit]
+
+        suit_binary_board = 0
+        for community_card in community_cards:
+            if community_card % 4 == flush_suit:
+                suit_binary_board |= BINARIES_BY_ID[community_card]
+
+        suit_binary_hole = 0
+        for hole_card in hole_cards:
+            if hole_card % 4 == flush_suit:
+                suit_binary_hole |= BINARIES_BY_ID[hole_card]
+
+        if flush_count_board == 3 and flush_count_hole == 2:
+            value_flush = FLUSH[suit_binary_board | suit_binary_hole]
+
+        else:
+            padding = [0x0000, 0x2000, 0x6000]
+
+            suit_binary_board |= padding[5 - flush_count_board]
+            suit_binary_hole |= padding[4 - flush_count_hole]
+
+            board_hash = hash_binary(suit_binary_board, 5)
+            hole_hash = hash_binary(suit_binary_hole, 4)
+
+            value_flush = FLUSH_OMAHA[board_hash * 1365 + hole_hash]
 
     quinary_board = [0] * 13
     quinary_hole = [0] * 13
 
-    quinary_board[(c1 >> 2)] += 1
-    quinary_board[(c2 >> 2)] += 1
-    quinary_board[(c3 >> 2)] += 1
-    quinary_board[(c4 >> 2)] += 1
-    quinary_board[(c5 >> 2)] += 1
+    for community_card in community_cards:
+        quinary_board[community_card // 4] += 1
 
-    quinary_hole[(h1 >> 2)] += 1
-    quinary_hole[(h2 >> 2)] += 1
-    quinary_hole[(h3 >> 2)] += 1
-    quinary_hole[(h4 >> 2)] += 1
+    for hole_card in hole_cards:
+        quinary_hole[hole_card // 4] += 1
 
     board_hash = hash_quinary(quinary_board, 5)
     hole_hash = hash_quinary(quinary_hole, 4)
 
     value_noflush = NO_FLUSH_OMAHA[board_hash * 1820 + hole_hash]
 
-    if value_flush < value_noflush:
-        return value_flush
-    else:
-        return value_noflush
+    return min(value_flush, value_noflush)
