@@ -27,14 +27,9 @@ def hash_quinary(quinary: list[int], num_cards: int) -> int:
     length = len(quinary)
 
     for rank, cnt in enumerate(quinary):
-        if cnt == 0:
-            continue
-
-        sum_numb += DP[cnt][length - rank - 1][num_cards]
-
-        num_cards -= cnt
-        if num_cards <= 0:
-            break
+        if cnt:
+            sum_numb += DP[cnt][length - rank - 1][num_cards]
+            num_cards -= cnt
 
     return sum_numb
 
