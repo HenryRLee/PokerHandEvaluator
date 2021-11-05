@@ -20,6 +20,27 @@ Run the `unit_tests` to perform the unit tests:
 ./unit_tests
 ```
 
+### Compile with zig
+
+This library can also be build with zig which supports many platforms and cross compilation scenarios.  In order to do so, [install a zig compiler](https://github.com/ziglang/zig#installation) for your platform and run `zig build` with some combination of the following flags:
+
+```console
+# show available build options
+$ zig build --help
+
+# create an optimized zig-out/lib/libpheval.a (or .lib on windows) 
+$ zig build -Drelease-fast
+
+# create an optimized zig-out/lib/libpheval.so (or .dll/.pdb on windows)
+$ zig build -Ddynamic -Drelease-fast
+
+# cross-compile for windows from another platform. creates zig-out/lib/libpheval.dll/pdb
+$ zig build -Dtarget=x86_64-windows -Drelease-fast
+
+# create zig-out/lib/libphevalomaha.a 
+zig build -Domaha -Drelease-fast
+```
+
 ## Use the library
 
 After building the library `libpheval.a`, you can add the `./include`
