@@ -22,7 +22,7 @@ Run the `unit_tests` to perform the unit tests:
 
 ### Compile with zig
 
-This library can also be build with zig which supports many platforms and cross compilation scenarios.  In order to do so, [install a zig compiler](https://github.com/ziglang/zig#installation) for your platform and run `zig build` with some combination of the following flags:
+This library can also be build with zig which supports many platforms and cross compilation scenarios.  In order to do so, [install a zig compiler](https://github.com/ziglang/zig#installation) for your platform (minimum version 0.9) and run `zig build` with some combination of the following flags:
 
 ```console
 # show available build options
@@ -38,7 +38,7 @@ $ zig build -Ddynamic -Drelease-fast
 $ zig build -Dtarget=x86_64-windows -Drelease-fast
 
 # create zig-out/lib/libphevalomaha.a 
-zig build -Domaha -Drelease-fast
+$ zig build -Domaha -Drelease-fast
 ```
 
 ## Use the library
