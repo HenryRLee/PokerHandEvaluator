@@ -12,6 +12,43 @@ pub fn build(b: *std.build.Builder) void {
     const omaha = b.option(bool, "omaha", "build omaha lib (libphevalomaha)") orelse false;
     opts.addOption(bool, "omaha", omaha);
 
+    const lib = addStaticLib(b, mode, target, dynamic, omaha);
+    lib.install();
+
+    // TODO: add tests step
+    // var main_tests = b.addTest("src/main.zig");
+    // main_tests.setBuildMode(mode);
+
+    // const test_step = b.step("test", "Run library tests");
+    // test_step.dependOn(&main_tests.step);
+
+    // 'build examples' step - builds examples/ and installs them to zig-out/bin
+    //   - also installs libphe and libpheomaha to zig-out/lib
+    //   - these can be built and run manually with the following commands
+    //     $ zig run examples/c_example.c -lc -Iinclude -Lzig-out/lib -lpheval
+    //     $ zig run examples/cpp_example.cc -lc++ -Iinclude -Lzig-out/lib -lpheval
+    //     $ zig run examples/omaha_example.cc -lc++ -Iinclude -Lzig-out/lib -lphevalomaha
+    const examples_step = b.step("examples", "build executables in examples folder");
+    const example_files: []const []const u8 = &.{ "c_example.c", "cpp_example.cc", "omaha_example.cc" };
+    inline for (example_files) |example_file| {
+        const exe = b.addExecutable(std.mem.trimRight(u8, example_file, ".c"), null);
+        exe.addCSourceFiles(&.{"examples/" ++ example_file}, &.{});
+        exe.addIncludeDir("include");
+        const want_omaha = std.mem.startsWith(u8, example_file, "omaha");
+        const deplib = if (!omaha and want_omaha) addStaticLib(b, mode, target, dynamic, true) else lib;
+        exe.linkLibrary(deplib);
+        if (std.mem.endsWith(u8, example_file, ".cc")) exe.linkLibCpp() else exe.linkLibC();
+        // install the deplib to zig-out/lib - without this 'zig build examples'
+        // won't install libs to zig-out/lib
+        const deplib_install_step = b.addInstallArtifact(deplib);
+        examples_step.dependOn(&deplib_install_step.step);
+        // install the example exe to zig-out/bin
+        const exe_install_step = b.addInstallArtifact(exe);
+        examples_step.dependOn(&exe_install_step.step);
+    }
+}
+
+fn addStaticLib(b: *std.build.Builder, mode: std.builtin.Mode, target: std.zig.CrossTarget, dynamic: bool, omaha: bool) *std.build.LibExeObjStep {
     const lib_name = if (omaha) "phevalomaha" else "pheval";
     const lib = b.addStaticLibrary(lib_name, null);
 
@@ -63,19 +100,5 @@ pub fn build(b: *std.build.Builder) void {
     // TODO: test building on windows with msvc abi
     // if (target.isWindows())
     //     if (target.abi) |abi| if (abi == .msvc) lib.linkLibC();
-    lib.install();
-
-    // TODO: add tests step
-    // var main_tests = b.addTest("src/main.zig");
-    // main_tests.setBuildMode(mode);
-
-    // const test_step = b.step("test", "Run library tests");
-    // test_step.dependOn(&main_tests.step);
-
-    // TODO add 'build examples' step
-    //   - this can be done manually with the following commands
-    // $ zig run examples/c_example.c -lc -Iinclude -Lzig-out/lib -lpheval
-    // $ zig run examples/cpp_example.cc -lc++ -Iinclude -Lzig-out/lib -lpheval
-    // $ zig run examples/omaha_example.cc -lc++ -Iinclude -Lzig-out/lib -lphevalomaha
-
+    return lib;
 }
