@@ -24,6 +24,35 @@ jobs:
           ./cpp_example
           ./omaha_example
           ./unit_tests
+      - name: Setup Zig
+        uses: goto-bus-stop/setup-zig@v1.3.0
+        with:
+          version: master
+      - run: | 
+          cd cpp
+          zig build -Drelease-fast
+      - run: | 
+          cd cpp
+          zig build -Ddynamic -Drelease-fast
+      - run: | 
+          cd cpp
+          zig build -Dtarget=x86_64-windows -Drelease-fast
+      - run: | 
+          cd cpp
+          zig build -Domaha -Drelease-fast
+      - run: | 
+          cd cpp
+          zig build -Domaha -Ddynamic -Drelease-fast
+      - run: | 
+          cd cpp
+          zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
+      - name: Run examples with zig
+        run: | 
+          cd cpp
+          zig build examples -Drelease-fast
+          zig-out/bin/c_example
+          zig-out/bin/cpp_example
+          zig-out/bin/omaha_example
   cpp_benchmark:
     name: C++ Benchmark
     runs-on: ubuntu-latest
