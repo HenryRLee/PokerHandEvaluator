@@ -28,28 +28,34 @@ jobs:
         uses: goto-bus-stop/setup-zig@v1.3.0
         with:
           version: master
-      - run: | 
-          cd cpp
-          zig build -Drelease-fast
-      - run: | 
-          cd cpp
-          zig build -Ddynamic -Drelease-fast
-      - run: | 
-          cd cpp
-          zig build -Dtarget=x86_64-windows -Drelease-fast
-      - run: | 
-          cd cpp
-          zig build -Domaha -Drelease-fast
-      - run: | 
-          cd cpp
-          zig build -Domaha -Ddynamic -Drelease-fast
-      - run: | 
-          cd cpp
-          zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
-      - name: Run examples with zig
+      - name: zig build -Drelease-fast
         run: | 
           cd cpp
-          zig build examples -Drelease-fast
+          zig build -Drelease-fast
+      - name: zig build -Ddynamic -Drelease-fast
+        run: | 
+          cd cpp
+          zig build -Ddynamic -Drelease-fast
+      - name: zig build -Dtarget=x86_64-windows -Drelease-fast
+        run: | 
+          cd cpp
+          zig build -Dtarget=x86_64-windows -Drelease-fast
+      - name: zig build -Domaha -Drelease-fast
+        run: | 
+          cd cpp
+          zig build -Domaha -Drelease-fast
+      - name: zig build -Domaha -Ddynamic -Drelease-fast
+        run: | 
+          cd cpp
+          zig build -Domaha -Ddynamic -Drelease-fast
+      - name: zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
+        run: | 
+          cd cpp
+          zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
+      - name: zig build and run examples
+        run: | 
+          cd cpp
+          zig build examples
           zig-out/bin/c_example
           zig-out/bin/cpp_example
           zig-out/bin/omaha_example

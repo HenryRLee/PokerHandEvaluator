@@ -39,6 +39,9 @@ $ zig build -Dtarget=x86_64-windows -Drelease-fast
 
 # create zig-out/lib/libphevalomaha.a 
 $ zig build -Domaha -Drelease-fast
+
+# create example executables in zig-out/bin/
+$ zig build examples
 ```
 
 ## Use the library
