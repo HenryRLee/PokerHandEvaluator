@@ -16,6 +16,7 @@
 
 #include <stdio.h>
 #include "tables.h"
+#include "hash.h"
 
 int hash_quinary(const unsigned char q[], int k)
 {
