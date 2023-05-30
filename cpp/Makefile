@@ -4,7 +4,7 @@ INCLUDE=./include
 CFLAGS+=-O2 -std=c99
 CXXFLAGS+=-O2 -std=c++14
 
-all: libpheval.a
+all: libpheval.a libphevalomaha.a
 
 libpheval.a: src/evaluator5.c.o src/hashtable5.c.o \
              src/evaluator6.c.o src/hashtable6.c.o \
