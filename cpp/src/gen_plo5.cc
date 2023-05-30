@@ -191,7 +191,7 @@ std::mutex m;
 const int ThreadNumber = 32;
 
 void ThreadFunction(int thread) {
-  std::fprintf(stderr, "Start thread %d\n", thread);
+  std::printf("Start thread %d\n", thread);
 
   for(int a = 0; a < 43; a++)
   {
@@ -494,7 +494,7 @@ void ThreadFunction(int thread) {
 
               if (percentage(count, total) > progress) {
                 progress = percentage(count, total);
-                std::fprintf(stderr, "Progress: %3.2f%%\n", 0.01 * progress);
+                std::printf("Progress: %3.2f%%\n", 0.01 * progress);
               }
             }
           }
@@ -503,7 +503,7 @@ void ThreadFunction(int thread) {
     }
   }
 
-  std::fprintf(stderr, "Thread %d completes\n", thread);
+  std::printf("Thread %d completes\n", thread);
 }
 
 int main() {
@@ -515,10 +515,10 @@ int main() {
     threads[i].join();
   }
 
+  std::printf("Complete %lld hands in total\n", count);
+
   std::ofstream output;
   output.open("tables_plo5.c");
-
-  std::printf("Complete %lld hands in total\n", count);
 
   output << "const short flush_plo5[4368 * 4368] = {";
   for (int i = 0; i < 4368 * 4368; i++) {
