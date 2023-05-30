@@ -185,7 +185,7 @@ void IterateBestHands(int a, int b, int c, int d, int e,
 
 long long count = 0;
 int progress = 0;
-const long long total = (long long)3679075400 * 126;
+const long long total = (long long)3986646103440;
 std::mutex m;
 
 const int ThreadNumber = 32;
