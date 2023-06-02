@@ -1,5 +1,5 @@
 /*
- *  Copyright 2016 Henry Lee
+ *  Copyright 2016-2023 Henry Lee
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -14,24 +14,15 @@
  *  limitations under the License.
  */
 
-#ifndef TABLES_H
-#define TABLES_H
+#include <phevaluator/phevaluator.h>
 
-extern const short flush[8192];
-extern const short noflush5[6175];
-extern const short noflush6[18395];
-extern const short noflush7[49205];
-extern const unsigned char suits[4609];
+namespace phevaluator {
 
-extern const unsigned int choose[53][10];
-extern const int dp[5][14][10];
+Rank EvaluatePlo5Cards(const Card& c1, const Card& c2,
+                       const Card& c3, const Card& c4, const Card& c5,
+                       const Card& h1, const Card& h2,
+                       const Card& h3, const Card& h4, const Card& h5) {
+  return evaluate_plo5_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4, h5);
+}
 
-extern const char* rank_description[7463][2];
-
-extern const short noflush_omaha[11238500];
-extern const short flush_omaha[4099095];
-
-extern const short flush_plo5[4368 * 4368];
-extern const short noflush_plo5[6175 * 6175];
-
-#endif // TABLES_H
+} // namespace phevaluator

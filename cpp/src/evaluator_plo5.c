@@ -19,10 +19,10 @@
 
 static int hash_binary(const int binary, int k)
 {
-  // The binary should have 15 bits
+  // The binary should have 16 bits
   int sum = 0;
   int i;
-  const int len = 15;
+  const int len = 16;
 
   for (i=0; i<len; i++)
   {
@@ -66,10 +66,10 @@ static short binaries_by_id[52] = {
  * 13 * 4 gives 52 ids.
  *
  * The first five parameters are the community cards on the board
- * The last four parameters are the hole cards of the player
+ * The last five parameters are the hole cards of the player
  */
-int evaluate_omaha_cards(int c1, int c2, int c3, int c4, int c5,
-                         int h1, int h2, int h3, int h4) {
+int evaluate_plo5_cards(int c1, int c2, int c3, int c4, int c5,
+                        int h1, int h2, int h3, int h4, int h5) {
   int value_flush = 10000;
   int value_noflush = 10000;
   int suit_count_board[4] = {0};
@@ -85,6 +85,7 @@ int evaluate_omaha_cards(int c1, int c2, int c3, int c4, int c5,
   suit_count_hole[h2 & 0x3]++;
   suit_count_hole[h3 & 0x3]++;
   suit_count_hole[h4 & 0x3]++;
+  suit_count_hole[h5 & 0x3]++;
 
   for (int i = 0; i < 4; i++) {
     if (suit_count_board[i] >= 3 && suit_count_hole[i] >= 2) {
@@ -102,28 +103,25 @@ int evaluate_omaha_cards(int c1, int c2, int c3, int c4, int c5,
       suit_binary_hole[h2 & 0x3] |= binaries_by_id[h2];
       suit_binary_hole[h3 & 0x3] |= binaries_by_id[h3];
       suit_binary_hole[h4 & 0x3] |= binaries_by_id[h4];
+      suit_binary_hole[h5 & 0x3] |= binaries_by_id[h5];
 
       if (suit_count_board[i] == 3 && suit_count_hole[i] == 2) {
         value_flush = flush[suit_binary_board[i] | suit_binary_hole[i]];
       } else {
-        // Padding is trying to make sure the binary has the same amount of
-        // bits set. For the board cards, we want 5 bits set, and for the hole
-        // cards, we want 4 bits set.
-        // For example, if the current board binary has only 3 bits set, we
-        // need to pad 2 extra bits.
-        // The resulting binary will have 15 bits in total, with 5 bits set for
-        // the board binary, and 4 bits set for the hole binary.
-        const int padding[3] = {0x0000, 0x2000, 0x6000};
+        // Padding is trying to make sure the binary has exactly 5 bits set.
+        // For example, if the current binary has only 2 bits set, we need to
+        // pad 3 bits.
+        // The resulting binary will have 16 bits in total with 5 bits set.
+        const int padding[4] = {0x0000, 0x2000, 0x6000, 0xe000};
 
         suit_binary_board[i] |= padding[5 - suit_count_board[i]];
-        suit_binary_hole[i] |= padding[4 - suit_count_hole[i]];
+        suit_binary_hole[i] |= padding[5 - suit_count_hole[i]];
 
         const int board_hash = hash_binary(suit_binary_board[i], 5);
-        const int hole_hash = hash_binary(suit_binary_hole[i], 4);
+        const int hole_hash = hash_binary(suit_binary_hole[i], 5);
 
-        value_flush = flush_omaha[board_hash * 1365 +  hole_hash];
+        value_flush = flush_plo5[board_hash * 4368 +  hole_hash];
       }
-
       break;
     }
   }
@@ -141,11 +139,12 @@ int evaluate_omaha_cards(int c1, int c2, int c3, int c4, int c5,
   quinary_hole[(h2 >> 2)]++;
   quinary_hole[(h3 >> 2)]++;
   quinary_hole[(h4 >> 2)]++;
+  quinary_hole[(h5 >> 2)]++;
 
   const int board_hash = hash_quinary(quinary_board, 5);
-  const int hole_hash = hash_quinary(quinary_hole, 4);
+  const int hole_hash = hash_quinary(quinary_hole, 5);
 
-  value_noflush = noflush_omaha[board_hash * 1820 + hole_hash];
+  value_noflush = noflush_omaha[board_hash * 6175 + hole_hash];
 
   if (value_flush < value_noflush)
     return value_flush;

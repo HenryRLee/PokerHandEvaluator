@@ -15,9 +15,12 @@ option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
 # Add the PokerHandEvaluator library
 add_library(pheval STATIC
   src/dptables.c
-  src/tables_omaha.c
   src/evaluator_omaha.c
   src/evaluator_omaha.cc
+  src/evaluator_plo5.c
+  src/evaluator_plo5.cc
+  src/tables_omaha.c
+  src/tables_plo5.c
   src/evaluator.cc
   src/evaluator5.c
   src/evaluator6.c
@@ -48,7 +51,7 @@ if (BUILD_TESTS)
   FetchContent_Declare(
     googletest
     GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG        release-1.10.0
+    GIT_TAG        release-1.12.1
   )
   # Prevent overriding the parent project's compiler/linker
   # settings on Windows
@@ -58,7 +61,7 @@ if (BUILD_TESTS)
   FetchContent_Declare(
     googlebenchmark
     GIT_REPOSITORY https://github.com/google/benchmark.git
-    GIT_TAG        v1.5.4
+    GIT_TAG        v1.8.0
   )
   set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
   FetchContent_MakeAvailable(googletest googlebenchmark)
@@ -66,6 +69,7 @@ if (BUILD_TESTS)
   add_executable(unit_tests
     test/evaluation.cc
     test/evaluation_omaha.cc
+    test/evaluation_plo5.cc
     test/rank.cc
     test/kev/fast_eval.c
     test/kev/kev_eval.c
@@ -97,6 +101,11 @@ if (BUILD_EXAMPLES)
     examples/omaha_example.cc
   )
   target_link_libraries(omaha_example pheval)
+
+  add_executable(plo5_example
+    examples/plo5_example.cc
+  )
+  target_link_libraries(plo5_example pheval)
 endif()
 
 # Install library
