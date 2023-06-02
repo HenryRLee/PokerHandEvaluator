@@ -180,6 +180,8 @@ void IterateBestHands(int a, int b, int c, int d, int e,
   if (v3 < best) best = v3;
   if (v4 < best) best = v4;
 
+  assert(best > 0 && best <= 7462);
+
   AssignPlo5Value(a, b, c, d, e, f, g, h, i, j, best);
 }
 
@@ -214,7 +216,7 @@ void ThreadFunction(int thread) {
                   {
                     for(int j = i + 1; j < 52; j++)
                     {
-                      int ten_choose_five[252][10] = {
+                      static const int ten_choose_five[252][10] = {
                         {a, b, c, d, e, f, g, h, i, j},
                         {a, b, c, d, f, e, g, h, i, j},
                         {a, b, c, d, g, e, f, h, i, j},
