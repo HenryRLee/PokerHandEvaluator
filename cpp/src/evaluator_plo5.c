@@ -144,7 +144,7 @@ int evaluate_plo5_cards(int c1, int c2, int c3, int c4, int c5,
   const int board_hash = hash_quinary(quinary_board, 5);
   const int hole_hash = hash_quinary(quinary_hole, 5);
 
-  value_noflush = noflush_omaha[board_hash * 6175 + hole_hash];
+  value_noflush = noflush_plo5[board_hash * 6175 + hole_hash];
 
   if (value_flush < value_noflush)
     return value_flush;
