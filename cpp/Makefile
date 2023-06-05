@@ -27,6 +27,9 @@ libphevalplo5.a: src/dptables.c.o src/tables_plo5.c.o \
                  src/7462.c.o
 	ar rcs $@ $^
 
+src/tables_plo5.c: src/tables_plo5.tar.gz
+	tar xzf $< -C src/
+
 %.c.o: %.c
 	${CC} -c ${CFLAGS} -I${INCLUDE} $< -o $@
 

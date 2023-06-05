@@ -1,7 +1,8 @@
-five
-six
-seven
 unit_tests
+
+# This file has been compressed to src/tables_plo5.tar.gz
+# We only track src/tables_plo5.tar.gz in git
+src/tables_plo5.c
 
 # CMake files
 Makefile
@@ -9,6 +10,9 @@ build/
 CMakeCache.txt
 CMakeFiles/
 cmake_install.cmake
+_deps/
+phevaluatorConfig.cmake
+phevaluatorConfigVersion.cmake
 
 # Google Test files
 googletest-build/
