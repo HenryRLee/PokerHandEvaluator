@@ -9,8 +9,10 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_C_STANDARD 99)
 
-option(BUILD_TESTS     "Build test ON/OFF"     ON)
+option(BUILD_TESTS    "Build test ON/OFF"     ON)
 option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
+option(BUILD_OMAHA    "Build Omaha library"   ON)
+option(BUILD_PLO5     "Build PLO5 library"    ON)
 
 add_library(pheval STATIC
   src/dptables.c
@@ -39,52 +41,70 @@ set_target_properties(pheval PROPERTIES
     VERSION ${PROJECT_VERSION}
     PUBLIC_HEADER "${PUB_HEADERS}")
 
-add_library(phevalomaha STATIC
-  src/dptables.c
-  src/evaluator_omaha.c
-  src/evaluator_omaha.cc
-  src/tables_omaha.c
-  src/hash.c
-  src/hand.cc
-  src/hashtable.c
-  src/rank.c
-  src/7462.c
-)
-target_include_directories(phevalomaha PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include/>)
-target_compile_options(phevalomaha PUBLIC -O3)
-set(PUB_HEADERS include/phevaluator/phevaluator.h
-                include/phevaluator/card.h
-                include/phevaluator/hand.h
-                include/phevaluator/rank.h)
-set_target_properties(pheval PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    PUBLIC_HEADER "${PUB_HEADERS}")
+if (BUILD_OMAHA)
+  add_library(phevalomaha STATIC
+    src/dptables.c
+    src/evaluator_omaha.c
+    src/evaluator_omaha.cc
+    src/tables_omaha.c
+    src/hash.c
+    src/hand.cc
+    src/hashtable.c
+    src/rank.c
+    src/7462.c
+  )
+  target_include_directories(phevalomaha PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include/>)
+  target_compile_options(phevalomaha PUBLIC -O3)
+  set(PUB_HEADERS include/phevaluator/phevaluator.h
+                  include/phevaluator/card.h
+                  include/phevaluator/hand.h
+                  include/phevaluator/rank.h)
+  set_target_properties(phevalomaha PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      PUBLIC_HEADER "${PUB_HEADERS}")
+endif()
 
-# Add the PokerHandEvaluator library
-add_library(phevalplo5 STATIC
-  src/dptables.c
-  src/evaluator_plo5.c
-  src/evaluator_plo5.cc
-  src/tables_plo5.c
-  src/hash.c
-  src/hand.cc
-  src/hashtable.c
-  src/rank.c
-  src/7462.c
-)
-target_include_directories(phevalplo5 PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include/>)
-target_compile_options(phevalplo5 PUBLIC -O3)
-set(PUB_HEADERS include/phevaluator/phevaluator.h
-                include/phevaluator/card.h
-                include/phevaluator/hand.h
-                include/phevaluator/rank.h)
-set_target_properties(pheval PROPERTIES
-    VERSION ${PROJECT_VERSION}
-    PUBLIC_HEADER "${PUB_HEADERS}")
+if (BUILD_PLO5)
+  set(plo5_source_tar "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo5.tar.gz")
+  set(plo5_source_code "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo5.c")
+  add_custom_command(
+    OUTPUT "${plo5_source_code}"
+    COMMAND ${CMAKE_COMMAND} -E tar xvzf "${plo5_source_tar}"
+    MAIN_DEPENDENCY ${plo5_source_tar}
+    COMMENT "Unpacking ${plo5_source_code}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src"
+  )
+
+#execute_process(COMMAND ${CMAKE_COMMAND} -E
+#    tar xvzf "${plo5_source_tar}")
+#  execute_process(COMMAND ${CMAKE_COMMAND} -E
+#    rename "${plo5_source_code}" "${CMAKE_CURRENT_BINARY_DIR}/src/${plo5_source_code}")
+
+  add_library(phevalplo5 STATIC
+    src/dptables.c
+    src/evaluator_plo5.c
+    src/evaluator_plo5.cc
+    src/tables_plo5.c
+    src/hash.c
+    src/hand.cc
+    src/hashtable.c
+    src/rank.c
+    src/7462.c
+  )
+  target_include_directories(phevalplo5 PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include/>)
+  target_compile_options(phevalplo5 PUBLIC -O3)
+  set(PUB_HEADERS include/phevaluator/phevaluator.h
+                  include/phevaluator/card.h
+                  include/phevaluator/hand.h
+                  include/phevaluator/rank.h)
+  set_target_properties(phevalplo5 PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      PUBLIC_HEADER "${PUB_HEADERS}")
+endif()
 
 if (BUILD_TESTS)
   include(FetchContent)
