@@ -1,2 +1,0 @@
-tables_omaha.c filter=lfs diff=lfs merge=lfs -text
-tables_plo5.c filter=lfs diff=lfs merge=lfs -text
