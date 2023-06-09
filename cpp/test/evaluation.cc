@@ -32,10 +32,6 @@ TEST(EvaluationTest, TestFiveCards) {
 
             EXPECT_EQ(ph_eval, kev_eval);
 
-            Hand hand({a, b, c, d, e});
-            int ph_hand_eval = EvaluateHand(hand).value();
-            EXPECT_EQ(ph_hand_eval, kev_eval);
-
             count++;
 
             if (percentage(count, total) > progress) {
@@ -77,10 +73,6 @@ TEST(EvaluationTest, TestSixCards) {
               int kev_eval = kev_eval_6cards(a, b, c, d, e, f); // Kev's method
 
               EXPECT_EQ(ph_eval, kev_eval);
-
-              Hand hand({a, b, c, d, e, f});
-              int ph_hand_eval = EvaluateHand(hand).value();
-              EXPECT_EQ(ph_hand_eval, kev_eval);
 
               count++;
 
@@ -126,10 +118,6 @@ TEST(EvaluationTest, TestSevenCards) {
                 int kev_eval = kev_eval_7cards(a, b, c, d, e, f, g);
 
                 EXPECT_EQ(ph_eval, kev_eval);
-
-                Hand hand({a, b, c, d, e, f, g});
-                int ph_hand_eval = EvaluateHand(hand).value();
-                EXPECT_EQ(ph_hand_eval, kev_eval);
 
                 count++;
 

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2016-2019 Henry Lee
+ *  Copyright 2016-2023 Henry Lee
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -84,7 +84,6 @@ int evaluate_plo5_cards(int c1, int c2, int c3, int c4, int c5,
 #ifdef __cplusplus
 
 #include <phevaluator/card.h>
-#include <phevaluator/hand.h>
 #include <phevaluator/rank.h>
 
 namespace phevaluator {
@@ -113,8 +112,6 @@ Rank EvaluatePlo5Cards(const Card& c1, const Card& c2, const Card& c3,
                         const Card& c4, const Card& c5,
                         const Card& h1, const Card& h2, const Card& h3,
                         const Card& h4, const Card& h5);
-
-Rank EvaluateHand(const Hand& hand);
 
 } // namespace phevaluator
 

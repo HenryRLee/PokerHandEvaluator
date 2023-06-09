@@ -9,16 +9,21 @@ set(CMAKE_CXX_STANDARD 11)
 
 set(CMAKE_C_STANDARD 99)
 
-option(BUILD_TESTS    "Build test ON/OFF"     ON)
+option(BUILD_CARD5 "Build 5-card standalone library" ON)
+option(BUILD_CARD6 "Build 6-card standalone library" ON)
+option(BUILD_CARD7 "Build 7-card standalone library" ON)
+option(BUILD_OMAHA "Build Omaha library" ON)
+option(BUILD_PLO5 "Build PLO5 library" ON)
+option(BUILD_TESTS "Build test ON/OFF" ON)
 option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
-option(BUILD_OMAHA    "Build Omaha library"   ON)
-option(BUILD_PLO5     "Build PLO5 library"    ON)
 
 add_library(pheval STATIC
   src/dptables.c
-  src/evaluator.cc
+  src/evaluator5.cc
   src/evaluator5.c
+  src/evaluator6.cc
   src/evaluator6.c
+  src/evaluator7.cc
   src/evaluator7.c
   src/hash.c
   src/hand.cc
@@ -33,13 +38,75 @@ target_include_directories(pheval PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include/>)
 target_compile_options(pheval PUBLIC -O3)
-set(PUB_HEADERS include/phevaluator/phevaluator.h
+set(PUB_HEADERS include/phevaluator/phevaluator5.h
                 include/phevaluator/card.h
-                include/phevaluator/hand.h
                 include/phevaluator/rank.h)
 set_target_properties(pheval PROPERTIES
     VERSION ${PROJECT_VERSION}
     PUBLIC_HEADER "${PUB_HEADERS}")
+
+if (BUILD_CARD5)
+  add_library(pheval5 STATIC
+    src/dptables.c
+    src/evaluator5.c
+    src/evaluator5.cc
+    src/hashtable5.c
+    src/hashtable.c
+    src/hash.c
+  )
+  target_include_directories(pheval5 PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include/>)
+  target_compile_options(pheval5 PUBLIC -O3)
+  set(PUB_HEADERS include/phevaluator/phevaluator.h
+                  include/phevaluator/card.h
+                  include/phevaluator/rank.h)
+  set_target_properties(pheval5 PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      PUBLIC_HEADER "${PUB_HEADERS}")
+endif()
+
+if (BUILD_CARD6)
+  add_library(pheval6 STATIC
+    src/dptables.c
+    src/evaluator6.c
+    src/evaluator6.cc
+    src/hashtable6.c
+    src/hashtable.c
+    src/hash.c
+  )
+  target_include_directories(pheval6 PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include/>)
+  target_compile_options(pheval6 PUBLIC -O3)
+  set(PUB_HEADERS include/phevaluator/phevaluator.h
+                  include/phevaluator/card.h
+                  include/phevaluator/rank.h)
+  set_target_properties(pheval6 PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      PUBLIC_HEADER "${PUB_HEADERS}")
+endif()
+
+if (BUILD_CARD7)
+  add_library(pheval7 STATIC
+    src/dptables.c
+    src/evaluator7.c
+    src/evaluator7.cc
+    src/hashtable7.c
+    src/hashtable.c
+    src/hash.c
+  )
+  target_include_directories(pheval7 PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include/>)
+  target_compile_options(pheval7 PUBLIC -O3)
+  set(PUB_HEADERS include/phevaluator/phevaluator.h
+                  include/phevaluator/card.h
+                  include/phevaluator/rank.h)
+  set_target_properties(pheval7 PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      PUBLIC_HEADER "${PUB_HEADERS}")
+endif()
 
 if (BUILD_OMAHA)
   add_library(phevalomaha STATIC
@@ -59,7 +126,6 @@ if (BUILD_OMAHA)
   target_compile_options(phevalomaha PUBLIC -O3)
   set(PUB_HEADERS include/phevaluator/phevaluator.h
                   include/phevaluator/card.h
-                  include/phevaluator/hand.h
                   include/phevaluator/rank.h)
   set_target_properties(phevalomaha PROPERTIES
       VERSION ${PROJECT_VERSION}
@@ -76,11 +142,6 @@ if (BUILD_PLO5)
     COMMENT "Unpacking ${plo5_source_code}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src"
   )
-
-#execute_process(COMMAND ${CMAKE_COMMAND} -E
-#    tar xvzf "${plo5_source_tar}")
-#  execute_process(COMMAND ${CMAKE_COMMAND} -E
-#    rename "${plo5_source_code}" "${CMAKE_CURRENT_BINARY_DIR}/src/${plo5_source_code}")
 
   add_library(phevalplo5 STATIC
     src/dptables.c
@@ -99,7 +160,6 @@ if (BUILD_PLO5)
   target_compile_options(phevalplo5 PUBLIC -O3)
   set(PUB_HEADERS include/phevaluator/phevaluator.h
                   include/phevaluator/card.h
-                  include/phevaluator/hand.h
                   include/phevaluator/rank.h)
   set_target_properties(phevalplo5 PROPERTIES
       VERSION ${PROJECT_VERSION}
@@ -144,6 +204,32 @@ if (BUILD_TESTS)
   )
   target_compile_options(benchmark_phevaluator PUBLIC -O3)
   target_link_libraries(benchmark_phevaluator benchmark pheval phevalomaha phevalplo5)
+
+  set(CMAKE_BUILD_TYPE "DEBUG") # Trying to enable assert in the following tests
+
+  add_executable(unit_tests_evaluator5_standalone
+    test/evaluation5_standalone.cc
+    test/kev/fast_eval.c
+    test/kev/kev_eval.c
+  )
+  target_compile_options(unit_tests_evaluator5_standalone PUBLIC -O3)
+  target_link_libraries(unit_tests_evaluator5_standalone pheval5)
+
+  add_executable(unit_tests_evaluator6_standalone
+    test/evaluation6_standalone.cc
+    test/kev/fast_eval.c
+    test/kev/kev_eval.c
+  )
+  target_compile_options(unit_tests_evaluator6_standalone PUBLIC -O3)
+  target_link_libraries(unit_tests_evaluator6_standalone pheval6)
+
+  add_executable(unit_tests_evaluator7_standalone
+    test/evaluation7_standalone.cc
+    test/kev/fast_eval.c
+    test/kev/kev_eval.c
+  )
+  target_compile_options(unit_tests_evaluator7_standalone PUBLIC -O3)
+  target_link_libraries(unit_tests_evaluator7_standalone pheval7)
 endif()
 
 if (BUILD_EXAMPLES)

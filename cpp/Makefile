@@ -6,10 +6,10 @@ CXXFLAGS+=-O2 -std=c++17
 
 all: libpheval.a libphevalomaha.a libphevalplo5.a
 
-libpheval.a: src/evaluator5.c.o src/hashtable5.c.o \
-             src/evaluator6.c.o src/hashtable6.c.o \
-             src/evaluator7.c.o src/hashtable7.c.o \
-             src/hash.c.o src/hashtable.c.o src/dptables.c.o src/evaluator.cc.o src/hand.cc.o \
+libpheval.a: src/evaluator5.c.o src/hashtable5.c.o src/evaluator5.cc.o \
+             src/evaluator6.c.o src/hashtable6.c.o src/evaluator6.cc.o \
+             src/evaluator7.c.o src/hashtable7.c.o src/evaluator7.cc.o \
+             src/hash.c.o src/hashtable.c.o src/dptables.c.o src/hand.cc.o \
              src/rank.c.o src/7462.c.o
 	ar rcs $@ $^
 
