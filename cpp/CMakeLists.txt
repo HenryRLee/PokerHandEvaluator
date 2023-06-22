@@ -14,6 +14,7 @@ option(BUILD_CARD6 "Build 6-card standalone library" ON)
 option(BUILD_CARD7 "Build 7-card standalone library" ON)
 option(BUILD_OMAHA "Build Omaha library" ON)
 option(BUILD_PLO5 "Build PLO5 library" ON)
+option(BUILD_PLO6 "Build PLO6 library" ON)
 option(BUILD_TESTS "Build test ON/OFF" ON)
 option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
 
@@ -166,6 +167,40 @@ if (BUILD_PLO5)
       PUBLIC_HEADER "${PUB_HEADERS}")
 endif()
 
+if (BUILD_PLO5)
+  set(plo6_source_tar "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6.tar.gz")
+  set(plo6_source_code "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6.c")
+  add_custom_command(
+    OUTPUT "${plo6_source_code}"
+    COMMAND ${CMAKE_COMMAND} -E tar xvzf "${plo6_source_tar}"
+    MAIN_DEPENDENCY ${plo6_source_tar}
+    COMMENT "Unpacking ${plo6_source_code}"
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src"
+  )
+
+  add_library(phevalplo6 STATIC
+    src/dptables.c
+    src/evaluator_plo6.c
+    src/evaluator_plo6.cc
+    src/tables_plo6.c
+    src/hash.c
+    src/hand.cc
+    src/hashtable.c
+    src/rank.c
+    src/7462.c
+  )
+  target_include_directories(phevalplo6 PUBLIC
+      $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+      $<INSTALL_INTERFACE:include/>)
+  target_compile_options(phevalplo6 PUBLIC -O3)
+  set(PUB_HEADERS include/phevaluator/phevaluator.h
+                  include/phevaluator/card.h
+                  include/phevaluator/rank.h)
+  set_target_properties(phevalplo6 PROPERTIES
+      VERSION ${PROJECT_VERSION}
+      PUBLIC_HEADER "${PUB_HEADERS}")
+endif()
+
 if (BUILD_TESTS)
   include(FetchContent)
   FetchContent_Declare(
@@ -190,12 +225,13 @@ if (BUILD_TESTS)
     test/evaluation.cc
     test/evaluation_omaha.cc
     test/evaluation_plo5.cc
+    test/evaluation_plo6.cc
     test/rank.cc
     test/kev/fast_eval.c
     test/kev/kev_eval.c
   )
   target_compile_options(unit_tests PUBLIC -O3)
-  target_link_libraries(unit_tests gtest_main pheval phevalomaha phevalplo5)
+  target_link_libraries(unit_tests gtest_main pheval phevalomaha phevalplo5 phevalplo6)
 
   add_test(NAME unit_tests COMMAND unit_tests)
 
@@ -203,7 +239,7 @@ if (BUILD_TESTS)
     benchmark/benchmark.cc
   )
   target_compile_options(benchmark_phevaluator PUBLIC -O3)
-  target_link_libraries(benchmark_phevaluator benchmark pheval phevalomaha phevalplo5)
+  target_link_libraries(benchmark_phevaluator benchmark pheval phevalomaha phevalplo5 phevalplo6)
 
   set(CMAKE_BUILD_TYPE "DEBUG") # Trying to enable assert in the following tests
 

@@ -34,4 +34,7 @@ extern const short flush_omaha[4099095];
 extern const short flush_plo5[4368 * 4368];
 extern const short noflush_plo5[6175 * 6175];
 
+extern const short flush_plo6[8192 * 8192];
+extern const short noflush_plo6[6175 * 18395];
+
 #endif // TABLES_H

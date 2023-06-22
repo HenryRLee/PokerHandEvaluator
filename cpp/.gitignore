@@ -1,9 +1,5 @@
 unit_tests
 
-# This file has been compressed to src/tables_plo5.tar.gz
-# We only track src/tables_plo5.tar.gz in git
-src/tables_plo5.c
-
 # CMake files
 Makefile
 build/
@@ -21,3 +17,13 @@ googletest-src/
 
 zig-out/
 zig-cache/
+
+# This file has been compressed to src/tables_plo5.tar.gz
+# We only track src/tables_plo5.tar.gz in git
+src/tables_plo5.c
+
+# This file has been compressed to src/tables_plo6.tar.gz
+# We only track src/tables_plo6.tar.gz in git
+src/tables_plo6.c
+
+
