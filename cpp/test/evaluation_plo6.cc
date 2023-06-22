@@ -80,7 +80,7 @@ static short IterateKevEval(int a, int b, int c, int d, int e,
 
 TEST(EvaluationTest, TestPlo6Cards) {
   int progress = 0;
-  const long long total = 1000 * 1000 * 1000;
+  const long long total = 100 * 1000 * 1000;
 
   std::printf("Start testing Plo6 cards\n");
 

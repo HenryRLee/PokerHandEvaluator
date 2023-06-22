@@ -13,11 +13,13 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run before script
+        timeout-minutes: 10
         run: |
           mkdir -p cpp/build
           cd cpp/build
           cmake .. ; make
       - name: Run script
+        timeout-minutes: 30
         run: |
           cd cpp/build
           ./c_example
@@ -66,6 +68,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run before script
+        timeout-minutes: 10
         run: |
           mkdir -p cpp/build
           cd cpp/build
