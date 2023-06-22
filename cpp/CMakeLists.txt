@@ -167,14 +167,14 @@ if (BUILD_PLO5)
       PUBLIC_HEADER "${PUB_HEADERS}")
 endif()
 
-if (BUILD_PLO5)
+if (BUILD_PLO6)
   set(plo6_source_tar "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6.tar.gz")
-  set(plo6_source_code "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6.c")
   add_custom_command(
-    OUTPUT "${plo6_source_code}"
+    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6_flush.c"
+           "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6_noflush.c"
     COMMAND ${CMAKE_COMMAND} -E tar xvzf "${plo6_source_tar}"
     MAIN_DEPENDENCY ${plo6_source_tar}
-    COMMENT "Unpacking ${plo6_source_code}"
+    COMMENT "Unpacking ${plo6_source_tar}"
     WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src"
   )
 
@@ -182,7 +182,8 @@ if (BUILD_PLO5)
     src/dptables.c
     src/evaluator_plo6.c
     src/evaluator_plo6.cc
-    src/tables_plo6.c
+    src/tables_plo6_flush.c
+    src/tables_plo6_noflush.c
     src/hash.c
     src/hand.cc
     src/hashtable.c
