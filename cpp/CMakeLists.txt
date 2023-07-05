@@ -13,8 +13,8 @@ option(BUILD_CARD5 "Build 5-card standalone library" ON)
 option(BUILD_CARD6 "Build 6-card standalone library" ON)
 option(BUILD_CARD7 "Build 7-card standalone library" ON)
 option(BUILD_OMAHA "Build Omaha library" ON)
-option(BUILD_PLO5 "Build PLO5 library" ON)
-option(BUILD_PLO6 "Build PLO6 library" ON)
+option(BUILD_PLO5 "Build PLO5 library" OFF)
+option(BUILD_PLO6 "Build PLO6 library" OFF)
 option(BUILD_TESTS "Build test ON/OFF" ON)
 option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
 
@@ -170,8 +170,7 @@ endif()
 if (BUILD_PLO6)
   set(plo6_source_tar "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6.tar.gz")
   add_custom_command(
-    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6_flush.c"
-           "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6_noflush.c"
+    OUTPUT "${CMAKE_CURRENT_SOURCE_DIR}/src/tables_plo6.c"
     COMMAND ${CMAKE_COMMAND} -E tar xvzf "${plo6_source_tar}"
     MAIN_DEPENDENCY ${plo6_source_tar}
     COMMENT "Unpacking ${plo6_source_tar}"
@@ -182,8 +181,7 @@ if (BUILD_PLO6)
     src/dptables.c
     src/evaluator_plo6.c
     src/evaluator_plo6.cc
-    src/tables_plo6_flush.c
-    src/tables_plo6_noflush.c
+    src/tables_plo6.c
     src/hash.c
     src/hand.cc
     src/hashtable.c
@@ -222,51 +220,86 @@ if (BUILD_TESTS)
   set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
   FetchContent_MakeAvailable(googletest googlebenchmark)
 
+  if (BUILD_OMAHA)
+    set(unit_tests_source_omaha test/evaluation_omaha.cc)
+    set(benchmark_source_omaha benchmark/benchmark_omaha.cc)
+    set(library_omaha phevalomaha)
+  endif()
+
+  if (BUILD_PLO5)
+    set(unit_tests_source_plo5 test/evaluation_plo5.cc)
+    set(benchmark_source_plo5 benchmark/benchmark_plo5.cc)
+    set(library_plo5 phevalplo5)
+  endif()
+
+  if (BUILD_PLO6)
+    set(unit_tests_source_plo6 test/evaluation_plo6.cc)
+    set(benchmark_source_plo6 benchmark/benchmark_plo6.cc)
+    set(library_plo6 phevalplo6)
+  endif()
+
   add_executable(unit_tests
     test/evaluation.cc
-    test/evaluation_omaha.cc
-    test/evaluation_plo5.cc
-    test/evaluation_plo6.cc
+    ${unit_tests_source_omaha}
+    ${unit_tests_source_plo5}
+    ${unit_tests_source_plo6}
     test/rank.cc
     test/kev/fast_eval.c
     test/kev/kev_eval.c
   )
   target_compile_options(unit_tests PUBLIC -O3)
-  target_link_libraries(unit_tests gtest_main pheval phevalomaha phevalplo5 phevalplo6)
+  target_link_libraries(unit_tests gtest_main pheval
+    ${library_omaha}
+    ${library_plo5}
+    ${library_plo6}
+  )
 
   add_test(NAME unit_tests COMMAND unit_tests)
 
   add_executable(benchmark_phevaluator
     benchmark/benchmark.cc
+    ${benchmark_source_omaha}
+    ${benchmark_source_plo5}
+    ${benchmark_source_plo6}
   )
   target_compile_options(benchmark_phevaluator PUBLIC -O3)
-  target_link_libraries(benchmark_phevaluator benchmark pheval phevalomaha phevalplo5 phevalplo6)
+  target_link_libraries(benchmark_phevaluator benchmark pheval
+    ${library_omaha}
+    ${library_plo5}
+    ${library_plo6}
+  )
 
   set(CMAKE_BUILD_TYPE "DEBUG") # Trying to enable assert in the following tests
 
-  add_executable(unit_tests_evaluator5_standalone
-    test/evaluation5_standalone.cc
-    test/kev/fast_eval.c
-    test/kev/kev_eval.c
-  )
-  target_compile_options(unit_tests_evaluator5_standalone PUBLIC -O3)
-  target_link_libraries(unit_tests_evaluator5_standalone pheval5)
+  if (BUILD_CARD5)
+    add_executable(unit_tests_evaluator5_standalone
+      test/evaluation5_standalone.cc
+      test/kev/fast_eval.c
+      test/kev/kev_eval.c
+    )
+    target_compile_options(unit_tests_evaluator5_standalone PUBLIC -O3)
+    target_link_libraries(unit_tests_evaluator5_standalone pheval5)
+  endif()
 
-  add_executable(unit_tests_evaluator6_standalone
-    test/evaluation6_standalone.cc
-    test/kev/fast_eval.c
-    test/kev/kev_eval.c
-  )
-  target_compile_options(unit_tests_evaluator6_standalone PUBLIC -O3)
-  target_link_libraries(unit_tests_evaluator6_standalone pheval6)
+  if (BUILD_CARD6)
+    add_executable(unit_tests_evaluator6_standalone
+      test/evaluation6_standalone.cc
+      test/kev/fast_eval.c
+      test/kev/kev_eval.c
+    )
+    target_compile_options(unit_tests_evaluator6_standalone PUBLIC -O3)
+    target_link_libraries(unit_tests_evaluator6_standalone pheval6)
+  endif()
 
-  add_executable(unit_tests_evaluator7_standalone
-    test/evaluation7_standalone.cc
-    test/kev/fast_eval.c
-    test/kev/kev_eval.c
-  )
-  target_compile_options(unit_tests_evaluator7_standalone PUBLIC -O3)
-  target_link_libraries(unit_tests_evaluator7_standalone pheval7)
+  if (BUILD_CARD6)
+    add_executable(unit_tests_evaluator7_standalone
+      test/evaluation7_standalone.cc
+      test/kev/fast_eval.c
+      test/kev/kev_eval.c
+    )
+    target_compile_options(unit_tests_evaluator7_standalone PUBLIC -O3)
+    target_link_libraries(unit_tests_evaluator7_standalone pheval7)
+  endif()
 endif()
 
 if (BUILD_EXAMPLES)

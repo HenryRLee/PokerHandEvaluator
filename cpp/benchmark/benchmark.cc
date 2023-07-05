@@ -1,12 +1,6 @@
-#include <algorithm>
-#include <vector>
-#include <array>
-#include <set>
-#include <chrono>
-#include <numeric>
-#include <random>
 #include "phevaluator/phevaluator.h"
 #include "benchmark/benchmark.h"
+#include "card_sampler.h"
 
 using namespace phevaluator;
 
@@ -66,29 +60,6 @@ static void EvaluateAllSevenCards(benchmark::State& state) {
   }
 }
 BENCHMARK(EvaluateAllSevenCards);
-
-static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-static std::default_random_engine generator(seed);
-
-class CardSampler {
-  std::array<int, 52> deck;
-public:
-  CardSampler(void) {
-    std::iota(deck.begin(), deck.end(), 0);
-  }
-  std::vector<int> sample(int size) {
-    std::vector<int> ret;
-    int residual_cards = deck.size();
-    for (int i = 0; i < size; i++) {
-      int target_index = generator() % residual_cards;
-      int tail_index = residual_cards - 1;
-      std::swap(deck[target_index], deck[tail_index]);
-      ret.push_back(deck[tail_index]);
-      residual_cards--;
-    }
-    return ret;
-  }
-};
 
 const int SIZE = 100;
 
@@ -152,80 +123,5 @@ static void EvaluateRandomSevenCards(benchmark::State& state) {
   }
 }
 BENCHMARK(EvaluateRandomSevenCards);
-
-static void EvaluateRandomOmahaCards(benchmark::State& state) {
-  std::vector<std::vector<int>> hands;
-  CardSampler cs{};
-
-  for (int i = 0; i < SIZE; i++) {
-    hands.push_back(cs.sample(9));
-  }
-
-  for (auto _ : state) {
-    for (int i = 0; i < SIZE; i++) {
-      EvaluateOmahaCards(hands[i][0],
-                         hands[i][1],
-                         hands[i][2],
-                         hands[i][3],
-                         hands[i][4],
-                         hands[i][5],
-                         hands[i][6],
-                         hands[i][7],
-                         hands[i][8]);
-    }
-  }
-}
-BENCHMARK(EvaluateRandomOmahaCards);
-
-static void EvaluateRandomPlo5Cards(benchmark::State& state) {
-  std::vector<std::vector<int>> hands;
-  CardSampler cs{};
-
-  for (int i = 0; i < SIZE; i++) {
-    hands.push_back(cs.sample(10));
-  }
-
-  for (auto _ : state) {
-    for (int i = 0; i < SIZE; i++) {
-      EvaluatePlo5Cards(hands[i][0],
-                        hands[i][1],
-                        hands[i][2],
-                        hands[i][3],
-                        hands[i][4],
-                        hands[i][5],
-                        hands[i][6],
-                        hands[i][7],
-                        hands[i][8],
-                        hands[i][9]);
-    }
-  }
-}
-BENCHMARK(EvaluateRandomPlo5Cards);
-
-static void EvaluateRandomPlo6Cards(benchmark::State& state) {
-  std::vector<std::vector<int>> hands;
-  CardSampler cs{};
-
-  for (int i = 0; i < SIZE; i++) {
-    hands.push_back(cs.sample(11));
-  }
-
-  for (auto _ : state) {
-    for (int i = 0; i < SIZE; i++) {
-      EvaluatePlo6Cards(hands[i][0],
-                        hands[i][1],
-                        hands[i][2],
-                        hands[i][3],
-                        hands[i][4],
-                        hands[i][5],
-                        hands[i][6],
-                        hands[i][7],
-                        hands[i][8],
-                        hands[i][9],
-                        hands[i][10]);
-    }
-  }
-}
-BENCHMARK(EvaluateRandomPlo6Cards);
 
 BENCHMARK_MAIN();
