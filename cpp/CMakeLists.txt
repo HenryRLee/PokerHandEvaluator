@@ -313,15 +313,26 @@ if (BUILD_EXAMPLES)
   )
   target_link_libraries(cpp_example pheval)
 
-  add_executable(omaha_example
-    examples/omaha_example.cc
-  )
-  target_link_libraries(omaha_example phevalomaha)
+  if (BUILD_OMAHA)
+    add_executable(omaha_example
+      examples/omaha_example.cc
+    )
+    target_link_libraries(omaha_example phevalomaha)
+  endif()
 
-  add_executable(plo5_example
-    examples/plo5_example.cc
-  )
-  target_link_libraries(plo5_example phevalplo5)
+  if (BUILD_PLO5)
+    add_executable(plo5_example
+      examples/plo5_example.cc
+    )
+    target_link_libraries(plo5_example phevalplo5)
+  endif()
+
+  if (BUILD_PLO6)
+    add_executable(plo6_example
+      examples/plo6_example.cc
+    )
+    target_link_libraries(plo6_example phevalplo6)
+  endif()
 endif()
 
 # Install library
@@ -333,17 +344,29 @@ if (UNIX)
       ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
       PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
 
-  install(TARGETS phevalomaha
-      EXPORT phevalTargets
-      LIBRARY DESTINATION ${CMAKE_INSTALL_DIR}
-      ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
+  if (BUILD_OMAHA)
+    install(TARGETS phevalomaha
+        EXPORT phevalTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_DIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
+  endif()
 
-  install(TARGETS phevalplo5
-      EXPORT phevalTargets
-      LIBRARY DESTINATION ${CMAKE_INSTALL_DIR}
-      ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
-      PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
+  if (BUILD_PLO5)
+    install(TARGETS phevalplo5
+        EXPORT phevalTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_DIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
+  endif()
+
+  if (BUILD_PLO6)
+    install(TARGETS phevalplo6
+        EXPORT phevalTargets
+        LIBRARY DESTINATION ${CMAKE_INSTALL_DIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
+  endif()
 
   #install find_package script
   install(EXPORT phevalTargets
