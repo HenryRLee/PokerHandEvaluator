@@ -39,6 +39,18 @@ cmake ..
 make pheval
 ```
 
+### Build in Windows
+
+The unit tests depends on Google Test suite, which isn't available in Windows.
+This way allows us to build the libraries and examples.
+
+```
+mkdir -p build
+cd build
+cmake -DBUILD_TESTS=OFF ..
+make
+```
+
 ### Build with zig
 
 This library can also be build with zig which supports many platforms and cross compilation scenarios.  In order to do so, [install a zig compiler](https://github.com/ziglang/zig#installation) for your platform (minimum version 0.9) and run `zig build` with some combination of the following flags:
