@@ -4,7 +4,7 @@ INCLUDE=./include
 CFLAGS+=-O2 -std=c99
 CXXFLAGS+=-O2 -std=c++17
 
-all: libpheval.a libphevalomaha.a libphevalplo5.a libphevalplo6.a
+all: libpheval.a libphevalplo4.a libphevalplo5.a libphevalplo6.a
 
 libpheval.a: src/evaluator5.c.o src/hashtable5.c.o src/evaluator5.cc.o \
              src/evaluator6.c.o src/hashtable6.c.o src/evaluator6.cc.o \
@@ -13,8 +13,8 @@ libpheval.a: src/evaluator5.c.o src/hashtable5.c.o src/evaluator5.cc.o \
              src/rank.c.o src/7462.c.o
 	ar rcs $@ $^
 
-libphevalomaha.a: src/dptables.c.o src/tables_omaha.c.o \
-                  src/evaluator_omaha.c.o src/evaluator_omaha.cc.o \
+libphevalplo4.a: src/dptables.c.o src/tables_plo4.c.o \
+                  src/evaluator_plo4.c.o src/evaluator_plo4.cc.o \
                   src/hash.c.o src/hand.cc.o \
                   src/hashtable.c.o src/rank.c.o \
                   src/7462.c.o
@@ -47,4 +47,4 @@ src/tables_plo6.c: src/tables_plo6.tar.gz
 	${CXX} -c ${CXXFLAGS} -I${INCLUDE} $< -o $@
 
 clean:
-	rm -f src/*.o libpheval.a libphevalomaha.a libphevalplo5.a libphevalplo6.a
+	rm -f src/*.o libpheval.a libphevalplo4.a libphevalplo5.a libphevalplo6.a

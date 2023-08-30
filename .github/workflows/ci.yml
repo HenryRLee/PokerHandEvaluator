@@ -24,8 +24,9 @@ jobs:
           cd cpp/build
           ./c_example
           ./cpp_example
-          ./omaha_example
+          ./plo4_example
           ./plo5_example
+          ./plo6_example
           ./unit_tests
 #     - name: Setup Zig
 #       uses: goto-bus-stop/setup-zig@v1.3.0

@@ -12,7 +12,7 @@ set(CMAKE_C_STANDARD 99)
 option(BUILD_CARD5 "Build 5-card standalone library" ON)
 option(BUILD_CARD6 "Build 6-card standalone library" ON)
 option(BUILD_CARD7 "Build 7-card standalone library" ON)
-option(BUILD_OMAHA "Build Omaha library" ON)
+option(BUILD_PLO4 "Build PLO4 library" ON)
 option(BUILD_PLO5 "Build PLO5 library" ON)
 option(BUILD_PLO6 "Build PLO6 library" ON)
 option(BUILD_TESTS "Build test ON/OFF" ON)
@@ -109,26 +109,26 @@ if (BUILD_CARD7)
       PUBLIC_HEADER "${PUB_HEADERS}")
 endif()
 
-if (BUILD_OMAHA)
-  add_library(phevalomaha STATIC
+if (BUILD_PLO4)
+  add_library(phevalplo4 STATIC
     src/dptables.c
-    src/evaluator_omaha.c
-    src/evaluator_omaha.cc
-    src/tables_omaha.c
+    src/evaluator_plo4.c
+    src/evaluator_plo4.cc
+    src/tables_plo4.c
     src/hash.c
     src/hand.cc
     src/hashtable.c
     src/rank.c
     src/7462.c
   )
-  target_include_directories(phevalomaha PUBLIC
+  target_include_directories(phevalplo4 PUBLIC
       $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
       $<INSTALL_INTERFACE:include/>)
-  target_compile_options(phevalomaha PUBLIC -O3)
+  target_compile_options(phevalplo4 PUBLIC -O3)
   set(PUB_HEADERS include/phevaluator/phevaluator.h
                   include/phevaluator/card.h
                   include/phevaluator/rank.h)
-  set_target_properties(phevalomaha PROPERTIES
+  set_target_properties(phevalplo4 PROPERTIES
       VERSION ${PROJECT_VERSION}
       PUBLIC_HEADER "${PUB_HEADERS}")
 endif()
@@ -220,10 +220,10 @@ if (BUILD_TESTS)
   set(BENCHMARK_ENABLE_INSTALL OFF CACHE BOOL "" FORCE)
   FetchContent_MakeAvailable(googletest googlebenchmark)
 
-  if (BUILD_OMAHA)
-    set(unit_tests_source_omaha test/evaluation_omaha.cc)
-    set(benchmark_source_omaha benchmark/benchmark_omaha.cc)
-    set(library_omaha phevalomaha)
+  if (BUILD_PLO4)
+    set(unit_tests_source_plo4 test/evaluation_plo4.cc)
+    set(benchmark_source_plo4 benchmark/benchmark_plo4.cc)
+    set(library_plo4 phevalplo4)
   endif()
 
   if (BUILD_PLO5)
@@ -240,7 +240,7 @@ if (BUILD_TESTS)
 
   add_executable(unit_tests
     test/evaluation.cc
-    ${unit_tests_source_omaha}
+    ${unit_tests_source_plo4}
     ${unit_tests_source_plo5}
     ${unit_tests_source_plo6}
     test/rank.cc
@@ -249,7 +249,7 @@ if (BUILD_TESTS)
   )
   target_compile_options(unit_tests PUBLIC -O3)
   target_link_libraries(unit_tests gtest_main pheval
-    ${library_omaha}
+    ${library_plo4}
     ${library_plo5}
     ${library_plo6}
   )
@@ -258,13 +258,13 @@ if (BUILD_TESTS)
 
   add_executable(benchmark_phevaluator
     benchmark/benchmark.cc
-    ${benchmark_source_omaha}
+    ${benchmark_source_plo4}
     ${benchmark_source_plo5}
     ${benchmark_source_plo6}
   )
   target_compile_options(benchmark_phevaluator PUBLIC -O3)
   target_link_libraries(benchmark_phevaluator benchmark pheval
-    ${library_omaha}
+    ${library_plo4}
     ${library_plo5}
     ${library_plo6}
   )
@@ -313,11 +313,11 @@ if (BUILD_EXAMPLES)
   )
   target_link_libraries(cpp_example pheval)
 
-  if (BUILD_OMAHA)
-    add_executable(omaha_example
-      examples/omaha_example.cc
+  if (BUILD_PLO4)
+    add_executable(plo4_example
+      examples/plo4_example.cc
     )
-    target_link_libraries(omaha_example phevalomaha)
+    target_link_libraries(plo4_example phevalplo4)
   endif()
 
   if (BUILD_PLO5)
@@ -344,8 +344,8 @@ if (UNIX)
       ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}
       PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/phevaluator)
 
-  if (BUILD_OMAHA)
-    install(TARGETS phevalomaha
+  if (BUILD_PLO4)
+    install(TARGETS phevalplo4
         EXPORT phevalTargets
         LIBRARY DESTINATION ${CMAKE_INSTALL_DIR}
         ARCHIVE DESTINATION ${CMAKE_INSTALL_DIR}

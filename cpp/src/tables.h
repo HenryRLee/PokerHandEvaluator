@@ -28,8 +28,8 @@ extern const int dp[5][14][10];
 
 extern const char* rank_description[7463][2];
 
-extern const short noflush_omaha[11238500];
-extern const short flush_omaha[4099095];
+extern const short noflush_plo4[11238500];
+extern const short flush_plo4[4099095];
 
 extern const short flush_plo5[4368 * 4368];
 extern const short noflush_plo5[6175 * 6175];
