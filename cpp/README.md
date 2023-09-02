@@ -90,9 +90,66 @@ cd examples
 make
 ```
 
-## Use the library
+## Using the libraries
 
-After building the library `libpheval.a`, you can add the `./include`
+After running `make`, you can see the following library files generated:
+
+```
+libpheval.a      # library pheval
+libpheval5.a     # library pheval5
+libpheval6.a     # library pheval6
+libpheval7.a     # library pheval7
+libphevalplo4.a  # library phevalplo4
+libphevalplo5.a  # library phevalplo5
+libphevalplo6.a  # library phevalplo6
+
+```
+
+#### pheval
+
+The corresponding library file is `libpheval.a`.
+
+This library includes 5-card, 6-card and 7-card evaluators.
+
+It also includes all the methods of describing a rank. However, the additional
+memory usage of these rank describing methods is significantly high (356k), due
+to the rank description table declared in `src/7462.c`.
+
+The example usage of this library can be found in `examples/c_example.c` and
+`examples/cpp_example.cc`.
+
+#### pheval5, pheval6 and pheval7
+
+The corresponding library files are `libpheval5.a`, `libpheval6.a` and
+`libpheval7.a`.
+
+Library `pheval5` includes the 5-card evaluator.
+Library `pheval6` includes the 6-card evaluator.
+Library `pheval7` includes the 7-card evaluator.
+
+These libraries don't include the rank describing methods, in order to optimize
+the memory usage.
+
+#### phevalplo4, phevalplo5 and phevalplo6
+
+The corresponding library files are `libphevalplo4.a`, `libphevalplo5.a` and
+`libphevalplo6.a`.
+
+Library `phevalplo4` includes the Pot Limit Omaha 4 (generally known as Omaha)
+evaluator.
+Library `phevalplo5` includes the Pot Limit Omaha 5 evaluator.
+Library `phevalplo6` includes the Pot Limit Omaha 6 evaluator.
+
+These libraries also include all the methods of describing a rank. The additional
+memory usage of these rank describing methods is insignificant compared to the
+memory usage of the basic omaha evaluators.
+
+The example usage of these libraries can be found in `examples/plo4_example.cc`,
+`examples/plo5_example.cc` and `examples/plo6_example.cc`.
+
+### Linking the library
+
+After building the libraries, you can add the `./include`
 directory to your includes path, and link the library to your source
 code. In addition, at least C++11 standard is required.
 
