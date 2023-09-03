@@ -303,6 +303,8 @@ if (BUILD_TESTS)
 endif()
 
 if (BUILD_EXAMPLES)
+  set(CMAKE_BUILD_TYPE "DEBUG") # Trying to enable assert in the following tests
+
   add_executable(c_example
     examples/c_example.c
   )
@@ -312,6 +314,27 @@ if (BUILD_EXAMPLES)
     examples/cpp_example.cc
   )
   target_link_libraries(cpp_example pheval)
+
+  if (BUILD_CARD5)
+    add_executable(evaluator5_standalone_example
+      examples/evaluator5_standalone_example.cc
+    )
+    target_link_libraries(evaluator5_standalone_example pheval5)
+  endif()
+
+  if (BUILD_CARD6)
+    add_executable(evaluator6_standalone_example
+      examples/evaluator6_standalone_example.cc
+    )
+    target_link_libraries(evaluator6_standalone_example pheval6)
+  endif()
+
+  if (BUILD_CARD7)
+    add_executable(evaluator7_standalone_example
+      examples/evaluator7_standalone_example.cc
+    )
+    target_link_libraries(evaluator7_standalone_example pheval7)
+  endif()
 
   if (BUILD_PLO4)
     add_executable(plo4_example

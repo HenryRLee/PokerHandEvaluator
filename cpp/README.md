@@ -78,7 +78,6 @@ libpheval7.a     # library pheval7
 libphevalplo4.a  # library phevalplo4
 libphevalplo5.a  # library phevalplo5
 libphevalplo6.a  # library phevalplo6
-
 ```
 
 #### pheval
@@ -105,6 +104,11 @@ Library `pheval7` includes the 7-card evaluator.
 
 These libraries don't include the rank describing methods, in order to optimize
 the memory usage.
+
+The example usage of these libraries can be found in
+`examples/evaluator5_standalone_example.cc`,
+`examples/evaluator6_standalone_example.cc` and
+`examples/evaluator7_standalone_example.cc`.
 
 #### phevalplo4, phevalplo5 and phevalplo6
 
