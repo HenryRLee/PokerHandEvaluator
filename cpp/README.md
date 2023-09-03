@@ -84,7 +84,7 @@ libphevalplo6.a  # library phevalplo6
 
 The corresponding library file is `libpheval.a`.
 
-This library includes 5-card, 6-card and 7-card evaluators.
+This library includes 5-card, 6-card, and 7-card evaluators.
 
 It also includes all the methods of describing a rank. However, the additional
 memory usage of these rank describing methods is significantly high (356k), due
@@ -93,31 +93,29 @@ to the rank description table declared in `src/7462.c`.
 The example usage of this library can be found in `examples/c_example.c` and
 `examples/cpp_example.cc`.
 
-#### pheval5, pheval6 and pheval7
+#### pheval5, pheval6, and pheval7
 
-The corresponding library files are `libpheval5.a`, `libpheval6.a` and
+The corresponding library files are `libpheval5.a`, `libpheval6.a`, and
 `libpheval7.a`.
 
-Library `pheval5` includes the 5-card evaluator.
-Library `pheval6` includes the 6-card evaluator.
-Library `pheval7` includes the 7-card evaluator.
+These libraries are memory optimized for evaluating 5-card hands, 6-card hands,
+and 7-card hands respectively.
 
-These libraries don't include the rank describing methods, in order to optimize
-the memory usage.
+These libraries don't include the rank describing methods, in order to save the
+memory usage.
 
 The example usage of these libraries can be found in
 `examples/evaluator5_standalone_example.cc`,
 `examples/evaluator6_standalone_example.cc` and
 `examples/evaluator7_standalone_example.cc`.
 
-#### phevalplo4, phevalplo5 and phevalplo6
+#### phevalplo4, phevalplo5, and phevalplo6
 
-The corresponding library files are `libphevalplo4.a`, `libphevalplo5.a` and
+The corresponding library files are `libphevalplo4.a`, `libphevalplo5.a`, and
 `libphevalplo6.a`.
 
-Library `phevalplo4` includes the Pot Limit Omaha 4 (standard Omaha) evaluator.
-Library `phevalplo5` includes the Pot Limit Omaha 5 evaluator.
-Library `phevalplo6` includes the Pot Limit Omaha 6 evaluator.
+These libraries are made for evaluator Pot Limit Omaha 4 (standard Omaha) hands,
+Pot Limit Omaha 5 hands, and Pot Limit Omaha 6 hands respectively.
 
 These libraries also include all the methods of describing a rank. The additional
 memory usage of these rank describing methods is insignificant compared to the
@@ -130,7 +128,7 @@ The example usage of these libraries can be found in `examples/plo4_example.cc`,
 
 After building the libraries, you can add the `./include`
 directory to your includes path, and link the library to your source
-code. In addition, at least C++11 standard is required.
+code. In addition, at least C++11 standard is required for compiling.
 
 For example:
 
