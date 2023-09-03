@@ -42,7 +42,7 @@ underlying algorithm.
 
 The [cpp](cpp) subdirectory has the C/C++ implementation of the algorithm,
 offering evaluation from 5-card hands to 7-card hands, as well as Omaha
-poker hands.
+poker hands, including PLO4, PLO5, and PLO6.
 
 ### Time performance
 
