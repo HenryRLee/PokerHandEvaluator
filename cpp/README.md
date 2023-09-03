@@ -51,30 +51,6 @@ cmake -DBUILD_TESTS=OFF ..
 make
 ```
 
-### Build with zig
-
-This library can also be build with zig which supports many platforms and cross compilation scenarios.  In order to do so, [install a zig compiler](https://github.com/ziglang/zig#installation) for your platform (minimum version 0.9) and run `zig build` with some combination of the following flags:
-
-```console
-# show available build options
-$ zig build --help
-
-# create an optimized zig-out/lib/libpheval.a (or .lib on windows) 
-$ zig build -Drelease-fast
-
-# create an optimized zig-out/lib/libpheval.so (or .dll/.pdb on windows)
-$ zig build -Ddynamic -Drelease-fast
-
-# cross-compile for windows from another platform. creates zig-out/lib/libpheval.dll/pdb
-$ zig build -Dtarget=x86_64-windows -Drelease-fast
-
-# create zig-out/lib/libphevalomaha.a 
-$ zig build -Domaha -Drelease-fast
-
-# create example executables in zig-out/bin/
-$ zig build examples
-```
-
 ### Build with GNU Make
 
 This [cpp](/cpp/) directory also includes a Makefile, for users that want to use native
@@ -135,8 +111,7 @@ the memory usage.
 The corresponding library files are `libphevalplo4.a`, `libphevalplo5.a` and
 `libphevalplo6.a`.
 
-Library `phevalplo4` includes the Pot Limit Omaha 4 (generally known as Omaha)
-evaluator.
+Library `phevalplo4` includes the Pot Limit Omaha 4 (standard Omaha) evaluator.
 Library `phevalplo5` includes the Pot Limit Omaha 5 evaluator.
 Library `phevalplo6` includes the Pot Limit Omaha 6 evaluator.
 
