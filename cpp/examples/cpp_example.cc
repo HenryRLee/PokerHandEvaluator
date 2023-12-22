@@ -28,7 +28,7 @@ int main()
   std::cout << "Player 2 has a " << rank2.describeCategory() << std::endl;
 
   assert(rank2.describeRank() == "Nines Full over Fours");
-  std::cout << "More specifically, player 2 has a " << rank2.describeCategory() << std::endl;
+  std::cout << "More specifically, player 2 has a " << rank2.describeRank() << std::endl;
 
   assert(rank2.describeSampleHand() == "99944");
   assert(!rank2.isFlush());
