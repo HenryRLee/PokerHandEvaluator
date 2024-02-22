@@ -39,7 +39,7 @@ target_include_directories(pheval PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:include/>)
 target_compile_options(pheval PUBLIC -O3)
-set(PUB_HEADERS include/phevaluator/phevaluator5.h
+set(PUB_HEADERS include/phevaluator/phevaluator.h
                 include/phevaluator/card.h
                 include/phevaluator/rank.h)
 set_target_properties(pheval PROPERTIES
