@@ -1,24 +1,18 @@
-"""Pre-calculated tables."""
-from .dptables import CHOOSE, DP, SUITS
-from .hashtable import FLUSH
-from .hashtable5 import NO_FLUSH_5
-from .hashtable6 import NO_FLUSH_6
-from .hashtable7 import NO_FLUSH_7
-from .hashtable_omaha import FLUSH_OMAHA, NO_FLUSH_OMAHA
+# import mapping to pre-calculated tables in other modules
+all_by_module = {
+    "phevaluator.tables.dptables": ["CHOOSE", "DP", "SUITS"],
+    "phevaluator.tables.hashtable": ["FLUSH"],
+    "phevaluator.tables.hashtable5": ["NO_FLUSH_5"],
+    "phevaluator.tables.hashtable6": ["NO_FLUSH_6"],
+    "phevaluator.tables.hashtable7": ["NO_FLUSH_7"],
+    "phevaluator.tables.hashtable_omaha": ["FLUSH_OMAHA", "NO_FLUSH_OMAHA"]
+}
 
-__all__ = [
-    "BINARIES_BY_ID",
-    "CHOOSE",
-    "DP",
-    "SUITBIT_BY_ID",
-    "SUITS",
-    "FLUSH",
-    "NO_FLUSH_5",
-    "NO_FLUSH_6",
-    "NO_FLUSH_7",
-    "FLUSH_OMAHA",
-    "NO_FLUSH_OMAHA",
-]
+# Based on werkzeug library
+object_origins = {}
+for module, items in all_by_module.items():
+    for item in items:
+        object_origins[item] = module
 
 # fmt: off
 BINARIES_BY_ID = [
@@ -39,3 +33,13 @@ BINARIES_BY_ID = [
 
 SUITBIT_BY_ID = [0x1, 0x8, 0x40, 0x200] * 13
 # fmt: on
+
+
+# Based on https://peps.python.org/pep-0562/ and werkzeug library
+def __getattr__(name):
+    """lazy submodule imports"""
+    if name in object_origins:
+        module = __import__(object_origins[name], None, None, [name])
+        return getattr(module, name)
+    else:
+        raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
