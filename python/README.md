@@ -28,7 +28,7 @@ The library requires Python 3.
 ## Using the library
 The main function is the `evaluate_cards` function.
 ```python
-from phevaluator import evaluate_cards
+from phevaluator.evaluator import evaluate_cards
 
 p1 = evaluate_cards("9c", "4c", "4s", "9d", "4h", "Qc", "6c")
 p2 = evaluate_cards("9c", "4c", "4s", "9d", "4h", "2c", "9h")
