@@ -1,6 +1,6 @@
-#include "phevaluator/phevaluator.h"
 #include "benchmark/benchmark.h"
-#include "card_sampler.h"
+#include "phevaluator/card_sampler.h"
+#include "phevaluator/phevaluator.h"
 
 using namespace phevaluator;
 
@@ -65,16 +65,13 @@ const int SIZE = 100;
 
 static void EvaluateRandomFiveCards(benchmark::State& state) {
   std::vector<std::vector<int>> hands;
-  CardSampler cs{};
+  card_sampler::CardSampler cs{};
   for (int i = 0; i < SIZE; i++) {
     hands.push_back(cs.sample(5));
   }
   for (auto _ : state) {
     for (int i = 0; i < SIZE; i++) {
-      EvaluateCards(hands[i][0],
-                    hands[i][1],
-                    hands[i][2],
-                    hands[i][3],
+      EvaluateCards(hands[i][0], hands[i][1], hands[i][2], hands[i][3],
                     hands[i][4]);
     }
   }
@@ -83,7 +80,7 @@ BENCHMARK(EvaluateRandomFiveCards);
 
 static void EvaluateRandomSixCards(benchmark::State& state) {
   std::vector<std::vector<int>> hands;
-  CardSampler cs{};
+  card_sampler::CardSampler cs{};
 
   for (int i = 0; i < SIZE; i++) {
     hands.push_back(cs.sample(6));
@@ -91,12 +88,8 @@ static void EvaluateRandomSixCards(benchmark::State& state) {
 
   for (auto _ : state) {
     for (int i = 0; i < SIZE; i++) {
-      EvaluateCards(hands[i][0],
-                    hands[i][1],
-                    hands[i][2],
-                    hands[i][3],
-                    hands[i][4],
-                    hands[i][5]);
+      EvaluateCards(hands[i][0], hands[i][1], hands[i][2], hands[i][3],
+                    hands[i][4], hands[i][5]);
     }
   }
 }
@@ -104,7 +97,7 @@ BENCHMARK(EvaluateRandomSixCards);
 
 static void EvaluateRandomSevenCards(benchmark::State& state) {
   std::vector<std::vector<int>> hands;
-  CardSampler cs{};
+  card_sampler::CardSampler cs{};
 
   for (int i = 0; i < SIZE; i++) {
     hands.push_back(cs.sample(7));
@@ -112,13 +105,8 @@ static void EvaluateRandomSevenCards(benchmark::State& state) {
 
   for (auto _ : state) {
     for (int i = 0; i < SIZE; i++) {
-      EvaluateCards(hands[i][0],
-                    hands[i][1],
-                    hands[i][2],
-                    hands[i][3],
-                    hands[i][4],
-                    hands[i][5],
-                    hands[i][6]);
+      EvaluateCards(hands[i][0], hands[i][1], hands[i][2], hands[i][3],
+                    hands[i][4], hands[i][5], hands[i][6]);
     }
   }
 }

@@ -1,20 +1,26 @@
+#pragma once
 #include <algorithm>
-#include <vector>
 #include <array>
-#include <set>
 #include <chrono>
 #include <numeric>
 #include <random>
+#include <set>
+#include <vector>
 
-static unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
+namespace card_sampler {
+static unsigned seed =
+    std::chrono::system_clock::now().time_since_epoch().count();
 static std::default_random_engine generator(seed);
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 class CardSampler {
   std::array<int, 52> deck;
-public:
-  CardSampler(void) {
-    std::iota(deck.begin(), deck.end(), 0);
-  }
+
+ public:
+  CardSampler(void) { std::iota(deck.begin(), deck.end(), 0); }
   std::vector<int> sample(int size) {
     std::vector<int> ret;
     int residual_cards = deck.size();
@@ -28,3 +34,8 @@ public:
     return ret;
   }
 };
+}  // namespace card_sampler
+
+#ifdef __cplusplus
+}  // closing brace for extern "C"
+#endif
