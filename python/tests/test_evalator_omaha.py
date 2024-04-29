@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from itertools import combinations
+from typing import List
 
 from phevaluator import (
     Card,
@@ -12,7 +13,7 @@ from phevaluator import (
 )
 
 
-def evaluate_omaha_exhaustive(community_cards: [int], hole_cards: [int]) -> int:
+def evaluate_omaha_exhaustive(community_cards: List[int], hole_cards: List[int]) -> int:
     """Evaluate omaha cards with `_evaluate_cards`."""
     best_rank = min(
         _evaluate_cards(c1, c2, c3, h1, h2)

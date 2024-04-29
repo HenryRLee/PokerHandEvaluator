@@ -1,7 +1,8 @@
 """Module evaluating cards in Omaha game."""
+
 from __future__ import annotations
 
-from typing import Union
+from typing import List, Union
 
 from .card import Card
 from .hash import hash_binary, hash_quinary
@@ -51,7 +52,7 @@ def evaluate_omaha_cards(*cards: Union[int, str, Card]) -> int:
     return _evaluate_omaha_cards(community_cards, hole_cards)
 
 
-def _evaluate_omaha_cards(community_cards: [int], hole_cards: [int]) -> int:
+def _evaluate_omaha_cards(community_cards: List[int], hole_cards: List[int]) -> int:
     value_flush = 10000
     value_noflush = 10000
     suit_count_board = [0] * 4

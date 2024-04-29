@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import unittest
 from itertools import combinations
+from typing import List
 
 from phevaluator.tables import FLUSH
 
@@ -11,8 +12,8 @@ class TestFlushTable(unittest.TestCase):
     VISIT = [0] * len(FLUSH)
     CUR_RANK = 1
 
-    CACHE: [int] = []
-    BINARIES: [int] = []
+    CACHE: List[int] = []
+    BINARIES: List[List[int]] = []
 
     @classmethod
     def setUpClass(cls):

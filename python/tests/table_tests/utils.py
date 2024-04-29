@@ -2,14 +2,15 @@ from __future__ import annotations
 
 import unittest
 from itertools import combinations, combinations_with_replacement, permutations
+from typing import List
 
 from phevaluator.hash import hash_quinary
 from phevaluator.tables import NO_FLUSH_5
 
 
 class BaseTestNoFlushTable(unittest.TestCase):
-    TABLE: [int] = NotImplemented
-    VISIT: [int] = NotImplemented
+    TABLE: List[int] = NotImplemented
+    VISIT: List[int] = NotImplemented
     NUM_CARDS: int = NotImplemented
 
     @classmethod
