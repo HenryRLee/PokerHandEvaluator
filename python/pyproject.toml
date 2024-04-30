@@ -2,12 +2,47 @@
 build-backend = "setuptools.build_meta"
 requires = ["setuptools", "wheel"]
 
-[tool.black]
-extend-exclude = '''
-(
-  phevaluator/tables/.*
-)
-'''
+[tool.mypy]
+exclude = ["phevaluator/tables/"]
+python_version = "3.8"
 
-[tool.isort]
-profile = "black"
+[tool.ruff]
+exclude = ["phevaluator/tables/"]
+target-version = "py38"
+fix = true
+show-fixes = true
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+    "D211",   # no-blank-line-before-class is incompatible with D203 (one-blank-line-before-class)
+    "D213",   # multi-line-summary-second-line is incompatible with D212 (multi-line-summary-first-line)
+    "E741",   # ambiguous-variable-name is incompatible with N806 (non-lowercase-variable-in-function)
+    "COM812", # missing-trailing-comma is incompatible with Ruff formatter
+    "ISC001", # single-line-implicit-string-concatenation is incompatible with Ruff formatter
+    "ANN101", # will be deprecated
+    "ANN102", # will be deprecated
+    "FIX002", # We use "TODO" comments to provide context for future work
+    "PT",     # We don't use pytests and this causes false positives
+    "ERA001", # False positive
+]
+
+[tool.ruff.lint.isort]
+force-single-line = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "pep257"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "D",    # Exclude test files from pydocstyle checks
+    "S101", # We allow asserts in tests
+]
+"./*.py" = [
+    "D",    # Exclude sample codes from pydocstyle checks
+    "T201", # We allow print statements in sample codes
+]
+
+[tool.ruff.format]
+docstring-code-format = true
+skip-magic-trailing-comma = true
