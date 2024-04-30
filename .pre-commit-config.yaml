@@ -1,0 +1,114 @@
+repos:
+  # Display the arguments passed to the hook
+  - repo: meta
+    hooks:
+      - id: identity
+
+  # For all files
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.6.0
+    hooks:
+      - id: check-merge-conflict
+        fail_fast: true
+      - id: no-commit-to-branch
+        args: [--branch=master, --branch=develop]
+        fail_fast: true
+      - id: forbid-submodules
+        fail_fast: true
+      - id: detect-private-key
+      - id: fix-byte-order-marker
+      - id: mixed-line-ending
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      # Formatting for TOML
+      - id: check-toml
+      # Formatting for YAML
+      - id: check-yaml
+
+  # For all files
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+      - id: remove-crlf
+      - id: remove-tabs
+
+  # Formatting for Python configuration files
+  - repo: https://github.com/asottile/setup-cfg-fmt
+    rev: v2.5.0
+    hooks:
+      - id: setup-cfg-fmt
+
+  # Linting and formatting for C++
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
+    hooks:
+      - id: clang-format
+        args: [-i]
+        exclude: |
+          (?x)^(
+            cpp/src/hashtable.*|
+            cpp/src/tables.*
+          )$
+      # - id: clang-tidy
+      # - id: oclint
+      # - id: cppcheck
+      # - id: include-what-you-use
+      #   args: [-Xiwyu, --no_comments]
+
+  # Formatting markdown files
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.40.0
+    hooks:
+      - id: markdownlint
+        args: [--fix]
+
+  - repo: local
+    hooks:
+      # Linting for Python
+      - id: ruff-check
+        name: Python - Linting with Ruff
+        entry: bash -c 'pip install ruff && cd python && ruff check'
+        language: system
+        types_or: [python]
+        pass_filenames: false
+
+      # Formatting for Python
+      - id: ruff-format
+        name: Python - Formatting with Ruff
+        entry: bash -c 'pip install ruff && cd python && ruff format'
+        language: system
+        types_or: [python]
+        pass_filenames: false
+
+      # Type checking for Python
+      - id: mypy
+        name: Python - Type checking with mypy
+        entry: bash -c 'pip install mypy && cd python && mypy .'
+        language: system
+        types_or: [python]
+        pass_filenames: false
+        stages:
+          - pre-commit
+          - pre-merge-commit
+          - pre-rebase
+          - manual
+
+      # Unit testing for Python
+      - id: unittest
+        name: Python - Run unit tests
+        entry: python -m unittest discover
+        language: system
+        pass_filenames: false
+        stages:
+          - pre-commit
+          - pre-merge-commit
+          - pre-rebase
+          - manual
+
+      # Display the differences between the original and formatted code
+      - id: git-diff
+        name: git diff
+        entry: git diff --color --exit-code
+        language: system
+        pass_filenames: false
+        always_run: true
