@@ -19,6 +19,7 @@ option(BUILD_TESTS "Build test ON/OFF" ON)
 option(BUILD_EXAMPLES "Build examples ON/OFF" ON)
 
 add_library(pheval STATIC
+  src/card_sampler.cc
   src/dptables.c
   src/evaluator5.cc
   src/evaluator5.c
@@ -41,6 +42,7 @@ target_include_directories(pheval PUBLIC
 target_compile_options(pheval PUBLIC -O3)
 set(PUB_HEADERS include/phevaluator/phevaluator.h
                 include/phevaluator/card.h
+                include/phevaluator/card_sampler.h
                 include/phevaluator/rank.h)
 set_target_properties(pheval PROPERTIES
     VERSION ${PROJECT_VERSION}
@@ -114,6 +116,7 @@ endif()
 
 if (BUILD_PLO4)
   add_library(phevalplo4 STATIC
+    src/card_sampler.cc
     src/dptables.c
     src/evaluator_plo4.c
     src/evaluator_plo4.cc
@@ -130,6 +133,7 @@ if (BUILD_PLO4)
   target_compile_options(phevalplo4 PUBLIC -O3)
   set(PUB_HEADERS include/phevaluator/phevaluator.h
                   include/phevaluator/card.h
+                  include/phevaluator/card_sampler.h
                   include/phevaluator/rank.h)
   set_target_properties(phevalplo4 PROPERTIES
       VERSION ${PROJECT_VERSION}
@@ -148,6 +152,7 @@ if (BUILD_PLO5)
   )
 
   add_library(phevalplo5 STATIC
+    src/card_sampler.cc
     src/dptables.c
     src/evaluator_plo5.c
     src/evaluator_plo5.cc
@@ -164,6 +169,7 @@ if (BUILD_PLO5)
   target_compile_options(phevalplo5 PUBLIC -O3)
   set(PUB_HEADERS include/phevaluator/phevaluator.h
                   include/phevaluator/card.h
+                  include/phevaluator/card_sampler.h
                   include/phevaluator/rank.h)
   set_target_properties(phevalplo5 PROPERTIES
       VERSION ${PROJECT_VERSION}
@@ -181,6 +187,7 @@ if (BUILD_PLO6)
   )
 
   add_library(phevalplo6 STATIC
+    src/card_sampler.cc
     src/dptables.c
     src/evaluator_plo6.c
     src/evaluator_plo6.cc
@@ -197,6 +204,7 @@ if (BUILD_PLO6)
   target_compile_options(phevalplo6 PUBLIC -O3)
   set(PUB_HEADERS include/phevaluator/phevaluator.h
                   include/phevaluator/card.h
+                  include/phevaluator/card_sampler.h
                   include/phevaluator/rank.h)
   set_target_properties(phevalplo6 PROPERTIES
       VERSION ${PROJECT_VERSION}
