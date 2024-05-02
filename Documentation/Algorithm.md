@@ -8,6 +8,7 @@
 - [Chapter 4: The Ultimate Dynamic Programming](#chapter4)
 
 <a name="chapter1"></a>
+
 ## Chapter 1: A Basic Evaluation Algorithm
 
 The algorithm we are describing here, is suitable for hands with 5 to 9 cards.
@@ -20,7 +21,7 @@ a 52-bit binary uniquely, with exactly 7 bits set to 1 and 45 bits set to 0.
 
 For example, if a hand has
 
-```
+```text
  5 of Spades,
  4 of Clubs,
  7 of Spades,
@@ -32,7 +33,7 @@ For example, if a hand has
 
 we can have such a 52-bit binary as a represenation:
 
-```
+```text
  |   Spades   |   Hearts   |  Diamonds  |   Clubs   |
  23456789TJQKA23456789TJQKA23456789TJQKA23456789TJQKA
  0001010010000000100000000000000000010000010000000001
@@ -50,7 +51,7 @@ lexicographical ordering, this functions is exactly the perfect hash function.
 
 Let's formalize this to a more general problem, and name it HashNBinaryKSum.
 
-```
+```text
  Problem: HashNBinaryKSum
 
  Input: integer n, integer k, an n-bit binary with exactly k bits set to 1
@@ -62,8 +63,8 @@ Let's formalize this to a more general problem, and name it HashNBinaryKSum.
 Consider an example with n = 4 and k = 2, the binary 0011 should return 1, and
 1010 should return 5.
 
-```
-	0011 0101 0110 1001 1010 1100
+```text
+  0011 0101 0110 1001 1010 1100
 ```
 
 The problem can be solved in recursions. In order to get the position in the
@@ -83,24 +84,24 @@ We can optimize the recursion to a loop, and the sample C code is shown below.
 ```c
 int hash_binary(unsigned char q[], int len, int k)
 {
-	int sum = 0;
-	int i;
+  int sum = 0;
+  int i;
 
-	for (i=0; i<len; i++)
-	{
-		if (q[i])
-		{
-			if (len-i-1 >= k)
-				sum += choose[len-i-1][k];
+  for (i=0; i<len; i++)
+  {
+    if (q[i])
+    {
+      if (len-i-1 >= k)
+        sum += choose[len-i-1][k];
 
-			k--;
+      k--;
 
-			if (k == 0)
-				break;
-		}
-	}
+      if (k == 0)
+        break;
+    }
+  }
 
-	return ++sum;
+  return ++sum;
 }
 ```
 
@@ -119,6 +120,7 @@ Proceed to chapter 2, you will find out how a more advanced algorithm can solve
 the problem.
 
 <a name="chapter2"></a>
+
 ## Chapter 2: Evaluate the Flushes First
 
 What makes a poker evaluator complicated, is the Flush category (including the
@@ -150,7 +152,7 @@ function that evaluates flush hands.
 
 For example, given the input:
 
-```
+```text
  5 of Spades,
  4 of Spades,
  7 of Spades,
@@ -162,7 +164,7 @@ For example, given the input:
 
 our 4 counters and binaries are:
 
-```
+```text
  Spades:     counter 5, binary 0000101101100
  Hearts:     counter 0, binary 0000000000000
  Clubs:      counter 1, binary 1000000000000
@@ -186,6 +188,7 @@ non-flush branch, and compare both results.
 We will discuss how to evaluate the quinary in the next chapter.
 
 <a name="chapter3"></a>
+
 ## Chapter 3: Hash For a Restricted Quinary
 
 Recall that for a hand that suits no longer matters, we can represent a 7-card
@@ -201,14 +204,14 @@ did in the binary hash, if we sort all the quinary in lexicographical order,
 where the sum of all bits of each quinary is equal to 7, the position in this
 ordering is a perfect hash of this quinary.
 
-```
+```text
  Problem: HashNQuinaryKSum
 
- Input: integer n, integer k, an (n+1)-bit quinary with the sum of all bits equal to
- k
+ Input: integer n, integer k, an (n+1)-bit quinary with the sum of all bits
+  equal to k
 
  Output: the position of the quinary in the lexicographical ordering of all
- (n+1)-bit quinaries with sum of all bits equal to k
+  (n+1)-bit quinaries with sum of all bits equal to k
 ```
 
 Similar to what we did in the binary hash, in order to get the position of the
@@ -232,49 +235,53 @@ sum of the result of the 5 subproblems with range of exactly a power of 5.
 
 We can use dynamic programming to solve all these subproblems, and store the
 result in an array. Let's use a 3-d array `dp[l][n][k]` of size `5*14*8`,
-where n is the number of trailing zero bits, k is the remaining number of k, and l is the
-most significant bit of the excluding endpoint. For
+where n is the number of trailing zero bits, k is the remaining number of k, and
+l is the most significant bit of the excluding endpoint. For
 example, the result of `[0000, 1000)` is stored in `dp[1][3][k]`, as the
 excluding endpoint is 1000, resulting l to be 1 and n to be 3. Another
 example is `[000, 200)`, whose result is stored in `dp[2][2][k]`.
 
 The base cases for the array dp:
 
-```
+```pseudocode
   if 0 <= i <= 4:
     dp[1][1][i] = 1;
   if i > 4:
     dp[1][1][i] = 0;
 ```
+
 For example, for `[00, 10)` with `k=4` there's only one legal quinary (04)
-However there is no instance for a quinary in the same range with `k=5` or any `k` larger than 4.
+However there is no instance for a quinary in the same range with `k=5` or any
+`k` larger than 4.
 
 Then we iterate the edges:
 
-```
+```pseudocode
   for each i in [2, 13]:
-    dp[1][i][1] = i; 
+    dp[1][i][1] = i;
     dp[1][i][0] = 1;
 ```
 
-For example, a 4-bit quinary with k=1 (`dp[1][3][1]`) has three quinaries: 001, 010, 100. 
+For example, a 4-bit quinary with k=1 (`dp[1][3][1]`) has three quinaries: 001,
+010, 100.
 If `k=0`, the only legal quinary 000.
 
-Now we can iterate all `dp[1][i][j]`. We do this by iterating the next digit from 0 to 4 
-and evaluating the shorter expression for smaller `k`. :
+Now we can iterate all `dp[1][i][j]`. We do this by iterating the next digit
+from 0 to 4 and evaluating the shorter expression for smaller `k`. :
 
-```
+```pseudocode
   for each i in [2, 13] and j in [2, 7]:
     dp[1][i][j] = SUM{k:[0,4]}dp[1][i-1][j-k];
 ```
 
-For example, to evaluate `dp[1][2][7]` (range `[000,100)` with `k=7`), we need to 
-enumerate the second bit from 0 to 4. This means summing for 07, 16, 25, 34, 43. 
-Notice that 07, 16, 25 are invalid and `dp[1][1][k] = 0 (for k > 4)` will ignore them.
+For example, to evaluate `dp[1][2][7]` (range `[000,100)` with `k=7`), we need to
+enumerate the second bit from 0 to 4. This means summing for 07, 16, 25, 34, 43.
+Notice that 07, 16, 25 are invalid and `dp[1][1][k] = 0 (for k > 4)` will ignore
+them.
 
 Now the iteration for the rest of the entries:
 
-```
+```pseudocode
   for each l in [2, 4] and i in [1, 13] and j in [0, 7]:
     dp[l][i][j] = dp[l-1][i][j] + dp[1][i][j-l+1]
 ```
@@ -282,7 +289,7 @@ Now the iteration for the rest of the entries:
 For example `dp[4][4][5]`, which is equivalent to the number of valid
 quinaries in the range `[00000, 40000)` with k=5. It can be splitted into
 `[00000, 30000)` with k=5, and `[30000, 40000)`. The former one is `dp[3][4][5]`,
- the latter one is equivalent to `[00000, 10000)` with k=k-3, which is
+the latter one is equivalent to `[00000, 10000)` with k=k-3, which is
 `dp[1][4][2]`.
 
 Finally we can compute the hash of the quinary base on the dp arrays. The
@@ -291,19 +298,19 @@ example C code is shown below.
 ```c
 int hash_quinary(unsigned char q[], int len, int k)
 {
-	int sum = 0;
-	int i;
+  int sum = 0;
+  int i;
 
-	for (i=0; i<len; i++) {
-		sum += dp[q[i]][len-i-1][k];
+  for (i=0; i<len; i++) {
+    sum += dp[q[i]][len-i-1][k];
 
-		k -= q[i];
+    k -= q[i];
 
-		if (k <= 0)
-			break;
-	}
+    if (k <= 0)
+      break;
+  }
 
-	return ++sum;
+  return ++sum;
 }
 ```
 
@@ -314,6 +321,7 @@ takes at most 13 cycles to compute. This algorithm is much better than any
 others that do 7-card poker evaluation by checking all 21 combinations.
 
 <a name="chapter4"></a>
+
 ## Chapter 4: The Ultimate Dynamic Programming Algorithm
 
 Recall that in chapter one, we managed to find a mapping from a 52-bit
@@ -324,7 +332,7 @@ function, it's still a useful approach.
 
 Let's go back to that problem HashNBinaryKSum:
 
-```
+```text
  Problem: HashNBinaryKSum
 
  Input: integer n, integer k, an n-bit binary with exactly k bits set to 1
@@ -335,38 +343,38 @@ Let's go back to that problem HashNBinaryKSum:
 
 More specificly, we are trying to solve a problem with n = 52 and k = 7. If we
 split the 52-bit binary into 4 blocks, where each block has 13 bits, we can
-precompute the results in a table in size 2^13 * 4 * 8, and do only 4 summations
+precompute the results in a table in size 2^13 \* 4 \* 8, and do only 4 summations
 in the actual hash function. In practice, it would be easier if we use a 16-bit
-block instead of 13, making the table in size 2^16 * 4 * 8.
+block instead of 13, making the table in size 2^16 \* 4 \* 8.
 
 Precomputing this table is similar to the methods we used in the previous
 chapters. I'll just put the sample C code here and omit the explanations.
 
 ```c
 {
-	int dp[65536][4][8]; 
+  int dp[65536][4][8];
 
-	for (i=0; i<65536; i++) {
-		for (j=0; j<4; j++) {
-			for (k=0; k<8; k++) {
-				int ck = k;
-				int s;
-				int sum = 0;
+  for (i=0; i<65536; i++) {
+    for (j=0; j<4; j++) {
+      for (k=0; k<8; k++) {
+        int ck = k;
+        int s;
+        int sum = 0;
 
-				for (s=15; s>=0; s--) {
-					if (i & (1 << s)) {
-						int n = j*16 + s;
+        for (s=15; s>=0; s--) {
+          if (i & (1 << s)) {
+            int n = j*16 + s;
 
-						sum += choose[n][ck];
+            sum += choose[n][ck];
 
-						ck--;
-					}
-				}
+            ck--;
+          }
+        }
 
-				dp[i][j][k] = sum;
-			}
-		}
-	}
+        dp[i][j][k] = sum;
+      }
+    }
+  }
 }
 ```
 
@@ -376,22 +384,22 @@ code is shown below.
 ```c
 int fast_hash(unsigned long long handid, int k)
 {
-	int hash = 0;
+  int hash = 0;
 
-	unsigned short * a = (unsigned short *)&handid;
+  unsigned short * a = (unsigned short *)&handid;
 
-	hash += dp_fast[a[3]][3][k];
-	k -= bitcount[a[3]];
+  hash += dp_fast[a[3]][3][k];
+  k -= bitcount[a[3]];
 
-	hash += dp_fast[a[2]][2][k];
-	k -= bitcount[a[2]];
+  hash += dp_fast[a[2]][2][k];
+  k -= bitcount[a[2]];
 
-	hash += dp_fast[a[1]][1][k];
-	k -= bitcount[a[1]];
+  hash += dp_fast[a[1]][1][k];
+  k -= bitcount[a[1]];
 
-	hash += dp_fast[a[0]][0][k];
+  hash += dp_fast[a[0]][0][k];
 
-	return hash;
+  return hash;
 }
 ```
 
@@ -399,7 +407,7 @@ Although this algorithm takes very few CPU cycles to compute the hash value (4
 summations and 3 decrements), the overall performance is worse than what we used
 in the previous chapter. Part of the reason might be the dp table is greater
 than a normal page size (64Kbytes). If we cut the block into 8 bits and use a
-table of size 2^8 * 8 * 8, which will double the  number of operations in the
+table of size 2^8 \* 8 \* 8, which will double the number of operations in the
 hash function (8 summations and 7 decrements), the performance seems to improve,
 but still doesn't beat the algorithm used in the previous chapter under my
 environment.
