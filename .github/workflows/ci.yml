@@ -11,7 +11,7 @@ jobs:
     name: C++ Standard Test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Run before script
         timeout-minutes: 10
         run: |
@@ -74,7 +74,7 @@ jobs:
     name: C++ Benchmark
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Run before script
         timeout-minutes: 10
         run: |
@@ -87,11 +87,15 @@ jobs:
           ./benchmark_phevaluator
 
   python-test:
-    name: Python test
+    name: Python - Run unit tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python ${{ matrix.python-version }}
@@ -142,7 +146,3 @@ jobs:
         run: |
           cd python
           pip install .
-      - name: Run script
-        run: |
-          cd python
-          python -m unittest discover -v
