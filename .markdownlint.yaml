@@ -1,0 +1,10 @@
+# Default state for all rules
+default: true
+
+# MD033 - Inline HTML
+MD033:
+  # We allow the <a> tag to create named anchors within the document.
+  # Example:
+  #   [Go to section](#section)
+  #   <a name="section"></a>
+  allowed_elements: [a]
