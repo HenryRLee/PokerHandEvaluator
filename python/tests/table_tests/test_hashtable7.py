@@ -14,10 +14,10 @@ class TestNoFlush7Table(BaseTestNoFlushTable):
     NUM_CARDS = 7
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         super().setUpClass()
 
-    def test_noflush7_table(self):
+    def test_noflush7_table(self) -> None:
         self.assertListEqual(self.TABLE, self.TOCOMPARE)
 
 

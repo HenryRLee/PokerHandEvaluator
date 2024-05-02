@@ -1,20 +1,30 @@
 from __future__ import annotations
 
 import unittest
-from itertools import combinations, combinations_with_replacement, permutations
-from typing import List
+from itertools import combinations
+from itertools import combinations_with_replacement
+from itertools import permutations
+from typing import Iterable
 
 from phevaluator.hash import hash_quinary
 from phevaluator.tables import NO_FLUSH_5
 
+SUITS_COUNT = 4
+
 
 class BaseTestNoFlushTable(unittest.TestCase):
-    TABLE: List[int] = NotImplemented
-    VISIT: List[int] = NotImplemented
+    TABLE: list[int] = NotImplemented
+    VISIT: list[int] = NotImplemented
     NUM_CARDS: int = NotImplemented
+    CACHE: list[int]
+    USED: list[int]
+    QUINARIES: list[tuple[list[int], list[list[int]]]]
+    CACHE_ADDITIONAL: list[int]
+    USED_ADDITIONAL: list[int]
+    QUINARIES_ADDITIONAL: list[list[int]]
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.CACHE = []
         cls.USED = [0] * 13
         cls.QUINARIES = []
@@ -34,19 +44,19 @@ class BaseTestNoFlushTable(unittest.TestCase):
         cls.mark_high_card()
 
     @staticmethod
-    def quinary_permutations(n):
+    def quinary_permutations(n: int) -> Iterable[tuple[int, ...]]:
         return permutations(range(13)[::-1], n)
 
     @staticmethod
-    def quinary_combinations(n):
+    def quinary_combinations(n: int) -> Iterable[tuple[int, ...]]:
         return combinations(range(13)[::-1], n)
 
     @staticmethod
-    def quinary_combinations_with_replacement(n):
+    def quinary_combinations_with_replacement(n: int) -> Iterable[tuple[int, ...]]:
         return combinations_with_replacement(range(13)[::-1], n)
 
     @classmethod
-    def gen_quinary(cls, ks, cur, additional):
+    def gen_quinary(cls, ks: tuple[int, ...], cur: int, additional: int) -> None:
         if cur == len(ks):
             cls.get_additional(additional)
             cls.QUINARIES.append((cls.CACHE[:], cls.QUINARIES_ADDITIONAL[:]))
@@ -62,12 +72,12 @@ class BaseTestNoFlushTable(unittest.TestCase):
                 cls.USED[i] = 0
 
     @classmethod
-    def get_additional(cls, n):
+    def get_additional(cls, n: int) -> None:
         if n == 0:
             cls.QUINARIES_ADDITIONAL.append(cls.CACHE_ADDITIONAL[:])
         else:
             for i in range(12, -1, -1):
-                if cls.USED[i] + cls.USED_ADDITIONAL[i] >= 4:
+                if cls.USED[i] + cls.USED_ADDITIONAL[i] >= SUITS_COUNT:
                     continue
                 cls.CACHE_ADDITIONAL.append(i)
                 cls.USED_ADDITIONAL[i] += 1
@@ -76,7 +86,7 @@ class BaseTestNoFlushTable(unittest.TestCase):
                 cls.USED_ADDITIONAL[i] -= 1
 
     @classmethod
-    def mark_template(cls, ks):
+    def mark_template(cls, ks: tuple[int, ...]) -> None:
         cls.gen_quinary(ks, 0, cls.NUM_CARDS - 5)
         for base, additionals in cls.QUINARIES:
             hand = [0] * 13
@@ -85,7 +95,6 @@ class BaseTestNoFlushTable(unittest.TestCase):
             base_rank = NO_FLUSH_5[hash_quinary(hand, 5)]
             for additional in additionals:
                 for i in additional:
-
                     hand[i] += 1
 
                 hash_ = hash_quinary(hand, cls.NUM_CARDS)
@@ -101,23 +110,23 @@ class BaseTestNoFlushTable(unittest.TestCase):
         cls.QUINARIES = []
 
     @classmethod
-    def mark_four_of_a_kind(cls):
+    def mark_four_of_a_kind(cls) -> None:
         cls.mark_template((4, 1))
 
     @classmethod
-    def mark_full_house(cls):
+    def mark_full_house(cls) -> None:
         cls.mark_template((3, 2))
 
     @classmethod
-    def mark_three_of_a_kind(cls):
+    def mark_three_of_a_kind(cls) -> None:
         cls.mark_template((3, 1, 1))
 
     @classmethod
-    def mark_two_pair(cls):
+    def mark_two_pair(cls) -> None:
         cls.mark_template((2, 2, 1))
 
     @classmethod
-    def mark_one_pair(cls):
+    def mark_one_pair(cls) -> None:
         for paired_card in range(13)[::-1]:
             for other_cards in cls.quinary_combinations(cls.NUM_CARDS - 2):
                 if paired_card in other_cards:
@@ -136,7 +145,7 @@ class BaseTestNoFlushTable(unittest.TestCase):
                     cls.TABLE[hash_] = base_rank
 
     @classmethod
-    def mark_high_card(cls):
+    def mark_high_card(cls) -> None:
         for base in cls.quinary_combinations(cls.NUM_CARDS):
             hand = [0] * 13
             for i in range(5):
@@ -151,7 +160,7 @@ class BaseTestNoFlushTable(unittest.TestCase):
                 cls.TABLE[hash_] = base_rank
 
     @classmethod
-    def mark_straight(cls):
+    def mark_straight(cls) -> None:
         hands = []
         for lowest in range(9)[::-1]:  # From 10 to 2
             hand = [0] * 13

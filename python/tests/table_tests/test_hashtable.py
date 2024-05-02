@@ -2,28 +2,27 @@ from __future__ import annotations
 
 import unittest
 from itertools import combinations
-from typing import List
+from typing import ClassVar
 
 from phevaluator.tables import FLUSH
 
 
 class TestFlushTable(unittest.TestCase):
-    TABLE = [0] * len(FLUSH)
-    VISIT = [0] * len(FLUSH)
-    CUR_RANK = 1
-
-    CACHE: List[int] = []
-    BINARIES: List[List[int]] = []
+    TABLE: ClassVar[list[int]] = [0] * len(FLUSH)
+    VISIT: ClassVar[list[int]] = [0] * len(FLUSH)
+    CUR_RANK: ClassVar[int] = 1
+    CACHE: ClassVar[list[int]] = []
+    BINARIES: ClassVar[list[list[int]]] = []
 
     @classmethod
-    def setUpClass(cls):
+    def setUpClass(cls) -> None:
         cls.mark_straight()
         cls.mark_four_of_a_kind()
         cls.mark_full_house()
         cls.mark_non_straight()
 
     @classmethod
-    def gen_binary(cls, highest, k, n):
+    def gen_binary(cls, highest: int, k: int, n: int) -> None:
         if k == 0:
             cls.BINARIES.append(cls.CACHE[:])
         else:
@@ -33,7 +32,7 @@ class TestFlushTable(unittest.TestCase):
                 cls.CACHE.remove(i)
 
     @classmethod
-    def mark_straight(cls):
+    def mark_straight(cls) -> None:
         for highest in range(12, 3, -1):  # From Ace to 6
             # k=5 case for base
             base = [highest - i for i in range(5)]
@@ -58,7 +57,7 @@ class TestFlushTable(unittest.TestCase):
         cls.CUR_RANK += 1
 
     @classmethod
-    def mark_non_straight(cls):
+    def mark_non_straight(cls) -> None:
         cls.gen_binary(12, 5, 5)
         for base in cls.BINARIES:
             base_idx = 0
@@ -76,7 +75,7 @@ class TestFlushTable(unittest.TestCase):
             cls.CUR_RANK += 1
 
     @classmethod
-    def mark_six_to_nine(cls, base, base_idx):
+    def mark_six_to_nine(cls, base: list[int], base_idx: int) -> None:
         # k=6-9 cases
         pos_candidates = [i for i in range(13) if i not in base]
         for r in [1, 2, 3, 4]:  # Need to select additional cards
@@ -92,20 +91,20 @@ class TestFlushTable(unittest.TestCase):
                 cls.VISIT[idx] = 1
 
     @classmethod
-    def mark_four_of_a_kind(cls):
+    def mark_four_of_a_kind(cls) -> None:
         # Four of a kind
         # The rank of the four cards: 13C1
         # The rank of the other card: 12C1
         cls.CUR_RANK += 13 * 12
 
     @classmethod
-    def mark_full_house(cls):
+    def mark_full_house(cls) -> None:
         # Full house
         # The rank of the cards of three of a kind: 13C1
         # The rank of the cards of a pair: 12C1
         cls.CUR_RANK += 13 * 12
 
-    def test_flush_table(self):
+    def test_flush_table(self) -> None:
         self.assertListEqual(self.TABLE, FLUSH)
 
 

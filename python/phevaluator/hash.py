@@ -2,16 +2,15 @@
 
 from __future__ import annotations
 
-from typing import List
+from .tables import CHOOSE
+from .tables import DP
 
-from .tables import CHOOSE, DP
 
-
-def hash_quinary(quinary: List[int], num_cards: int) -> int:
+def hash_quinary(quinary: list[int], num_cards: int) -> int:
     """Hash list of cards.
 
     Args:
-        quinary (List[int]): List of the count of the cards.
+        quinary (list[int]): List of the count of the cards.
         num_cards (int): The number of cards.
 
     Returns:
@@ -64,7 +63,6 @@ def hash_binary(binary: int, num_cards: int) -> int:
     length = 15
 
     for rank in range(length):
-
         if (binary >> rank) % 2:
             sum_numb += CHOOSE[length - rank - 1][num_cards]
             num_cards -= 1

@@ -1,17 +1,16 @@
 """Module evaluating cards."""
-from typing import Union
+
+from __future__ import annotations
 
 from .card import Card
 from .hash import hash_quinary
-from .tables import (
-    BINARIES_BY_ID,
-    FLUSH,
-    NO_FLUSH_5,
-    NO_FLUSH_6,
-    NO_FLUSH_7,
-    SUITBIT_BY_ID,
-    SUITS,
-)
+from .tables import BINARIES_BY_ID
+from .tables import FLUSH
+from .tables import NO_FLUSH_5
+from .tables import NO_FLUSH_6
+from .tables import NO_FLUSH_7
+from .tables import SUITBIT_BY_ID
+from .tables import SUITS
 
 MIN_CARDS = 5
 MAX_CARDS = 7
@@ -19,7 +18,7 @@ MAX_CARDS = 7
 NO_FLUSHES = {5: NO_FLUSH_5, 6: NO_FLUSH_6, 7: NO_FLUSH_7}
 
 
-def evaluate_cards(*cards: Union[int, str, Card]) -> int:
+def evaluate_cards(*cards: int | str | Card) -> int:
     """Evaluate cards for the best five cards.
 
     This function selects the best combination of the five cards from given cards and
@@ -27,7 +26,7 @@ def evaluate_cards(*cards: Union[int, str, Card]) -> int:
     The number of cards must be between 5 and 7.
 
     Args:
-        cards(Union[int, str, Card]): List of cards
+        cards(int | str | Card): List of cards
 
     Raises:
         ValueError: Unsupported size of the cards
@@ -39,17 +38,18 @@ def evaluate_cards(*cards: Union[int, str, Card]) -> int:
         >>> rank1 = evaluate_cards("Ac", "Ad", "Ah", "As", "Kc")
         >>> rank2 = evaluate_cards("Ac", "Ad", "Ah", "As", "Kd")
         >>> rank3 = evaluate_cards("Ac", "Ad", "Ah", "As", "Kc", "Qh")
-        >>> rank1 == rank2 == rank3 # Those three are evaluated by `A A A A K`
+        >>> rank1 == rank2 == rank3  # Those three are evaluated by `A A A A K`
         True
     """
     int_cards = list(map(Card.to_id, cards))
     hand_size = len(cards)
 
     if not (MIN_CARDS <= hand_size <= MAX_CARDS) or (hand_size not in NO_FLUSHES):
-        raise ValueError(
+        msg = (
             f"The number of cards must be between {MIN_CARDS} and {MAX_CARDS}."
             f"passed size: {hand_size}"
         )
+        raise ValueError(msg)
 
     return _evaluate_cards(*int_cards)
 

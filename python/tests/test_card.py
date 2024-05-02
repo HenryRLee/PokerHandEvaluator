@@ -1,20 +1,23 @@
+from __future__ import annotations
+
 import unittest
+from typing import ClassVar
 
 from phevaluator import Card
 
 
 class TestCard(unittest.TestCase):
-    # lowercase name, capitalcase name, value
-    testcases = [
-        ["2c", "2C", 0],
-        ["2d", "2D", 1],
-        ["2h", "2H", 2],
-        ["2s", "2S", 3],
-        ["Tc", "TC", 32],
-        ["Ac", "AC", 48],
+    # lowercase name, capital name, value
+    testcases: ClassVar[list[tuple[str, str, int]]] = [
+        ("2c", "2C", 0),
+        ("2d", "2D", 1),
+        ("2h", "2H", 2),
+        ("2s", "2S", 3),
+        ("Tc", "TC", 32),
+        ("Ac", "AC", 48),
     ]
 
-    def test_card_equality(self):
+    def test_card_equality(self) -> None:
         for name, capital_name, number in self.testcases:
             # equality between cards
             # e.g. Card("2c") == Card(0)
@@ -27,7 +30,7 @@ class TestCard(unittest.TestCase):
             # equality between Card and int
             self.assertEqual(Card(number), number)  # e.g. Card(0) == 0
 
-    def test_card_immutability(self):
+    def test_card_immutability(self) -> None:
         # Once a Card is assigned or constructed from another Card,
         # it's not affected by any changes to source variable
         c_source = Card(1)
@@ -40,9 +43,9 @@ class TestCard(unittest.TestCase):
         self.assertEqual(c_assign, Card(1))
         self.assertEqual(c_construct, Card(1))
 
-    def test_card_describe(self):
+    def test_card_describe(self) -> None:
         for name, capital_name, number in self.testcases:
-            rank, suit = name
+            rank, suit, *_ = tuple(name)
             c_name = Card(name)
             c_capital_name = Card(capital_name)
             c_number = Card(number)

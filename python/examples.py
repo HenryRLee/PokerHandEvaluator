@@ -1,7 +1,8 @@
-from phevaluator import evaluate_cards, evaluate_omaha_cards
+from phevaluator import evaluate_cards
+from phevaluator import evaluate_omaha_cards
 
 
-def example1():
+def example1() -> None:
     print("Example 1: A Texas Holdem example")
 
     a = 7 * 4 + 0  # 9c
@@ -26,7 +27,7 @@ def example1():
     print("Player 2 has a stronger hand")
 
 
-def example2():
+def example2() -> None:
     print("Example 2: Another Texas Holdem example")
 
     rank1 = evaluate_cards("9c", "4c", "4s", "9d", "4h", "Qc", "6c")  # expected 292
@@ -37,7 +38,7 @@ def example2():
     print("Player 2 has a stronger hand")
 
 
-def example3():
+def example3() -> None:
     print("Example 3: An Omaha poker example")
     # fmt: off
     rank1 = evaluate_omaha_cards(

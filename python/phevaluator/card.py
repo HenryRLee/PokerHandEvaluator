@@ -1,7 +1,9 @@
 """Module for card."""
+
 from __future__ import annotations
 
-from typing import Any, Union
+
+CARD_DESCRIPTION_LENGTH = 2
 
 # fmt: off
 rank_map = {
@@ -10,7 +12,7 @@ rank_map = {
 }
 suit_map = {
     "C": 0, "D": 1, "H": 2, "S": 3,
-    "c": 0, "d": 1, "h": 2, "s": 3
+    "c": 0, "d": 1, "h": 2, "s": 3,
 }
 # fmt: on
 
@@ -63,33 +65,33 @@ class Card:
             The string parameter of the constructor should be exactly 2 characters.
 
             >>> Card("9h")  # OK
-            >>> Card("9h ") # ERROR
+            >>> Card("9h ")  # ERROR
 
         TypeError: Construction with unsupported type
             The parameter of the constructor should be one of the following types: [int,
             str, Card].
-            >>> Card(0)       # OK. The 0 stands 2 of Clubs
-            >>> Card("2c")    # OK
-            >>> Card("2C")    # OK. Capital letter is also accepted.
-            >>> Card(Card(0)) # OK
-            >>> Card(0.0)     # ERROR. float is not allowed
+            >>> Card(0)  # OK. The 0 stands 2 of Clubs
+            >>> Card("2c")  # OK
+            >>> Card("2C")  # OK. Capital letter is also accepted.
+            >>> Card(Card(0))  # OK
+            >>> Card(0.0)  # ERROR. float is not allowed
 
         TypeError: Setting attribute
             >>> c = Card("2c")
-            >>> c.__id = 1      # ERROR
-            >>> c._Card__id = 1 # ERROR
+            >>> c.__id = 1  # ERROR
+            >>> c._Card__id = 1  # ERROR
 
         TypeError: Deliting attribute
             >>> c = Card("2c")
-            >>> del c.__id      # ERROR
-            >>> del c._Card__id # ERROR
+            >>> del c.__id  # ERROR
+            >>> del c._Card__id  # ERROR
 
     """
 
     __slots__ = ["__id"]
     __id: int
 
-    def __init__(self, other: Union[int, str, Card]):
+    def __init__(self, other: int | str | Card) -> None:
         """Construct card object.
 
         If the passed argument is integer, it's set to `self.__id`.
@@ -128,7 +130,7 @@ class Card:
         return self.__id
 
     @staticmethod
-    def to_id(other: Union[int, str, Card]) -> int:
+    def to_id(other: int | str | Card) -> int:
         """Return the Card ID integer as API.
 
         If the passed argument is integer, it's returned with doing nothing.
@@ -149,17 +151,20 @@ class Card:
         """
         if isinstance(other, int):
             return other
-        elif isinstance(other, str):
-            if len(other) != 2:
-                raise ValueError(f"The length of value must be 2. passed: {other}")
+        if isinstance(other, str):
+            if len(other) != CARD_DESCRIPTION_LENGTH:
+                msg = (
+                    f"The length of value must be {CARD_DESCRIPTION_LENGTH}. "
+                    f"passed: {other}"
+                )
+                raise ValueError(msg)
             rank, suit, *_ = tuple(other)
             return rank_map[rank] * 4 + suit_map[suit]
-        elif isinstance(other, Card):
+        if isinstance(other, Card):
             return other.id_
 
-        raise TypeError(
-            f"Type of parameter must be int, str or Card. passed: {type(other)}"
-        )
+        msg = f"Type of parameter must be int, str or Card. passed: {type(other)}"
+        raise TypeError(msg)
 
     def describe_rank(self) -> str:
         """Calculate card rank.
@@ -212,7 +217,7 @@ class Card:
         """
         return self.describe_rank() + self.describe_suit()
 
-    def __eq__(self, other: Any) -> bool:
+    def __eq__(self, other: object) -> bool:
         """Return equality. This is special method.
 
         Args:
@@ -262,10 +267,12 @@ class Card:
         """int: Special method for `hash(self)`."""
         return hash(self.id_)
 
-    def __setattr__(self, name: str, value: Any) -> None:
-        """Set an attribute. This causes TypeError since assignment to attribute is prevented."""
-        raise TypeError("Card object does not support assignment to attribute")
+    def __setattr__(self, name: str, value: object) -> None:
+        """Set an attribute. This causes TypeError since assignment is prevented."""
+        msg = "Card object does not support assignment to attribute"
+        raise TypeError(msg)
 
     def __delattr__(self, name: str) -> None:
-        """Delete an attribute. This causes TypeError since deletion of attribute is prevented."""
-        raise TypeError("Card object does not support deletion of attribute")
+        """Delete an attribute. This causes TypeError since deletion is prevented."""
+        msg = "Card object does not support deletion of attribute"
+        raise TypeError(msg)
