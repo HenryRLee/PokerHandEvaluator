@@ -19,30 +19,27 @@
 
 #ifdef __cplusplus
 
-#include <unordered_map>
-#include <string>
 #include <array>
 #include <functional>
+#include <string>
+#include <unordered_map>
 
 namespace phevaluator {
 const static std::unordered_map<char, int> rankMap = {
-  {'2', 0}, {'3', 1}, {'4', 2}, {'5', 3},
-  {'6', 4}, {'7', 5}, {'8', 6}, {'9', 7},
-  {'T', 8}, {'J', 9}, {'Q', 10}, {'K', 11}, {'A', 12},
+    {'2', 0}, {'3', 1}, {'4', 2}, {'5', 3},  {'6', 4},  {'7', 5},  {'8', 6},
+    {'9', 7}, {'T', 8}, {'J', 9}, {'Q', 10}, {'K', 11}, {'A', 12},
 };
 const static std::unordered_map<char, int> suitMap = {
-  {'C', 0}, {'D', 1}, {'H', 2}, {'S', 3},
-  {'c', 0}, {'d', 1}, {'h', 2}, {'s', 3},
+    {'C', 0}, {'D', 1}, {'H', 2}, {'S', 3},
+    {'c', 0}, {'d', 1}, {'h', 2}, {'s', 3},
 };
 const static std::array<char, 13> rankReverseArray = {
-  '2', '3', '4', '5',
-  '6', '7', '8', '9',
-  'T', 'J', 'Q', 'K', 'A',
+    '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K', 'A',
 };
-const static std::array<char, 4> suitReverseArray = { 'c', 'd', 'h', 's' };
+const static std::array<char, 4> suitReverseArray = {'c', 'd', 'h', 's'};
 
 class Card {
-public:
+ public:
   Card() {}
 
   Card(int id) : id_(id) {}
@@ -62,29 +59,28 @@ public:
   char describeSuit(void) const { return suitReverseArray[id_ % 4]; }
 
   std::string describeCard(void) const {
-    return std::string{ describeRank(), describeSuit() };
+    return std::string{describeRank(), describeSuit()};
   }
 
   operator int() const { return id_; }
 
   operator std::string() const { return describeCard(); }
 
-private:
+ private:
   int id_;
 };
 
-} // namespace phevaluator
-
+}  // namespace phevaluator
 
 namespace std {
 template <>
 struct hash<phevaluator::Card> {
   size_t operator()(const phevaluator::Card& card) const {
-    return hash<int>()(int(card)); // usually identical to `return int(card)`
+    return hash<int>()(int(card));  // usually identical to `return int(card)`
   }
 };
-} // namespace std
+}  // namespace std
 
-#endif // __cplusplus
+#endif  // __cplusplus
 
-#endif // PHEVALUATOR_CARD_H
+#endif  // PHEVALUATOR_CARD_H

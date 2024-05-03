@@ -1,4 +1,5 @@
 #include <phevaluator/card_sampler.h>
+
 #include <array>
 #include <chrono>
 #include <numeric>
@@ -11,9 +12,7 @@ static unsigned seed =
     std::chrono::system_clock::now().time_since_epoch().count();
 static std::default_random_engine generator(seed);
 
-CardSampler::CardSampler(void) {
-  std::iota(deck.begin(), deck.end(), 0);
-}
+CardSampler::CardSampler(void) { std::iota(deck.begin(), deck.end(), 0); }
 
 std::vector<int> CardSampler::sample(int size) {
   std::vector<int> ret;

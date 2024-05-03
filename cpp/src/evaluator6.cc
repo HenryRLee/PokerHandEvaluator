@@ -15,6 +15,7 @@
  */
 
 #include <phevaluator/phevaluator.h>
+
 #include "hash.h"
 extern "C" {
 #include "tables.h"
@@ -26,5 +27,4 @@ Rank EvaluateCards(const Card& a, const Card& b, const Card& c, const Card& d,
   return evaluate_6cards(a, b, c, d, e, f);
 }
 
-} // namespace phevaluator
-
+}  // namespace phevaluator

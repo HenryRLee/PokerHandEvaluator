@@ -67,14 +67,15 @@ const char* describe_sample_hand(int rank);
 bool is_flush(int rank);
 
 #ifdef __cplusplus
-} // closing brace for extern "C"
+}  // closing brace for extern "C"
 #endif
 
 #ifdef __cplusplus
 
-#include <vector>
 #include <array>
 #include <string>
+#include <vector>
+
 #include "card.h"
 
 namespace phevaluator {
@@ -83,49 +84,31 @@ class Rank {
  public:
   int value() const { return value_; }
 
-  bool operator<(const Rank& other) const {
-    return value_ > other.value_;
-  }
+  bool operator<(const Rank& other) const { return value_ > other.value_; }
 
-  bool operator<=(const Rank& other) const {
-    return value_ >= other.value_;
-  }
+  bool operator<=(const Rank& other) const { return value_ >= other.value_; }
 
-  bool operator>(const Rank& other) const {
-    return value_ < other.value_;
-  }
+  bool operator>(const Rank& other) const { return value_ < other.value_; }
 
-  bool operator>=(const Rank& other) const {
-    return value_ <= other.value_;
-  }
+  bool operator>=(const Rank& other) const { return value_ <= other.value_; }
 
-  bool operator==(const Rank& other) const {
-    return value_ == other.value_;
-  }
+  bool operator==(const Rank& other) const { return value_ == other.value_; }
 
-  bool operator!=(const Rank& other) const {
-    return value_ != other.value_;
-  }
+  bool operator!=(const Rank& other) const { return value_ != other.value_; }
 
-  enum rank_category category() const {
-    return get_rank_category(value_);
-  }
+  enum rank_category category() const { return get_rank_category(value_); }
 
   std::string describeCategory() const {
     return describe_rank_category(category());
   }
 
-  std::string describeRank() const {
-    return describe_rank(value_);
-  }
+  std::string describeRank() const { return describe_rank(value_); }
 
   std::string describeSampleHand() const {
     return describe_sample_hand(value_);
   }
 
-  bool isFlush() const {
-    return is_flush(value_);
-  }
+  bool isFlush() const { return is_flush(value_); }
 
   Rank(int value) : value_(value) {}
   Rank() {}
@@ -134,8 +117,8 @@ class Rank {
   int value_ = 0;
 };
 
-} // namespace phevaluator
+}  // namespace phevaluator
 
-#endif // __cplusplus
+#endif  // __cplusplus
 
-#endif // PHEVALUATOR_STRENTH_H
+#endif  // PHEVALUATOR_STRENTH_H

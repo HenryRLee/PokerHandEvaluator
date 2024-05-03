@@ -1,6 +1,7 @@
 #include <phevaluator/card_sampler.h>
 #include <phevaluator/phevaluator.h>
 #include <phevaluator/rank.h>
+
 #include <algorithm>
 #include <cstdio>
 #include <string>
@@ -17,16 +18,8 @@ static int percentage(long long numerator, long long denominator) {
 
 static card_sampler::CardSampler cs{};
 
-static short IterateKevEval(int a,
-                            int b,
-                            int c,
-                            int d,
-                            int e,
-                            int f,
-                            int g,
-                            int h,
-                            int i,
-                            int j) {
+static short IterateKevEval(int a, int b, int c, int d, int e, int f, int g,
+                            int h, int i, int j) {
   short best = 20000;
 
   int board[10][3] = {

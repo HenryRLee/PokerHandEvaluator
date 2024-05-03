@@ -1,7 +1,9 @@
-#include <cstdio>
-#include <cassert>
-#include <algorithm>
 #include <phevaluator/phevaluator.h>
+
+#include <algorithm>
+#include <cassert>
+#include <cstdio>
+
 #include "gtest/gtest.h"
 #include "kev/kev_eval.h"
 
@@ -9,7 +11,7 @@ using namespace phevaluator;
 
 TEST(RankTest, TestValue) {
   Rank a = EvaluateCards("9c", "4c", "4s", "9d", "4h");
-	Rank b = EvaluateCards("9c", "4c", "4s", "9d", "9h");
+  Rank b = EvaluateCards("9c", "4c", "4s", "9d", "9h");
 
   ASSERT_EQ(a.value(), 292);
   ASSERT_EQ(b.value(), 236);
@@ -17,7 +19,7 @@ TEST(RankTest, TestValue) {
 
 TEST(RankTest, TestComparison) {
   Rank a = EvaluateCards("9c", "4c", "4s", "9d", "4h");
-	Rank b = EvaluateCards("9c", "4c", "4s", "9d", "9h");
+  Rank b = EvaluateCards("9c", "4c", "4s", "9d", "9h");
 
   ASSERT_GT(b, a);
   ASSERT_GE(b, a);
@@ -29,7 +31,7 @@ TEST(RankTest, TestComparison) {
 
 TEST(RankTest, TestRankCategory) {
   Rank a = EvaluateCards("9c", "4c", "4s", "9d", "4h");
-	Rank b = EvaluateCards("As", "Ks", "Qs", "Js", "Ts");
+  Rank b = EvaluateCards("As", "Ks", "Qs", "Js", "Ts");
 
   ASSERT_EQ(a.category(), rank_category::FULL_HOUSE);
   ASSERT_EQ(b.category(), rank_category::STRAIGHT_FLUSH);
@@ -166,7 +168,7 @@ TEST(RankTest, TestRankCategoryHighCards) {
 
 TEST(RankTest, TestRankDescription) {
   Rank a = EvaluateCards("9c", "4c", "4s", "9d", "4h");
-	Rank b = EvaluateCards("As", "Ks", "Qs", "Js", "Ts");
+  Rank b = EvaluateCards("As", "Ks", "Qs", "Js", "Ts");
 
   ASSERT_EQ(a.describeRank(), "Fours Full over Nines");
   ASSERT_EQ(b.describeRank(), "Royal Flush");
@@ -178,8 +180,7 @@ TEST(RankTest, TestRankDescription) {
   ASSERT_TRUE(b.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionStraightFlushes)
-{
+TEST(RankTest, TestRankDescriptionStraightFlushes) {
   Rank a = EvaluateCards("6s", "2s", "5s", "3s", "4s");
   Rank b = EvaluateCards("8d", "Td", "Jd", "Qd", "9d");
   Rank c = EvaluateCards("6h", "8h", "5h", "7h", "4h");
@@ -197,8 +198,7 @@ TEST(RankTest, TestRankDescriptionStraightFlushes)
   ASSERT_TRUE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionFourOfAKinds)
-{
+TEST(RankTest, TestRankDescriptionFourOfAKinds) {
   Rank a = EvaluateCards("As", "Ad", "Ac", "2s", "Ah");
   Rank b = EvaluateCards("Qs", "Qc", "3d", "Qd", "Qh");
   Rank c = EvaluateCards("3d", "3c", "8c", "3h", "3s");
@@ -216,8 +216,7 @@ TEST(RankTest, TestRankDescriptionFourOfAKinds)
   ASSERT_FALSE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionFullHouses)
-{
+TEST(RankTest, TestRankDescriptionFullHouses) {
   Rank a = EvaluateCards("As", "2d", "Ac", "2s", "Ah");
   Rank b = EvaluateCards("3c", "Qc", "3d", "3s", "Qh");
   Rank c = EvaluateCards("8d", "7d", "8c", "8s", "7h");
@@ -235,8 +234,7 @@ TEST(RankTest, TestRankDescriptionFullHouses)
   ASSERT_FALSE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionFlushes)
-{
+TEST(RankTest, TestRankDescriptionFlushes) {
   Rank a = EvaluateCards("As", "2s", "3s", "7s", "Ts");
   Rank b = EvaluateCards("2c", "Qc", "Tc", "7c", "4c");
   Rank c = EvaluateCards("2d", "4d", "3d", "8d", "5d");
@@ -254,8 +252,7 @@ TEST(RankTest, TestRankDescriptionFlushes)
   ASSERT_TRUE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionStraights)
-{
+TEST(RankTest, TestRankDescriptionStraights) {
   Rank a = EvaluateCards("As", "Kc", "Qd", "Jd", "Th");
   Rank b = EvaluateCards("Ks", "Qc", "Jd", "Td", "9h");
   Rank c = EvaluateCards("5h", "4d", "3d", "2c", "As");
@@ -277,8 +274,7 @@ TEST(RankTest, TestRankDescriptionStraights)
   ASSERT_EQ(c.category(), rank_category::STRAIGHT);
 }
 
-TEST(RankTest, TestRankDescriptionThreeOfAKinds)
-{
+TEST(RankTest, TestRankDescriptionThreeOfAKinds) {
   Rank a = EvaluateCards("As", "2s", "Ad", "Ac", "Ts");
   Rank b = EvaluateCards("6d", "6c", "2h", "6s", "4c");
   Rank c = EvaluateCards("9s", "4d", "9d", "8d", "9h");
@@ -296,8 +292,7 @@ TEST(RankTest, TestRankDescriptionThreeOfAKinds)
   ASSERT_FALSE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionTwoPairs)
-{
+TEST(RankTest, TestRankDescriptionTwoPairs) {
   Rank a = EvaluateCards("As", "2s", "Ad", "Tc", "Ts");
   Rank b = EvaluateCards("6d", "2c", "4h", "6s", "4c");
   Rank c = EvaluateCards("9s", "7d", "9d", "7s", "Ah");
@@ -315,8 +310,7 @@ TEST(RankTest, TestRankDescriptionTwoPairs)
   ASSERT_FALSE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionOnePairs)
-{
+TEST(RankTest, TestRankDescriptionOnePairs) {
   Rank a = EvaluateCards("Qs", "2s", "Qh", "3c", "Ts");
   Rank b = EvaluateCards("5s", "2c", "3h", "6s", "3c");
   Rank c = EvaluateCards("Ts", "Qd", "Td", "7s", "Ah");
@@ -334,8 +328,7 @@ TEST(RankTest, TestRankDescriptionOnePairs)
   ASSERT_FALSE(c.isFlush());
 }
 
-TEST(RankTest, TestRankDescriptionHighCards)
-{
+TEST(RankTest, TestRankDescriptionHighCards) {
   Rank a = EvaluateCards("6s", "7s", "2d", "3c", "4h");
   Rank b = EvaluateCards("Qs", "3c", "Ah", "Kc", "2d");
   Rank c = EvaluateCards("4h", "9s", "Td", "7s", "2d");

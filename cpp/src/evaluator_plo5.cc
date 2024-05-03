@@ -18,11 +18,11 @@
 
 namespace phevaluator {
 
-Rank EvaluatePlo5Cards(const Card& c1, const Card& c2,
-                       const Card& c3, const Card& c4, const Card& c5,
-                       const Card& h1, const Card& h2,
-                       const Card& h3, const Card& h4, const Card& h5) {
+Rank EvaluatePlo5Cards(const Card& c1, const Card& c2, const Card& c3,
+                       const Card& c4, const Card& c5, const Card& h1,
+                       const Card& h2, const Card& h3, const Card& h4,
+                       const Card& h5) {
   return evaluate_plo5_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4, h5);
 }
 
-} // namespace phevaluator
+}  // namespace phevaluator

@@ -14,29 +14,26 @@
  *  limitations under the License.
  */
 
-#include <stdio.h>
-#include "tables.h"
 #include "hash.h"
 
-int hash_quinary(const unsigned char q[], int k)
-{
+#include <stdio.h>
+
+#include "tables.h"
+
+int hash_quinary(const unsigned char q[], int k) {
   int sum = 0;
   const int len = 13;
   int i;
 
-  for (i=0; i<len; i++)
-  {
-    sum += dp[q[i]][len-i-1][k];
+  for (i = 0; i < len; i++) {
+    sum += dp[q[i]][len - i - 1][k];
 
     k -= q[i];
 
-    if (k <= 0)
-    {
+    if (k <= 0) {
       break;
     }
   }
 
   return sum;
 }
-
-

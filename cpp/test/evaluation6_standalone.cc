@@ -1,7 +1,9 @@
-#include <cstdio>
+#include <phevaluator/phevaluator.h>
+
 #include <algorithm>
 #include <cassert>
-#include <phevaluator/phevaluator.h>
+#include <cstdio>
+
 #include "kev/kev_eval.h"
 
 using namespace phevaluator;
@@ -17,20 +19,15 @@ int main() {
 
   std::printf("Start testing six cards\n");
 
-  for(int a = 0; a < 47; a++)
-  {
-    for(int b = a + 1; b < 48; b++)
-    {
-      for(int c = b + 1; c < 49; c++)
-      {
-        for(int d = c + 1; d < 50; d++)
-        {
-          for(int e = d + 1; e < 51; e++)
-          {
-            for(int f = e + 1; f < 52; f++)
-            {
-              int ph_eval = EvaluateCards(a, b, c, d, e, f).value(); // C++ method
-              int kev_eval = kev_eval_6cards(a, b, c, d, e, f); // Kev's method
+  for (int a = 0; a < 47; a++) {
+    for (int b = a + 1; b < 48; b++) {
+      for (int c = b + 1; c < 49; c++) {
+        for (int d = c + 1; d < 50; d++) {
+          for (int e = d + 1; e < 51; e++) {
+            for (int f = e + 1; f < 52; f++) {
+              int ph_eval =
+                  EvaluateCards(a, b, c, d, e, f).value();       // C++ method
+              int kev_eval = kev_eval_6cards(a, b, c, d, e, f);  // Kev's method
 
               assert(ph_eval == kev_eval);
 
