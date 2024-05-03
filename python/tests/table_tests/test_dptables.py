@@ -16,7 +16,7 @@ class TestSuitsTable(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls) -> None:
-        for k in [5, 6, 7, 8, 9]:
+        for k in [5, 6, 7]:
             cls.update_k(cls.DP, k)
 
     @staticmethod
@@ -32,14 +32,6 @@ class TestSuitsTable(unittest.TestCase):
                     idx = (
                         0x1 * cnts[0] + 0x8 * cnts[1] + 0x40 * cnts[2] + 0x200 * cnts[3]
                     )
-
-                    # TODO(@ohwi): Check these cases:
-                    # https://github.com/HenryRLee/PokerHandEvaluator/issues/93
-                    #   There exist three cases that idxes are same.
-                    #   For two different cnts in case of k=9.
-                    #   The cases are 72, 520, 576.
-                    if idx in [72, 520, 576] and SUITS[idx] != suit + 1:
-                        continue
 
                     table[idx] = suit + 1
 
