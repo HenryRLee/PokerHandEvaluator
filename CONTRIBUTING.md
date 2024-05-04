@@ -72,7 +72,7 @@ cd cpp/build
 
 ## Python development
 
-See more details: [README.md for Python](python/README.md)
+See more details: [README.md for Python](python/README.md#contributing)
 
 Requirements:
 
