@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 CARD_DESCRIPTION_LENGTH = 2
 
 # fmt: off
