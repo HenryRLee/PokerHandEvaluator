@@ -34,41 +34,42 @@ jobs:
           ./unit_tests_evaluator5_standalone
           ./unit_tests_evaluator6_standalone
           ./unit_tests_evaluator7_standalone
-#     - name: Setup Zig
-#       uses: goto-bus-stop/setup-zig@v1.3.0
-#       with:
-#         version: master
-#      - name: zig build -Drelease-fast
-#        run: | 
-#          cd cpp
-#          zig build -Drelease-fast
-#      - name: zig build -Ddynamic -Drelease-fast
-#        run: | 
-#          cd cpp
-#          zig build -Ddynamic -Drelease-fast
-#      - name: zig build -Dtarget=x86_64-windows -Drelease-fast
-#        run: | 
-#          cd cpp
-#          zig build -Dtarget=x86_64-windows -Drelease-fast
-#      - name: zig build -Domaha -Drelease-fast
-#        run: | 
-#          cd cpp
-#          zig build -Domaha -Drelease-fast
-#      - name: zig build -Domaha -Ddynamic -Drelease-fast
-#        run: | 
-#          cd cpp
-#          zig build -Domaha -Ddynamic -Drelease-fast
-#      - name: zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
-#        run: | 
-#          cd cpp
-#          zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
-#      - name: zig build and run examples
-#        run: | 
-#          cd cpp
-#          zig build examples
-#          zig-out/bin/c_example
-#          zig-out/bin/cpp_example
-#          zig-out/bin/omaha_example
+  #     - name: Setup Zig
+  #       uses: goto-bus-stop/setup-zig@v1.3.0
+  #       with:
+  #         version: master
+  #      - name: zig build -Drelease-fast
+  #        run: |
+  #          cd cpp
+  #          zig build -Drelease-fast
+  #      - name: zig build -Ddynamic -Drelease-fast
+  #        run: |
+  #          cd cpp
+  #          zig build -Ddynamic -Drelease-fast
+  #      - name: zig build -Dtarget=x86_64-windows -Drelease-fast
+  #        run: |
+  #          cd cpp
+  #          zig build -Dtarget=x86_64-windows -Drelease-fast
+  #      - name: zig build -Domaha -Drelease-fast
+  #        run: |
+  #          cd cpp
+  #          zig build -Domaha -Drelease-fast
+  #      - name: zig build -Domaha -Ddynamic -Drelease-fast
+  #        run: |
+  #          cd cpp
+  #          zig build -Domaha -Ddynamic -Drelease-fast
+  #      - name: zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
+  #        run: |
+  #          cd cpp
+  #          zig build -Domaha -Ddynamic -Dtarget=x86_64-windows -Drelease-fast
+  #      - name: zig build and run examples
+  #        run: |
+  #          cd cpp
+  #          zig build examples
+  #          zig-out/bin/c_example
+  #          zig-out/bin/cpp_example
+  #          zig-out/bin/omaha_example
+
   cpp_benchmark:
     name: C++ Benchmark
     runs-on: ubuntu-latest
@@ -84,6 +85,7 @@ jobs:
         run: |
           cd cpp/build
           ./benchmark_phevaluator
+
   python-test:
     name: Python test
     runs-on: ubuntu-latest
@@ -91,9 +93,49 @@ jobs:
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11"]
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python 3.x
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run tests
+        run: |
+          cd python
+          python -m unittest discover -v
+
+  python-type-checking:
+    name: Python - Type checking with mypy
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.8"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Run mypy
+        run: |
+          cd python
+          pip install mypy
+          mypy .
+
+  python-check-install:
+    name: Python - Check package installation (without releasing)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - "3.8"
+          - "3.9"
+          - "3.10"
+          - "3.11"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install package
