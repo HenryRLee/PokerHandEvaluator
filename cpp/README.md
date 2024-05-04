@@ -5,7 +5,7 @@
 The following intructions assumes you are in the [cpp](/cpp/) directory. If
 you are in the root directory, please change to [cpp](/cpp/) first.
 
-```
+```sh
 cd cpp
 ```
 
@@ -13,7 +13,7 @@ cd cpp
 
 This library can be built using CMake. A recommended way of building it is:
 
-```
+```sh
 mkdir -p build
 cd build
 cmake ..
@@ -25,14 +25,14 @@ a unit test binary `unit_tests`.
 
 Run `unit_tests` to perform the unit tests:
 
-```
+```sh
 ./unit_tests
 ```
 
 Another build option is to build the library only, after generating the CMake files,
 run `make pheval` to build the static-linked library.
 
-```
+```sh
 mkdir -p build
 cd build
 cmake ..
@@ -44,7 +44,7 @@ make pheval
 The unit tests depends on Google Test suite, which isn't available in Windows.
 This way allows us to build the libraries and examples.
 
-```
+```sh
 mkdir -p build
 cd build
 cmake -DBUILD_TESTS=OFF ..
@@ -55,15 +55,15 @@ After successfully running the `cmake` command, each build target will generate 
 
 ### Build with GNU Make
 
-This [cpp](/cpp/) directory also includes a Makefile, for users that want to use native
-GNU Make to compile the library.
+This [cpp](/cpp/) directory also includes a Makefile, for users that want to use
+native GNU Make to compile the library.
 
 Simply run `make` to build the static-linked library `libpheval.a`.
 
 In the [examples](/cpp/examples), there is another Makefile to compile the examples
 with the library linked.
 
-```
+```sh
 cd examples
 make
 ```
@@ -72,7 +72,7 @@ make
 
 After running `make`, you can see the following library files generated:
 
-```
+```text
 libpheval.a      # library pheval
 libpheval5.a     # library pheval5
 libpheval6.a     # library pheval6
@@ -82,7 +82,7 @@ libphevalplo5.a  # library phevalplo5
 libphevalplo6.a  # library phevalplo6
 ```
 
-#### pheval
+### pheval
 
 The corresponding library file is `libpheval.a`.
 
@@ -318,6 +318,7 @@ describe_rank(rank2); // Nines Full over Fours
 ```
 
 <a name="cardid"></a>
+
 ## Card Id
 
 We can use an integer to represent a card. The two least significant bits
