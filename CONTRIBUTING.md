@@ -96,7 +96,7 @@ Test:
 python3 -m unittest discover -v
 ```
 
-## GitHub Actions
+## Continuous Integration (CI) with GitHub Actions
 
 We use GitHub Actions to automate various checks and tests for every Pull Request.
 If the build, tests, type checking, or package installation fails, the workflow will
@@ -104,7 +104,9 @@ exit with a non-zero status code. Linting errors or files formatted by pre-commi
 will cause the workflow to exit with status code 1. If any job exits with a non-zero
 status code, merging or pushing to the repository will be blocked by GitHub Actions.
 
-For every commit, the following pre-commit checks are performed:
+### Pre-commit Checks for Every Commit
+
+The following pre-commit checks are performed:
 
 * Prevent commits to the `master` or `develop` branches
 * Check for merge conflicts
@@ -113,14 +115,18 @@ For every commit, the following pre-commit checks are performed:
 * Display the differences between the original and formatted code, if any files
   are formatted by pre-commit
 
-For C++, the following checks are performed:
+### CI Checks for C++
+
+The following checks are performed:
 
 * C++ build and unit tests
 * Pre-commit checks:
   * Lint C++ code format according to the style specified in `.clang-format` (for
     modified files)
 
-For Python, the following checks are performed:
+### CI Checks for Python
+
+The following checks are performed:
 
 * Python unit tests for Python 3.8 to 3.11
 * Python type checking with `mypy` for Python 3.8
@@ -130,7 +136,9 @@ For Python, the following checks are performed:
   * Lint Python files with `Ruff` according to the configuration in `pyproject.toml`
     (if any Python files are modified, check all Python files)
 
-For certain file types, additional pre-commit checks are performed:
+### CI Checks for Certain File Types
+
+Additional pre-commit checks are performed:
 
 * Check YAML formatting (for modified files)
 * Check TOML formatting (for modified files)
