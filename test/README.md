@@ -1,14 +1,16 @@
 # Test Data
 
-Each directory has two sets of test data, both in csv format. The last column of each line
-represents the rank of the test case, and the other columns are the card input.
+Each directory has two sets of test data, both in csv format. The last column of
+each line represents the rank of the test case, and the other columns are the
+card input.
 
-In the `string_input_tests.csv` files, the card inputs are using string format, while in the
-`id_input_tests.csv` files, the inputs are [Card Id](../cpp/#cardid) format.
+In the `string_input_tests.csv` files, the card inputs are using string format,
+while in the `id_input_tests.csv` files, the inputs are [Card Id](../cpp/#cardid)
+format.
 
 For example, if we look at the file `five/string_input_tests.csv`, it has six columns.
-The first five columns are the five different cards, and the last column is the rank of the
-given five cards.
+The first five columns are the five different cards, and the last column is the
+rank of the given five cards.
 
 ```bash
 card_1,card_2,card_3,card_4,card_5,rank

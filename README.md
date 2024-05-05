@@ -116,7 +116,7 @@ as Omaha poker hands evaluation.
 
 You can install the library using `pip`:
 
-```
+```sh
 pip3 install phevaluator
 ```
 
@@ -129,31 +129,39 @@ and [bensi94](https://github.com/bensi94).
 
 ## Other Implementations
 
-[PHE](https://github.com/thlorenz/phe) is a Javascript port, developed by Thorsten Lorenz.
+[PHE](https://github.com/thlorenz/phe) is a Javascript port, developed by Thorsten
+Lorenz.
 
-[41Poker](https://github.com/41semicolon/41poker) is another Javascript port, developed by 41semicolon.
+[41Poker](https://github.com/41semicolon/41poker) is another Javascript port,
+developed by 41semicolon.
 
 [poker](https://pub.dev/packages/poker) is a Dart port, developed by Kohei.
 
-[ghais/poker](https://github.com/ghais/poker/blob/main/src/Poker/Holdem/Evaluate.hs) contains a Haskell implementation of the evaluator.
+[ghais/poker](https://github.com/ghais/poker/blob/main/src/Poker/Holdem/Evaluate.hs)
+contains a Haskell implementation of the evaluator.
 
 [gophe](https://github.com/mattlangl/gophe) is a Go port, developed by mattlangl.
 
-[poker-handle](https://github.com/pocketberserker/poker-handle/tree/main/src/poker) has a TypeScript port, developed by pocketberserker.
+[poker-handle](https://github.com/pocketberserker/poker-handle/tree/main/src/poker)
+has a TypeScript port, developed by pocketberserker.
 
-[PokerHandEvaluator.cs](https://github.com/travisstaloch/PokerHandEvaluator.cs) is a C# port, developed by travisstaloch.
+[PokerHandEvaluator.cs](https://github.com/travisstaloch/PokerHandEvaluator.cs)
+is a C# port, developed by travisstaloch.
 
-[poker_engine](https://github.com/aleo101/poker_engine) is a Rust port, developed by Alexander Leones.
+[poker_engine](https://github.com/aleo101/poker_engine) is a Rust port,
+developed by Alexander Leones.
 
-[Poker-Calculator](https://github.com/tryabin/Poker-Calculator) contains a CUDA implementation of this evaluator.
+[Poker-Calculator](https://github.com/tryabin/Poker-Calculator) contains a CUDA
+implementation of this evaluator.
 
 ## Awesome Use Cases
 
 ### A simple Hold'em pre-flop equity estimator
 
-A reddit user coded a Hold'em pre-flop equity estimator in C++ using the PHEvaluator library.
+A reddit user coded a Hold'em pre-flop equity estimator in C++ using the
+PHEvaluator library.
 
-https://www.reddit.com/r/poker/comments/okk5qn/i_ran_1m_runouts_of_random_play_to_get_a_sense_of/
+<https://www.reddit.com/r/poker/comments/okk5qn/i_ran_1m_runouts_of_random_play_to_get_a_sense_of/>
 
 The source code can be found in [sim.cc](https://gist.github.com/bwasti/c2ca972c57f4fb581813f82f010c7cb2).
 
@@ -165,10 +173,11 @@ An article about Monte Carlo simulation of Texas Hold'em.
 
 [Estimating the outcome of a Texas hold’em game using Monte Carlo simulation](https://petrosdemetrakopoulos.medium.com/estimating-the-outcome-of-a-texas-holdem-game-using-monte-carlo-simulation-1be35be29036)
 
-It's source code is in https://github.com/petrosDemetrakopoulos/TexasHoldemMonteCarloSimulation
+It's source code is in <https://github.com/petrosDemetrakopoulos/TexasHoldemMonteCarloSimulation>
 
 ## Contributing to this repository
 
-All contributions are welcome. A contribution can be as small as reporting a bug by creating an issue.
+All contributions are welcome. A contribution can be as small as reporting a bug
+by creating an issue.
 
 If you plan to create a Pull Request, please find more details in [CONTRIBUTING.md](CONTRIBUTING.md).
