@@ -95,7 +95,7 @@ to the rank description table declared in `src/7462.c`.
 The example usage of this library can be found in `examples/c_example.c` and
 `examples/cpp_example.cc`.
 
-#### pheval5, pheval6, and pheval7
+### pheval5, pheval6, and pheval7
 
 The corresponding library files are `libpheval5.a`, `libpheval6.a`, and
 `libpheval7.a`.
@@ -111,7 +111,7 @@ The example usage of these libraries can be found in
 `examples/evaluator6_standalone_example.cc` and
 `examples/evaluator7_standalone_example.cc`.
 
-#### phevalplo4, phevalplo5, and phevalplo6
+### phevalplo4, phevalplo5, and phevalplo6
 
 The corresponding library files are `libphevalplo4.a`, `libphevalplo5.a`, and
 `libphevalplo6.a`.
