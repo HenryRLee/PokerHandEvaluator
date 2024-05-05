@@ -2,13 +2,7 @@ name: pre-commit
 
 on:
   push:
-    branches:
-      - master
-      - develop
   pull_request:
-    branches:
-      - master
-      - develop
 
 jobs:
   pre-commit:
@@ -18,4 +12,15 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.8"
-      - uses: pre-commit/action@v3.0.1
+
+      - name: "pre-commit (push)"
+        uses: pre-commit/action@v3.0.1
+        if: github.event_name == 'push'
+
+      - name: "pre-commit (pull_request)"
+        uses: pre-commit/action@v3.0.1
+        if: github.event_name == 'pull_request'
+
+      - name: "pre-commit (merged)"
+        uses: pre-commit/action@v3.0.1
+        if: github.event.pull_request.merged == 'true'
