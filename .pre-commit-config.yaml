@@ -32,12 +32,6 @@ repos:
       - id: remove-crlf
       - id: remove-tabs
 
-  # Formatting for Python configuration files
-  - repo: https://github.com/asottile/setup-cfg-fmt
-    rev: v2.5.0
-    hooks:
-      - id: setup-cfg-fmt
-
   # Linting and formatting for C++
   - repo: https://github.com/pocc/pre-commit-hooks
     rev: v1.3.5
