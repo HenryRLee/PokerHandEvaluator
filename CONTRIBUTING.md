@@ -132,7 +132,6 @@ The following checks are performed:
 * Python type checking with `mypy` for Python 3.8
 * Python package installation for Python 3.8 to 3.11
 * Pre-commit checks:
-  * Check `setup.cfg` (if modified)
   * Lint Python files with `Ruff` according to the configuration in `pyproject.toml`
     (if any Python files are modified, check all Python files)
 

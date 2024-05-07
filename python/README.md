@@ -97,17 +97,11 @@ To ensure a smooth contribution process, please follow the guidelines below.
 
 #### Option 2: Setup without pre-commit
 
-* Install `Ruff`:
+Install development dependencies:
 
-  ```shell
-  pip install ruff
-  ```
-
-* Install `mypy`:
-
-  ```shell
-  pip install mypy
-  ```
+```shell
+pip install '.[dev]'
+```
 
 ### Checking Changes
 
@@ -154,6 +148,28 @@ type checker, and unit tests.
   ```shell
   python3 -m unittest discover -v
   ```
+
+### Building the Package
+
+To build the package, run the following command:
+
+```shell
+python -m build
+```
+
+This will create a `dist` folder containing the built package.
+
+Install the built package for testing:
+
+```shell
+pip install dist/*.whl
+```
+
+Check whether your distribution's long description will render correctly on PyPI:
+
+```shell
+python -m twine check dist/*
+```
 
 Please ensure that your code passes all the checks and tests before submitting a
 pull request. If you have any questions, need further assistance, or want to report
