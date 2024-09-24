@@ -2,7 +2,7 @@
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/CI?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/ci.yml)
 
-A Poker Hand Evaluator based on a Perfect Hash Algorithm
+A [Poker Hand Evaluator](https://github.com/HenryRLee/PokerHandEvaluator) based on a Perfect Hash Algorithm
 
 ## Overview
 
