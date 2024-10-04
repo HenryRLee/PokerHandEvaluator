@@ -11,22 +11,22 @@ c_example: c_example.c ../libpheval.a
 	${CC} ${CFLAGS} -I${INCLUDE} $^ -o $@
 
 cpp_example: cpp_example.cc ../libpheval.a
-	${CXX} ${CFLAGS} ${CXXFLAG} -I${INCLUDE} $^ -o $@
+	${CXX} ${CXXFLAG} -I${INCLUDE} $^ -o $@
 
 plo4_example: plo4_example.cc ../libphevalplo4.a
-	${CXX} ${CFLAGS} ${CXXFLAG} -I${INCLUDE} $^ -o $@
+	${CXX} ${CXXFLAG} -I${INCLUDE} $^ -o $@
 
 omaha_example: omaha_example.cc ../libphevalplo4.a
-	${CXX} ${CFLAGS} ${CXXFLAG} -I${INCLUDE} $^ -o $@
+	${CXX} ${CXXFLAG} -I${INCLUDE} $^ -o $@
 
 plo5_example: plo5_example.cc ../libphevalplo5.a
-	${CXX} ${CFLAGS} ${CXXFLAG} -I${INCLUDE} $^ -o $@
+	${CXX} ${CXXFLAG} -I${INCLUDE} $^ -o $@
 
 plo6_example: plo6_example.cc ../libphevalplo6.a
-	${CXX} ${CFLAGS} ${CXXFLAG} -I${INCLUDE} $^ -o $@
+	${CXX} ${CXXFLAG} -I${INCLUDE} $^ -o $@
 
 ../libpheval.a:
-	$(MAKE) -C ../;
+	$(MAKE) -C ../ libpheval.a
 
 ../libphevalplo4.a:
 	$(MAKE) -C ../ libphevalplo4.a
