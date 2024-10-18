@@ -12,6 +12,10 @@ from .tables import NO_FLUSH_OMAHA
 
 COMMUNITY_CARD_COUNT = 5
 HOLE_CARD_COUNT = 4
+FLUSH_BASE_VALUE = 10000
+NO_FLUSH_BASE_VALUE = 10000
+MIN_FLUSH_COUNT_BOARD = 3
+MIN_FLUSH_COUNT_HOLE = 2
 TOTAL_CARD_COUNT = COMMUNITY_CARD_COUNT + HOLE_CARD_COUNT
 
 
@@ -64,61 +68,73 @@ def evaluate_omaha_cards(*cards: int | str | Card) -> int:
 
 # TODO(@azriel1rf): `_evaluate_omaha_cards` is too complex. Consider refactoring.
 # https://github.com/HenryRLee/PokerHandEvaluator/issues/92
-def _evaluate_omaha_cards(community_cards: list[int], hole_cards: list[int]) -> int:  # noqa: C901, PLR0912
-    value_flush = 10000
-    value_noflush = 10000
-    suit_count_board = [0] * 4
-    suit_count_hole = [0] * 4
+def _evaluate_omaha_cards(community_cards: list[int], hole_cards: list[int]) -> int:
+    value_flush = FLUSH_BASE_VALUE
+    suit_count_board = _count_suits(community_cards)
+    suit_count_hole = _count_suits(hole_cards)
 
-    for community_card in community_cards:
-        suit_count_board[community_card % 4] += 1
-
-    for hole_card in hole_cards:
-        suit_count_hole[hole_card % 4] += 1
-
-    min_flush_count_board = 3
-    min_flush_count_hole = 2
-
-    flush_suit = -1
-    for i in range(4):
-        if (
-            suit_count_board[i] >= min_flush_count_board
-            and suit_count_hole[i] >= min_flush_count_hole
-        ):
-            flush_suit = i
-            break
+    flush_suit = _determine_flush_suit(suit_count_board, suit_count_hole)
 
     if flush_suit != -1:
-        flush_count_board = suit_count_board[flush_suit]
-        flush_count_hole = suit_count_hole[flush_suit]
+        value_flush = _determine_flush_value(
+            community_cards, hole_cards, suit_count_board, suit_count_hole, flush_suit
+        )
 
-        suit_binary_board = 0
-        for community_card in community_cards:
-            if community_card % 4 == flush_suit:
-                suit_binary_board |= BINARIES_BY_ID[community_card]
+    value_noflush = _determine_noflush_value(community_cards, hole_cards)
 
-        suit_binary_hole = 0
-        for hole_card in hole_cards:
-            if hole_card % 4 == flush_suit:
-                suit_binary_hole |= BINARIES_BY_ID[hole_card]
+    return min(value_flush, value_noflush)
 
+
+def _count_suits(cards: list[int]) -> list[int]:
+    suit_count = [0] * 4
+    for card in cards:
+        suit_count[card % 4] += 1
+    return suit_count
+
+
+def _determine_flush_suit(
+    suit_count_board: list[int], suit_count_hole: list[int]
+) -> int:
+    for i in range(4):
         if (
-            flush_count_board == min_flush_count_board
-            and flush_count_hole == min_flush_count_hole
+            suit_count_board[i] >= MIN_FLUSH_COUNT_BOARD
+            and suit_count_hole[i] >= MIN_FLUSH_COUNT_HOLE
         ):
-            value_flush = FLUSH[suit_binary_board | suit_binary_hole]
+            return i
+    return -1
 
-        else:
-            padding = [0x0000, 0x2000, 0x6000]
 
-            suit_binary_board |= padding[COMMUNITY_CARD_COUNT - flush_count_board]
-            suit_binary_hole |= padding[HOLE_CARD_COUNT - flush_count_hole]
+def _determine_flush_value(
+    community_cards: list[int],
+    hole_cards: list[int],
+    suit_count_board: list[int],
+    suit_count_hole: list[int],
+    flush_suit: int,
+) -> int:
+    flush_count_board = suit_count_board[flush_suit]
+    flush_count_hole = suit_count_hole[flush_suit]
+    suit_binary_board = 0
+    for community_card in community_cards:
+        if community_card % 4 == flush_suit:
+            suit_binary_board |= BINARIES_BY_ID[community_card]
+    suit_binary_hole = 0
+    for hole_card in hole_cards:
+        if hole_card % 4 == flush_suit:
+            suit_binary_hole |= BINARIES_BY_ID[hole_card]
+    if (
+        flush_count_board == MIN_FLUSH_COUNT_BOARD
+        and flush_count_hole == MIN_FLUSH_COUNT_HOLE
+    ):
+        return FLUSH[suit_binary_board | suit_binary_hole]
+    padding = [0x0000, 0x2000, 0x6000]
+    suit_binary_board |= padding[COMMUNITY_CARD_COUNT - flush_count_board]
+    suit_binary_hole |= padding[HOLE_CARD_COUNT - flush_count_hole]
+    board_hash = hash_binary(suit_binary_board, COMMUNITY_CARD_COUNT)
+    hole_hash = hash_binary(suit_binary_hole, HOLE_CARD_COUNT)
+    return FLUSH_OMAHA[board_hash * 1365 + hole_hash]
 
-            board_hash = hash_binary(suit_binary_board, COMMUNITY_CARD_COUNT)
-            hole_hash = hash_binary(suit_binary_hole, HOLE_CARD_COUNT)
 
-            value_flush = FLUSH_OMAHA[board_hash * 1365 + hole_hash]
-
+def _determine_noflush_value(community_cards: list[int], hole_cards: list[int]) -> int:
     quinary_board = [0] * 13
     quinary_hole = [0] * 13
 
@@ -131,6 +147,4 @@ def _evaluate_omaha_cards(community_cards: list[int], hole_cards: list[int]) -> 
     board_hash = hash_quinary(quinary_board, COMMUNITY_CARD_COUNT)
     hole_hash = hash_quinary(quinary_hole, HOLE_CARD_COUNT)
 
-    value_noflush = NO_FLUSH_OMAHA[board_hash * 1820 + hole_hash]
-
-    return min(value_flush, value_noflush)
+    return NO_FLUSH_OMAHA[board_hash * 1820 + hole_hash]
