@@ -12,8 +12,7 @@ from .tables import NO_FLUSH_OMAHA
 
 COMMUNITY_CARD_COUNT = 5
 HOLE_CARD_COUNT = 4
-FLUSH_BASE_VALUE = 10000
-NO_FLUSH_BASE_VALUE = 10000
+MAX_RANK_VALUE = 10000
 MIN_FLUSH_COUNT_BOARD = 3
 MIN_FLUSH_COUNT_HOLE = 2
 MAX_FLUSH_HOLE_HASH = 1365
@@ -71,7 +70,7 @@ def evaluate_omaha_cards(*cards: int | str | Card) -> int:
 # TODO(@azriel1rf): `_evaluate_omaha_cards` is too complex. Consider refactoring.
 # https://github.com/HenryRLee/PokerHandEvaluator/issues/92
 def _evaluate_omaha_cards(community_cards: list[int], hole_cards: list[int]) -> int:
-    value_flush = FLUSH_BASE_VALUE
+    value_flush = MAX_RANK_VALUE
     suit_count_board = _count_suits(community_cards)
     suit_count_hole = _count_suits(hole_cards)
 
