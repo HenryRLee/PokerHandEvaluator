@@ -16,6 +16,8 @@ FLUSH_BASE_VALUE = 10000
 NO_FLUSH_BASE_VALUE = 10000
 MIN_FLUSH_COUNT_BOARD = 3
 MIN_FLUSH_COUNT_HOLE = 2
+MAX_FLUSH_HOLE_HASH = 1365
+MAX_NO_FLUSH_HOLE_HASH = 1820
 TOTAL_CARD_COUNT = COMMUNITY_CARD_COUNT + HOLE_CARD_COUNT
 
 
@@ -131,7 +133,7 @@ def _determine_flush_value(
     suit_binary_hole |= padding[HOLE_CARD_COUNT - flush_count_hole]
     board_hash = hash_binary(suit_binary_board, COMMUNITY_CARD_COUNT)
     hole_hash = hash_binary(suit_binary_hole, HOLE_CARD_COUNT)
-    return FLUSH_OMAHA[board_hash * 1365 + hole_hash]
+    return FLUSH_OMAHA[board_hash * MAX_FLUSH_HOLE_HASH + hole_hash]
 
 
 def _determine_noflush_value(community_cards: list[int], hole_cards: list[int]) -> int:
@@ -147,4 +149,4 @@ def _determine_noflush_value(community_cards: list[int], hole_cards: list[int]) 
     board_hash = hash_quinary(quinary_board, COMMUNITY_CARD_COUNT)
     hole_hash = hash_quinary(quinary_hole, HOLE_CARD_COUNT)
 
-    return NO_FLUSH_OMAHA[board_hash * 1820 + hole_hash]
+    return NO_FLUSH_OMAHA[board_hash * MAX_NO_FLUSH_HOLE_HASH + hole_hash]
