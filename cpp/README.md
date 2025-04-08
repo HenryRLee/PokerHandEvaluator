@@ -126,6 +126,15 @@ memory usage of the basic omaha evaluators.
 The example usage of these libraries can be found in `examples/plo4_example.cc`,
 `examples/plo5_example.cc` and `examples/plo6_example.cc`.
 
+Building the PLO6 library costs significant amount of memory. If you don't want
+to build this feature, you may disable PLO6 using a CMake config.
+
+```
+cmake -DBUILD_PLO6=OFF .. ; make
+```
+
+Similarly, you can turn off PLO4 and PLO5.
+
 ### Linking the library
 
 After building the libraries, you can add the `./include`
