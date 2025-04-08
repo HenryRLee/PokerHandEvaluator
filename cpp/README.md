@@ -129,7 +129,7 @@ The example usage of these libraries can be found in `examples/plo4_example.cc`,
 Building the PLO6 library costs significant amount of memory. If you don't want
 to build this feature, you may disable PLO6 using a CMake config.
 
-```
+```bash
 cmake -DBUILD_PLO6=OFF .. ; make
 ```
 
