@@ -8,7 +8,7 @@ from typing import Iterator
 from phevaluator import Card
 from phevaluator import evaluate_omaha_cards
 
-TEST_DATA_DIR = Path(__file__).resolve().parents[2] / "test"
+TEST_DATA_DIR = Path(__file__).resolve().parents[2] / "test_data"
 
 
 def _iter_rows(csv_path: Path) -> Iterator[tuple[list[str], int]]:
