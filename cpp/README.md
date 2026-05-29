@@ -14,28 +14,34 @@ cd cpp
 This library can be built using CMake. A recommended way of building it is:
 
 ```sh
-mkdir -p build
-cd build
-cmake ..
-make
+cmake -B build # This will create a folder named build, and configure the Makefile
+cmake --build build # This will start the build in the new folder
 ```
 
-This will generate a static-linked library `libpheval.a`, as well as
-a unit test binary `unit_tests`.
+This will generate a static-linked library `libpheval.a`, in the new folder,
+as well as a unit test binary `unit_tests`.
 
 Run `unit_tests` to perform the unit tests:
 
 ```sh
+cd build/
 ./unit_tests
 ```
 
-Another build option is to build the library only, after generating the CMake files,
-run `make pheval` to build the static-linked library.
+Another build option is to build the library only, to skip the unit tests binary.
+Build with the target `pheval` to build the static-linked library.
 
 ```sh
-mkdir -p build
+cmake -B build
+cmake --build build/ --target pheval
+```
+
+The CMake command will generate a Makefile in the new folder. So if you prefer
+the GNU Make, you can still do so. For example:
+
+```sh
+cmake -B build
 cd build
-cmake ..
 make pheval
 ```
 
@@ -45,9 +51,7 @@ The unit tests depends on Google Test suite, which isn't available in Windows.
 This way allows us to build the libraries and examples.
 
 ```sh
-mkdir -p build
-cd build
-cmake -DBUILD_TESTS=OFF ..
+cmake -B build -DBUILD_TESTS=OFF
 ```
 
 After successfully running the `cmake` command, each build target will generate a
