@@ -52,8 +52,8 @@ The function can take both numbers and card strings (with a format like: 'Ah' or
 ## Card Id
 
 We can use an integer to represent a card. The two least significant bits
-represent the 4 suits, ranged from 0-3. The rest of it represent the 13
-ranks, ranged from 0-12.
+represent the 4 suits, ranging from 0-3. The rest of it represents the 13
+ranks, ranging from 0-12.
 
 More specifically, the ranks are:
 

@@ -1,23 +1,12 @@
 from __future__ import annotations
 
-import csv
 import unittest
-from pathlib import Path
-from typing import Iterator
 
 from phevaluator import Card
 from phevaluator import evaluate_cards
 
-TEST_DATA_DIR = Path(__file__).resolve().parents[2] / "test_data"
-
-
-def _iter_rows(csv_path: Path) -> Iterator[tuple[list[str], int]]:
-    with csv_path.open(encoding="UTF-8", newline="") as f:
-        reader = csv.reader(f)
-        next(reader)  # skip header
-        for row in reader:
-            *cards, rank = row
-            yield cards, int(rank)
+from ._csv_fixtures import TEST_DATA_DIR
+from ._csv_fixtures import run_csv
 
 
 class TestEvaluator(unittest.TestCase):
@@ -31,16 +20,7 @@ class TestEvaluator(unittest.TestCase):
 
     def _run_csv(self, subdir: str, filename: str, *, as_int: bool) -> None:
         csv_path = TEST_DATA_DIR / subdir / filename
-        if not csv_path.is_file():
-            self.skipTest(f"Missing test data file: {csv_path}")
-        for cards, expected_rank in _iter_rows(csv_path):
-            args = [int(c) for c in cards] if as_int else cards
-            actual = evaluate_cards(*args)
-            if actual != expected_rank:
-                self.fail(
-                    f"{csv_path.name}: cards={cards} "
-                    f"expected={expected_rank} got={actual}"
-                )
+        run_csv(self, csv_path, evaluate_cards, as_int=as_int)
 
     def test_five_id(self) -> None:
         self._run_csv("five", "id_input_tests.csv", as_int=True)
