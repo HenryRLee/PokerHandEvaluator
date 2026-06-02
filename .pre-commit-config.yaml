@@ -90,7 +90,7 @@ repos:
       # Unit testing for Python
       - id: unittest
         name: Python - Run unit tests
-        entry: python -m unittest discover
+        entry: python -m unittest discover -s python
         language: system
         pass_filenames: false
         stages:

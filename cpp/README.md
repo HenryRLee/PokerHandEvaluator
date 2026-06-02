@@ -348,6 +348,11 @@ club = 0, diamond = 1, heart = 2, spade = 3
 
 So that you can use `rank * 4 + suit` to get the card ID.
 
+Technically, it is fine to swap the suit values, as long as the suits are
+uniquely mapped to the values 0, 1, 2, and 3. If you do swap the suit values,
+make sure to update the mapping in the source code as well (`suitMap` in
+[card.h](include/phevaluator/card.h)).
+
 The complete card Id mapping can be found below. The rows are the ranks
 from 2 to Ace, and the columns are the suits: club, diamond, heart and spade.
 

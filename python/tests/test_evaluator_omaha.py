@@ -1,42 +1,40 @@
 from __future__ import annotations
 
 import unittest
-from itertools import combinations
 
 from phevaluator import Card
-from phevaluator import _evaluate_cards
-from phevaluator import _evaluate_omaha_cards
 from phevaluator import evaluate_omaha_cards
-from phevaluator import sample_cards
 
-
-def evaluate_omaha_exhaustive(community_cards: list[int], hole_cards: list[int]) -> int:
-    """Evaluate omaha cards with `_evaluate_cards`."""
-    return min(
-        _evaluate_cards(c1, c2, c3, h1, h2)
-        for c1, c2, c3 in combinations(community_cards, 3)
-        for h1, h2 in combinations(hole_cards, 2)
-    )
+from ._csv_fixtures import TEST_DATA_DIR
+from ._csv_fixtures import run_csv
 
 
 class TestEvaluatorOmaha(unittest.TestCase):
-    def test_omaha(self) -> None:
-        """Test two functions yield the same results.
+    def test_omaha_example(self) -> None:
+        # fmt: off
+        rank1 = evaluate_omaha_cards(
+            "4c", "5c", "6c", "7s", "8s", # community cards
+            "2c", "9c", "As", "Kd",       # player hole cards
+        )
 
-        Compare:
-            `_evaluate_omaha_cards`
-            `_evaluate_cards`
-        """
-        total = 10000
-        for _ in range(total):
-            cards = sample_cards(9)
-            community_cards = cards[:5]
-            hole_cards = cards[5:]
-            with self.subTest(cards):
-                self.assertEqual(
-                    _evaluate_omaha_cards(community_cards, hole_cards),
-                    evaluate_omaha_exhaustive(community_cards, hole_cards),
-                )
+        rank2 = evaluate_omaha_cards(
+            "4c", "5c", "6c", "7s", "8s", # community cards
+            "6s", "9s", "Ts", "Js",       # player hole cards
+        )
+        # fmt: on
+
+        self.assertEqual(rank1, 1578)
+        self.assertEqual(rank2, 1604)
+
+    def _run_csv(self, filename: str, *, as_int: bool) -> None:
+        csv_path = TEST_DATA_DIR / "plo4" / filename
+        run_csv(self, csv_path, evaluate_omaha_cards, as_int=as_int)
+
+    def test_plo4_id(self) -> None:
+        self._run_csv("id_input_tests.csv", as_int=True)
+
+    def test_plo4_string(self) -> None:
+        self._run_csv("string_input_tests.csv", as_int=False)
 
     def test_evaluator_interface(self) -> None:
         # int, str and Card can be passed to evaluate_omaha_cards()
