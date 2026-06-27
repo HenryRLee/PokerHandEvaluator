@@ -32,13 +32,12 @@ for passing the code review.
 
 ## Development Setup
 
-### pre-commit
-
-You will need [pre-commit](https://pre-commit.com/) to format and lint your code.
-
-* Install `pre-commit` using package manager such as `pip`, `apt` (Ubuntu), or `brew`
-  (MacOS)
-* Install `pre-commit` hooks with `pre-commit install`
+Formatting and linting are enforced by GitHub Actions on every Pull Request (see
+[Continuous Integration](#continuous-integration-ci-with-github-actions) below).
+When a check finds an auto-fixable problem, the workflow posts an inline
+suggestion on your Pull Request that you can apply with a single click. You can
+also run the same tools locally before pushing, as described in the sections
+below.
 
 ## C++ development
 
@@ -98,55 +97,49 @@ python3 -m unittest discover -v
 
 ## Continuous Integration (CI) with GitHub Actions
 
-We use GitHub Actions to automate various checks and tests for every Pull Request.
-If the build, tests, type checking, or package installation fails, the workflow will
-exit with a non-zero status code. Linting errors or files formatted by pre-commit
-will cause the workflow to exit with status code 1. If any job exits with a non-zero
-status code, merging or pushing to the repository will be blocked by GitHub Actions.
+We use GitHub Actions to automate various checks and tests for every Pull
+Request. If the build, tests, type checking, or package installation fails, the
+workflow will exit with a non-zero status code. Formatting and linting problems
+also cause the workflow to fail. If any job exits with a non-zero status code,
+merging your Pull Request will be blocked by GitHub Actions.
 
-### Pre-commit Checks for Every Commit
+The [`Lint & Suggest`](.github/workflows/lint-suggest.yml) workflow runs the
+formatters and linters and posts the required changes as inline
+**suggestions** you can apply with one click. Pull Requests opened from forks
+receive the same suggestions from a separate
+[`Lint & Suggest (forks)`](.github/workflows/lint-suggest-fork.yml) workflow.
+All checks still run and block on failure for fork Pull Requests.
 
-The following pre-commit checks are performed:
+### Lint & Suggest checks
 
-* Prevent commits to the `master` or `develop` branches
-* Check for merge conflicts
-* Forbid submodules (if added)
-* Lint files for encoding, line endings, tabs and more (for modified files)
-* Display the differences between the original and formatted code, if any files
-  are formatted by pre-commit
+* **File hygiene** (all text files): byte-order-marker removal, line endings
+  normalised to LF, tabs replaced with spaces (Makefiles excluded), trailing
+  whitespace removal, and a final newline at end of file.
+* **TOML & YAML**: validity checks.
+* **C++**: `clang-format` according to [.clang-format](cpp/.clang-format)
+  (excluding the generated `cpp/src/hashtable*` and `cpp/src/tables*` files).
+* **Markdown**: `markdownlint` according to [.markdownlint.yaml](.markdownlint.yaml).
+* **Python**: `ruff check` and `ruff format` according to
+  [pyproject.toml](python/pyproject.toml).
+* **Python type checking**: `mypy`.
+* **Repo guards**: merge-conflict detection, private-key detection, and
+  forbidding submodules.
 
-### CI Checks for C++
+The C++, Markdown, and Python formatting/lint jobs only inspect the files
+changed in your Pull Request.
 
-The following checks are performed:
+### CI checks
+
+The [`CI`](.github/workflows/ci.yml) workflow additionally performs:
 
 * C++ build and unit tests
-* Pre-commit checks:
-  * Lint C++ code format according to the style specified in `.clang-format` (for
-    modified files)
-
-### CI Checks for Python
-
-The following checks are performed:
-
 * Python unit tests for Python 3.8 to 3.11
-* Python type checking with `mypy` for Python 3.8
 * Python package installation for Python 3.8 to 3.11
-* Pre-commit checks:
-  * Lint Python files with `Ruff` according to the configuration in `pyproject.toml`
-    (if any Python files are modified, check all Python files)
-
-### CI Checks for Certain File Types
-
-Additional pre-commit checks are performed:
-
-* Check YAML formatting (for modified files)
-* Check TOML formatting (for modified files)
-* Lint Markdown files with markdownlint (for modified files)
 
 See more details:
 
 * [GitHub Actions configurations](.github/workflows/ci.yml)
-* [pre-commit configurations](.pre-commit-config.yaml)
+* [Lint & Suggest configurations](.github/workflows/lint-suggest.yml)
 
 If you have any questions, need further assistance, or want to report
 a bug or suggest an enhancement, feel free to [open an issue](https://github.com/HenryRLee/PokerHandEvaluator/issues).

@@ -1,0 +1,259 @@
+name: Lint & Suggest
+
+# Replaces the old pre-commit checks with reviewdog-powered jobs that post inline
+# PR suggestions and block the PR. Only runs on pull_request because reviewdog's
+# suggester is a pull-request-only feature. A `git diff --exit-code` hard gate is
+# used in every job so the checks still block on fork PRs (where the GITHUB_TOKEN
+# is read-only and inline suggestions cannot be posted).
+
+on:
+  pull_request:
+    branches: [master, develop]
+
+permissions:
+  contents: read
+  checks: write
+  issues: write
+  pull-requests: write
+
+env:
+  IS_INTERNAL_PR: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+
+jobs:
+  # Non-formatting safety checks carried over from pre-commit. These have no
+  # auto-fix, so they fail the PR rather than posting suggestions.
+  repo-guards:
+    name: runner / repo guards
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install "pre-commit-hooks==4.6.0"
+      - name: check for merge conflicts
+        run: git ls-files -z | xargs -0 -r check-merge-conflict --assume-in-merge
+      - name: detect private keys
+        run: git ls-files -z | xargs -0 -r detect-private-key
+      - name: forbid submodules
+        run: |
+          if [ -f .gitmodules ] || git ls-files -s | awk '$1 == "160000"{f=1} END{exit !f}'; then
+            echo "::error::Submodules are not allowed in this repository.";
+            exit 1;
+          fi
+
+  # Whitespace / EOL / BOM / tab normalisation. These transforms are stable, so
+  # they run on the whole repository (the tree is already clean under v4.6.0).
+  file-hygiene:
+    name: runner / file hygiene
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install "pre-commit-hooks==4.6.0"
+      - name: Apply fixers
+        run: |
+          set -u
+          list="$RUNNER_TEMP/text_files"
+          # Only operate on tracked text files (skip binary/generated assets).
+          git ls-files -z | while IFS= read -r -d '' f; do
+            grep -Iq . "$f" && printf '%s\0' "$f"
+          done > "$list"
+
+          # fix-byte-order-marker
+          xargs -0 -r fix-byte-order-marker < "$list" || true
+          # mixed-line-ending + remove-crlf (force LF everywhere)
+          xargs -0 -r mixed-line-ending --fix=lf < "$list" || true
+          # remove-tabs (replace each tab with 4 spaces), excluding Makefiles
+          while IFS= read -r -d '' f; do
+            case "$(basename "$f")" in
+              Makefile|makefile|GNUmakefile|*.mk) continue ;;
+            esac
+            grep -qP '\t' "$f" && sed -i 's/\t/    /g' "$f" || true
+          done < "$list"
+          # trailing-whitespace
+          xargs -0 -r trailing-whitespace-fixer < "$list" || true
+          # end-of-file-fixer
+          xargs -0 -r end-of-file-fixer < "$list" || true
+
+          rm -f "$list"
+      - name: Suggest changes
+        if: env.IS_INTERNAL_PR == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: file-hygiene
+          level: error
+          fail_level: error
+          cleanup: "false"
+      - name: Fail if any file was modified
+        run: |
+          git diff --exit-code || {
+            echo "::error::File hygiene issues found (whitespace/EOL/BOM/tabs). Review the PR suggestions or fix locally.";
+            exit 1;
+          }
+
+  # Validity checks for TOML and YAML. No auto-fix exists, so these are fail-only.
+  validate-toml-yaml:
+    name: runner / validate TOML & YAML
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install "pre-commit-hooks==4.6.0"
+      - name: check-toml
+        run: git ls-files -z '*.toml' | xargs -0 -r check-toml
+      - name: check-yaml
+        run: git ls-files -z '*.yaml' '*.yml' | xargs -0 -r check-yaml
+
+  clang-format:
+    name: runner / clang-format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install "clang-format==18.1.8"
+      - name: Collect changed C/C++ files
+        id: changed
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          files=$(git diff --name-only --diff-filter=ACMR "$base" HEAD \
+            | grep -E '\.(c|cc|cpp|cxx|h|hh|hpp)$' \
+            | grep -Ev '^cpp/src/(hashtable|tables)' \
+            | tr '\n' ' ' || true)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - name: Run clang-format
+        if: steps.changed.outputs.files != ''
+        run: clang-format -i ${{ steps.changed.outputs.files }}
+      - name: Suggest changes
+        if: steps.changed.outputs.files != '' && env.IS_INTERNAL_PR == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: clang-format
+          level: error
+          fail_level: error
+          cleanup: "false"
+      - name: Fail if any file was modified
+        if: steps.changed.outputs.files != ''
+        run: |
+          git diff --exit-code || {
+            echo "::error::clang-format issues found. Run 'clang-format -i' (CI uses clang-format 18.1.8) or apply the PR suggestions.";
+            exit 1;
+          }
+
+  markdownlint:
+    name: runner / markdownlint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm install -g markdownlint-cli@0.40.0
+      - name: Collect changed Markdown files
+        id: changed
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          files=$(git diff --name-only --diff-filter=ACMR "$base" HEAD \
+            | grep -E '\.md$' | tr '\n' ' ' || true)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - name: Apply markdownlint fixes
+        if: steps.changed.outputs.files != ''
+        run: markdownlint --fix ${{ steps.changed.outputs.files }} || true
+      - name: Suggest changes
+        if: steps.changed.outputs.files != '' && env.IS_INTERNAL_PR == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: markdownlint
+          level: error
+          fail_level: error
+          cleanup: "false"
+      - name: Fail if any file was modified
+        if: steps.changed.outputs.files != ''
+        run: |
+          git diff --exit-code || {
+            echo "::error::markdownlint auto-fixable issues found. Run 'markdownlint --fix' or apply the PR suggestions.";
+            exit 1;
+          }
+      - name: Fail on remaining (unfixable) violations
+        if: steps.changed.outputs.files != ''
+        run: markdownlint ${{ steps.changed.outputs.files }}
+
+  ruff:
+    name: runner / ruff
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: pip install ruff
+      - name: Collect changed Python files
+        id: changed
+        run: |
+          base="${{ github.event.pull_request.base.sha }}"
+          files=$(git diff --name-only --diff-filter=ACMR "$base" HEAD -- python \
+            | grep -E '\.py$' | tr '\n' ' ' || true)
+          echo "files=$files" >> "$GITHUB_OUTPUT"
+      - name: Apply ruff fixes and formatting
+        if: steps.changed.outputs.files != ''
+        run: |
+          ruff check --fix-only ${{ steps.changed.outputs.files }} || true
+          ruff format ${{ steps.changed.outputs.files }}
+      - name: Suggest changes
+        if: steps.changed.outputs.files != '' && env.IS_INTERNAL_PR == 'true'
+        uses: reviewdog/action-suggester@v1
+        with:
+          tool_name: ruff
+          level: error
+          fail_level: error
+          cleanup: "false"
+      - name: Fail if any file was modified
+        if: steps.changed.outputs.files != ''
+        run: |
+          git diff --exit-code || {
+            echo "::error::ruff found auto-fixable/format issues. Run 'ruff check --fix' and 'ruff format' or apply the PR suggestions.";
+            exit 1;
+          }
+      - name: Fail on remaining (unfixable) lint
+        if: steps.changed.outputs.files != ''
+        run: ruff check ${{ steps.changed.outputs.files }}
+
+  mypy:
+    name: runner / mypy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.8"
+      - uses: reviewdog/action-setup@v1
+      - name: Install package and mypy
+        run: |
+          cd python
+          pip install '.[dev]'
+      - name: mypy (gate)
+        run: |
+          cd python
+          mypy .
+      - name: mypy annotations (reviewdog)
+        if: always() && env.IS_INTERNAL_PR == 'true'
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd python
+          mypy . 2>&1 \
+            | reviewdog -efm="%f:%l: %t%*[^:]: %m" \
+                -name=mypy -reporter=github-pr-review \
+                -filter-mode=added -level=error -fail-level=none || true
