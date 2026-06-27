@@ -30,7 +30,7 @@ for passing the code review.
 * We recommend you to format, lint, build, and test your code locally before pushing
   your changes. This helps identify and fix issues quickly.
 
-## Development Setup
+## Formatting and linting
 
 Formatting and linting are enforced by GitHub Actions on every Pull Request (see
 [Continuous Integration](#continuous-integration-ci-with-github-actions) below).
