@@ -26,8 +26,8 @@ jobs:
     name: runner / repo guards
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - run: pip install "pre-commit-hooks==4.6.0"
@@ -48,8 +48,8 @@ jobs:
     name: runner / file hygiene
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - run: pip install "pre-commit-hooks==4.6.0"
@@ -99,8 +99,8 @@ jobs:
     name: runner / validate TOML & YAML
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - run: pip install "pre-commit-hooks==4.6.0"
@@ -113,10 +113,10 @@ jobs:
     name: runner / clang-format
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - run: pip install "clang-format==18.1.8"
@@ -152,7 +152,7 @@ jobs:
     name: runner / markdownlint
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - uses: actions/setup-node@v4
@@ -192,10 +192,10 @@ jobs:
     name: runner / ruff
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - run: pip install ruff
@@ -234,15 +234,13 @@ jobs:
     name: runner / mypy
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.8"
       - uses: reviewdog/action-setup@v1
-      - name: Install package and mypy
-        run: |
-          cd python
-          pip install '.[dev]'
+      - name: Install mypy
+        run: pip install mypy
       - name: mypy (gate)
         run: |
           cd python

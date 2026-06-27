@@ -36,7 +36,7 @@ jobs:
     if: github.event.pull_request.head.repo.fork == true
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           ref: ${{ github.event.pull_request.head.sha }}
           fetch-depth: 0
@@ -45,7 +45,7 @@ jobs:
           persist-credentials: false
       - name: Fetch base commit
         run: git fetch --no-tags --depth=1 origin ${{ github.event.pull_request.base.sha }}
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
       - uses: actions/setup-node@v4
