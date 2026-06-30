@@ -1,0 +1,110 @@
+name: Lint & Suggest (forks)
+
+# Posts inline formatting suggestions on pull requests opened from FORKS.
+#
+# Why this exists separately from lint-suggest.yml:
+#   * The `pull_request` event gives fork PRs a read-only GITHUB_TOKEN, so
+#     reviewdog cannot post review suggestions.
+#   * `pull_request_target` runs in the base-repository context, where the
+#     GITHUB_TOKEN is write-capable (see `permissions` below), so reviewdog can
+#     post. No GitHub App, PAT, or other maintainer setup is required.
+#
+# lint-suggest.yml still owns BLOCKING for every PR (including forks). This
+# workflow is suggestion-only.
+#
+# SECURITY: pull_request_target + checking out fork code is the documented "risky"
+# pattern. It is kept safe here by running ONLY static, declarative file
+# formatters that never execute project code (no `pip install .`, no build, no
+# tests, no mypy), so the write-capable GITHUB_TOKEN is never exposed to
+# untrusted code execution.
+
+on:
+  pull_request_target:
+    branches: [master, develop]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  checks: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  fork-suggest:
+    name: runner / fork suggestions
+    # Internal PRs already get suggestions from lint-suggest.yml.
+    if: github.event.pull_request.head.repo.fork == true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+          # pull_request_target grants a write-capable token; do not leave it in
+          # .git/config while untrusted fork content is checked out.
+          persist-credentials: false
+      - name: Fetch base commit
+        run: git fetch --no-tags --depth=1 origin ${{ github.event.pull_request.base.sha }}
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install formatters
+        run: |
+          pip install "pre-commit-hooks==4.6.0" "clang-format==18.1.8" ruff
+          npm install -g markdownlint-cli@0.40.0
+      # Runs only static formatters that do not execute project code. No secrets
+      # are referenced in this step, so the App key is not present in the env here.
+      - name: Run formatters on changed files
+        run: |
+          set -u
+          base="${{ github.event.pull_request.base.sha }}"
+          changed="$(git diff --name-only --diff-filter=ACMR "$base" HEAD)"
+
+          # File hygiene (tracked text files only).
+          list="$RUNNER_TEMP/text_files"
+          git ls-files -z | while IFS= read -r -d '' f; do
+            grep -Iq . "$f" && printf '%s\0' "$f"
+          done > "$list"
+          xargs -0 -r fix-byte-order-marker < "$list" || true
+          xargs -0 -r mixed-line-ending --fix=lf < "$list" || true
+          while IFS= read -r -d '' f; do
+            case "$(basename "$f")" in
+              Makefile|makefile|GNUmakefile|*.mk) continue ;;
+            esac
+            grep -qP '\t' "$f" && sed -i 's/\t/    /g' "$f" || true
+          done < "$list"
+          xargs -0 -r trailing-whitespace-fixer < "$list" || true
+          xargs -0 -r end-of-file-fixer < "$list" || true
+          rm -f "$list"
+
+          # clang-format (changed C/C++, excluding generated tables).
+          cppfiles="$(echo "$changed" \
+            | grep -E '\.(c|cc|cpp|cxx|h|hh|hpp)$' \
+            | grep -Ev '^cpp/src/(hashtable|tables)' || true)"
+          if [ -n "$cppfiles" ]; then clang-format -i $cppfiles || true; fi
+
+          # ruff (changed Python under python/).
+          pyfiles="$(echo "$changed" | grep -E '^python/.*\.py$' || true)"
+          if [ -n "$pyfiles" ]; then
+            ruff check --fix-only $pyfiles || true
+            ruff format $pyfiles || true
+          fi
+
+          # markdownlint (changed Markdown).
+          mdfiles="$(echo "$changed" | grep -E '\.md$' || true)"
+          if [ -n "$mdfiles" ]; then markdownlint --fix $mdfiles || true; fi
+
+          git --no-pager diff --stat || true
+      - name: Suggest changes
+        uses: reviewdog/action-suggester@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          tool_name: formatters
+          level: error
+          # Suggestion-only: blocking is handled by lint-suggest.yml.
+          fail_level: none
+          filter_mode: diff_context
+          cleanup: "false"
