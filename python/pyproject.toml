@@ -55,15 +55,10 @@ dev = [
 [tool.setuptools]
 include-package-data = true
 
-[tool.setuptools.package-data]
-phevaluator = ["tables/*.dat"]
-
 [tool.mypy]
-exclude = ["phevaluator/tables/"]
 python_version = "3.8"
 
 [tool.ruff]
-exclude = ["phevaluator/tables/"]
 target-version = "py38"
 fix = true
 show-fixes = true
