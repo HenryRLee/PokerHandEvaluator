@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import csv
 import unittest  # noqa: TC003
+from collections.abc import Callable  # noqa: TC003
+from collections.abc import Iterator  # noqa: TC003
 from pathlib import Path
-from typing import Callable
-from typing import Iterator
 
 TEST_DATA_DIR = Path(__file__).resolve().parents[2] / "test_data"
 

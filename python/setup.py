@@ -99,9 +99,7 @@ sources = ["phevaluator/_pheval.c"]
 sources += [f"_pheval_csrc/src/{name}" for name in _CPP_SOURCES]
 
 pheval_extension = Extension(
-    "phevaluator._pheval",
-    sources=sources,
-    include_dirs=["_pheval_csrc/include"],
+    "phevaluator._pheval", sources=sources, include_dirs=["_pheval_csrc/include"]
 )
 
 setup(ext_modules=[pheval_extension])

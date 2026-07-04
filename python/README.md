@@ -17,7 +17,7 @@ poker hands.
 
 ## Installation
 
-The library requires Python 3.
+The library requires Python 3.10 or newer.
 
 The evaluator is implemented as a C extension (`phevaluator._pheval`) that
 wraps the C sources in the repository's [`cpp`](../cpp) directory, so a C
@@ -132,7 +132,7 @@ To ensure a smooth contribution process, please follow the guidelines below.
 
 ### Requirements
 
-* Python 3.8
+* Python 3.10 or newer
 * A C compiler (the evaluator is built as a C extension)
 * [Ruff](https://docs.astral.sh/ruff/) for linting and formatting
 * [mypy](https://mypy-lang.org/) for type checking
