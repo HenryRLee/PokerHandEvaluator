@@ -12,7 +12,12 @@ all_by_module = {
         "evaluate_6cards",
         "evaluate_7cards",
     ],
-    "phevaluator.evaluator_omaha": ["evaluate_omaha_cards"],
+    "phevaluator.evaluator_omaha": [
+        "evaluate_omaha_cards",
+        "evaluate_plo4_cards",
+        "evaluate_plo5_cards",
+        "evaluate_plo6_cards",
+    ],
     "phevaluator.utils": ["sample_cards"],
 }
 

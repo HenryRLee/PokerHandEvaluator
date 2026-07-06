@@ -61,6 +61,40 @@ static PyObject *pheval_evaluate_omaha_cards(PyObject *self, PyObject *args) {
       evaluate_omaha_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4));
 }
 
+static PyObject *pheval_evaluate_plo4_cards(PyObject *self, PyObject *args) {
+  int c1, c2, c3, c4, c5, h1, h2, h3, h4;
+  if (!PyArg_ParseTuple(args, "iiiiiiiii", &c1, &c2, &c3, &c4, &c5, &h1, &h2,
+                        &h3, &h4)) {
+    return NULL;
+  }
+  return PyLong_FromLong(
+      evaluate_plo4_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4));
+}
+
+#ifdef PHEVALUATOR_HAVE_PLO5
+static PyObject *pheval_evaluate_plo5_cards(PyObject *self, PyObject *args) {
+  int c1, c2, c3, c4, c5, h1, h2, h3, h4, h5;
+  if (!PyArg_ParseTuple(args, "iiiiiiiiii", &c1, &c2, &c3, &c4, &c5, &h1, &h2,
+                        &h3, &h4, &h5)) {
+    return NULL;
+  }
+  return PyLong_FromLong(
+      evaluate_plo5_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4, h5));
+}
+#endif  // PHEVALUATOR_HAVE_PLO5
+
+#ifdef PHEVALUATOR_HAVE_PLO6
+static PyObject *pheval_evaluate_plo6_cards(PyObject *self, PyObject *args) {
+  int c1, c2, c3, c4, c5, h1, h2, h3, h4, h5, h6;
+  if (!PyArg_ParseTuple(args, "iiiiiiiiiii", &c1, &c2, &c3, &c4, &c5, &h1, &h2,
+                        &h3, &h4, &h5, &h6)) {
+    return NULL;
+  }
+  return PyLong_FromLong(
+      evaluate_plo6_cards(c1, c2, c3, c4, c5, h1, h2, h3, h4, h5, h6));
+}
+#endif  // PHEVALUATOR_HAVE_PLO6
+
 static PyMethodDef pheval_methods[] = {
     {"evaluate_5cards", pheval_evaluate_5cards, METH_VARARGS,
      "Evaluate 5 cards and return their rank (1 is the strongest)."},
@@ -70,6 +104,16 @@ static PyMethodDef pheval_methods[] = {
      "Evaluate the best 5 of 7 cards and return their rank."},
     {"evaluate_omaha_cards", pheval_evaluate_omaha_cards, METH_VARARGS,
      "Evaluate an Omaha hand (5 community + 4 hole cards) and return its rank."},
+    {"evaluate_plo4_cards", pheval_evaluate_plo4_cards, METH_VARARGS,
+     "Evaluate a PLO4 hand (5 community + 4 hole cards) and return its rank."},
+#ifdef PHEVALUATOR_HAVE_PLO5
+    {"evaluate_plo5_cards", pheval_evaluate_plo5_cards, METH_VARARGS,
+     "Evaluate a PLO5 hand (5 community + 5 hole cards) and return its rank."},
+#endif  // PHEVALUATOR_HAVE_PLO5
+#ifdef PHEVALUATOR_HAVE_PLO6
+    {"evaluate_plo6_cards", pheval_evaluate_plo6_cards, METH_VARARGS,
+     "Evaluate a PLO6 hand (5 community + 6 hole cards) and return its rank."},
+#endif  // PHEVALUATOR_HAVE_PLO6
     {NULL, NULL, 0, NULL},
 };
 
