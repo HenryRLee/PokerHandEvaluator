@@ -1,3 +1,11 @@
+"""Usage examples for the phevaluator public functions.
+
+Every ``evaluate_*`` function returns the rank of the best five-card hand as an
+integer from 1 to 7462. The scale matches Cactus Kev's evaluator: 1 is the
+strongest possible hand (a Royal Straight Flush) and 7462 is the weakest. A
+smaller value always means a stronger hand, so ranks can be compared directly.
+"""
+
 from phevaluator import Card
 from phevaluator import evaluate_5cards
 from phevaluator import evaluate_6cards
@@ -9,8 +17,8 @@ from phevaluator import evaluate_plo5_cards
 from phevaluator import evaluate_plo6_cards
 
 
-def example1() -> None:
-    print("Example 1: A Texas Holdem example")
+def texas_holdem_with_int_arguments() -> None:
+    print("Texas Hold'em with integer card ids")
 
     a = 7 * 4 + 0  # 9c
     b = 2 * 4 + 0  # 4c
@@ -29,13 +37,14 @@ def example1() -> None:
     rank1 = evaluate_cards(a, b, c, d, e, f, g)  # expected 292
     rank2 = evaluate_cards(a, b, c, d, e, h, i)  # expected 236
 
+    # A smaller rank is a stronger hand, so player 2 (236) beats player 1 (292).
     print(f"The rank of the hand in player 1 is {rank1}")
     print(f"The rank of the hand in player 2 is {rank2}")
     print("Player 2 has a stronger hand")
 
 
-def example2() -> None:
-    print("Example 2: Another Texas Holdem example")
+def texas_holdem_with_string_arguments() -> None:
+    print("Texas Hold'em with string arguments")
 
     rank1 = evaluate_cards("9c", "4c", "4s", "9d", "4h", "Qc", "6c")  # expected 292
     rank2 = evaluate_cards("9c", "4c", "4s", "9d", "4h", "2c", "9h")  # expected 236
@@ -45,8 +54,8 @@ def example2() -> None:
     print("Player 2 has a stronger hand")
 
 
-def example3() -> None:
-    print("Example 3: An Omaha poker example")
+def omaha_with_string_arguments() -> None:
+    print("Omaha with string arguments")
     # fmt: off
     rank1 = evaluate_omaha_cards(
         "4c", "5c", "6c", "7s", "8s", # community cards
@@ -64,8 +73,8 @@ def example3() -> None:
     print("Player 1 has a stronger hand")
 
 
-def example4() -> None:
-    print("Example 4: Evaluating 5, 6, and 7 cards with string arguments")
+def five_six_seven_cards_with_string_arguments() -> None:
+    print("Evaluating 5, 6, and 7 cards with string arguments")
 
     rank5 = evaluate_5cards("Ac", "Ad", "Ah", "As", "Kc")  # expected 11
     rank6 = evaluate_6cards("Ac", "Ad", "Ah", "As", "Kc", "Kd")  # expected 11
@@ -76,8 +85,8 @@ def example4() -> None:
     print(f"The rank of the 7-card hand is {rank7}")
 
 
-def example5() -> None:
-    print("Example 5: Evaluating Omaha (PLO) hands with string arguments")
+def pot_limit_omaha_with_string_arguments() -> None:
+    print("Pot Limit Omaha (PLO4/PLO5/PLO6) with string arguments")
 
     # evaluate_plo4_cards is equivalent to evaluate_omaha_cards.
     # fmt: off
@@ -114,8 +123,8 @@ def example5() -> None:
         print(f"PLO6 is unavailable: {error}")
 
 
-def example6() -> None:
-    print("Example 6: Passing int, string, and Card arguments to evaluate_cards")
+def evaluate_cards_with_mixed_argument_types() -> None:
+    print("Passing int, string, and Card arguments to evaluate_cards")
 
     # The same hand (2d 2h 2s Tc Ac) expressed with different argument types.
     rank_int = evaluate_cards(1, 2, 3, 32, 48)
@@ -133,9 +142,9 @@ def example6() -> None:
 
 
 if __name__ == "__main__":
-    example1()
-    example2()
-    example3()
-    example4()
-    example5()
-    example6()
+    texas_holdem_with_int_arguments()
+    texas_holdem_with_string_arguments()
+    omaha_with_string_arguments()
+    five_six_seven_cards_with_string_arguments()
+    pot_limit_omaha_with_string_arguments()
+    evaluate_cards_with_mixed_argument_types()
