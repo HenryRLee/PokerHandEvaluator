@@ -75,7 +75,7 @@ is the worst. A smaller value is always a stronger hand, so you can compare
 two hands directly (e.g. `p2 < p1` means player 2 wins).
 
 The function can take both numbers and card strings (with a format like: 'Ah' or
-'2C'). Usage examples can be seen in `examples.py`.
+'2C'). Usage examples can be seen in [`examples.py`](examples.py).
 
 ### Omaha and Pot Limit Omaha
 
