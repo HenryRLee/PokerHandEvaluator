@@ -2,20 +2,18 @@
 
 from __future__ import annotations
 
+from . import _pheval
 from .card import Card
-from .hash import hash_quinary
-from .tables import BINARIES_BY_ID
-from .tables import FLUSH
-from .tables import NO_FLUSH_5
-from .tables import NO_FLUSH_6
-from .tables import NO_FLUSH_7
-from .tables import SUITBIT_BY_ID
-from .tables import SUITS
 
 MIN_CARDS = 5
 MAX_CARDS = 7
 
-NO_FLUSHES = {5: NO_FLUSH_5, 6: NO_FLUSH_6, 7: NO_FLUSH_7}
+# Map the number of cards to the matching native evaluator function.
+_EVALUATORS = {
+    5: _pheval.evaluate_5cards,
+    6: _pheval.evaluate_6cards,
+    7: _pheval.evaluate_7cards,
+}
 
 
 def evaluate_cards(*cards: int | str | Card) -> int:
@@ -44,37 +42,89 @@ def evaluate_cards(*cards: int | str | Card) -> int:
     int_cards = list(map(Card.to_id, cards))
     hand_size = len(cards)
 
-    if not (MIN_CARDS <= hand_size <= MAX_CARDS) or (hand_size not in NO_FLUSHES):
+    if not (MIN_CARDS <= hand_size <= MAX_CARDS) or (hand_size not in _EVALUATORS):
         msg = (
             f"The number of cards must be between {MIN_CARDS} and {MAX_CARDS}."
             f"passed size: {hand_size}"
         )
         raise ValueError(msg)
 
-    return _evaluate_cards(*int_cards)
+    return _EVALUATORS[hand_size](*int_cards)
 
 
-def _evaluate_cards(*cards: int) -> int:
-    hand_size = len(cards)
-    no_flush = NO_FLUSHES[hand_size]
+def evaluate_5cards(
+    a: int | str | Card,
+    b: int | str | Card,
+    c: int | str | Card,
+    d: int | str | Card,
+    e: int | str | Card,
+) -> int:
+    """Evaluate exactly five cards and return their rank.
 
-    suit_hash = 0
-    for card in cards:
-        suit_hash += SUITBIT_BY_ID[card]
+    Args:
+        a, b, c, d, e (int | str | Card): The five cards.
 
-    flush_suit = SUITS[suit_hash] - 1
+    Returns:
+        int: The rank of the hand. Smaller is stronger (1 is the strongest).
 
-    if flush_suit != -1:
-        hand_binary = 0
+    Examples:
+        >>> evaluate_5cards("Ac", "Ad", "Ah", "As", "Kc")
+        11
+    """
+    return _pheval.evaluate_5cards(
+        Card.to_id(a), Card.to_id(b), Card.to_id(c), Card.to_id(d), Card.to_id(e)
+    )
 
-        for card in cards:
-            if card % 4 == flush_suit:
-                hand_binary |= BINARIES_BY_ID[card]
 
-        return FLUSH[hand_binary]
+def evaluate_6cards(  # noqa: PLR0913
+    a: int | str | Card,
+    b: int | str | Card,
+    c: int | str | Card,
+    d: int | str | Card,
+    e: int | str | Card,
+    f: int | str | Card,
+) -> int:
+    """Evaluate the best five of six cards and return their rank.
 
-    hand_quinary = [0] * 13
-    for card in cards:
-        hand_quinary[card // 4] += 1
+    Args:
+        a, b, c, d, e, f (int | str | Card): The six cards.
 
-    return no_flush[hash_quinary(hand_quinary, hand_size)]
+    Returns:
+        int: The rank of the best five-card hand. Smaller is stronger.
+    """
+    return _pheval.evaluate_6cards(
+        Card.to_id(a),
+        Card.to_id(b),
+        Card.to_id(c),
+        Card.to_id(d),
+        Card.to_id(e),
+        Card.to_id(f),
+    )
+
+
+def evaluate_7cards(  # noqa: PLR0913
+    a: int | str | Card,
+    b: int | str | Card,
+    c: int | str | Card,
+    d: int | str | Card,
+    e: int | str | Card,
+    f: int | str | Card,
+    g: int | str | Card,
+) -> int:
+    """Evaluate the best five of seven cards and return their rank.
+
+    Args:
+        a, b, c, d, e, f, g (int | str | Card): The seven cards.
+
+    Returns:
+        int: The rank of the best five-card hand. Smaller is stronger.
+    """
+    return _pheval.evaluate_7cards(
+        Card.to_id(a),
+        Card.to_id(b),
+        Card.to_id(c),
+        Card.to_id(d),
+        Card.to_id(e),
+        Card.to_id(f),
+        Card.to_id(g),
+    )

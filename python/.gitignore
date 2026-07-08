@@ -11,6 +11,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Vendored C sources copied from ../cpp at build time (see setup.py)
+_pheval_csrc/
+
 # Distribution / packaging
 .Python
 build/

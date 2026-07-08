@@ -4,10 +4,20 @@ from typing import Any
 
 # import mapping to objects in other modules
 all_by_module = {
-    "phevaluator": ["card", "evaluator_omaha", "evaluator", "hash", "tables", "utils"],
+    "phevaluator": ["card", "evaluator_omaha", "evaluator", "utils"],
     "phevaluator.card": ["Card"],
-    "phevaluator.evaluator": ["_evaluate_cards", "evaluate_cards"],
-    "phevaluator.evaluator_omaha": ["_evaluate_omaha_cards", "evaluate_omaha_cards"],
+    "phevaluator.evaluator": [
+        "evaluate_cards",
+        "evaluate_5cards",
+        "evaluate_6cards",
+        "evaluate_7cards",
+    ],
+    "phevaluator.evaluator_omaha": [
+        "evaluate_omaha_cards",
+        "evaluate_plo4_cards",
+        "evaluate_plo5_cards",
+        "evaluate_plo6_cards",
+    ],
     "phevaluator.utils": ["sample_cards"],
 }
 

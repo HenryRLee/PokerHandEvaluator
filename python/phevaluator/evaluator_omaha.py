@@ -2,22 +2,18 @@
 
 from __future__ import annotations
 
+from . import _pheval
 from .card import Card
-from .hash import hash_binary
-from .hash import hash_quinary
-from .tables import BINARIES_BY_ID
-from .tables import FLUSH
-from .tables import FLUSH_OMAHA
-from .tables import NO_FLUSH_OMAHA
 
 COMMUNITY_CARD_COUNT = 5
 HOLE_CARD_COUNT = 4
-MAX_RANK_VALUE = 10000
-MIN_FLUSH_COUNT_BOARD = 3
-MIN_FLUSH_COUNT_HOLE = 2
-MAX_FLUSH_HOLE_HASH = 1365
-MAX_NO_FLUSH_HOLE_HASH = 1820
 TOTAL_CARD_COUNT = COMMUNITY_CARD_COUNT + HOLE_CARD_COUNT
+
+# Total number of cards for each Pot Limit Omaha variant (5 community cards plus
+# the variant's hole cards).
+PLO4_CARD_COUNT = COMMUNITY_CARD_COUNT + 4
+PLO5_CARD_COUNT = COMMUNITY_CARD_COUNT + 5
+PLO6_CARD_COUNT = COMMUNITY_CARD_COUNT + 6
 
 
 def evaluate_omaha_cards(*cards: int | str | Card) -> int:
@@ -62,90 +58,93 @@ def evaluate_omaha_cards(*cards: int | str | Card) -> int:
         )
         raise ValueError(msg)
 
-    community_cards = int_cards[:COMMUNITY_CARD_COUNT]
-    hole_cards = int_cards[COMMUNITY_CARD_COUNT:]
-    return _evaluate_omaha_cards(community_cards, hole_cards)
+    return _pheval.evaluate_omaha_cards(*int_cards)
 
 
-# TODO(@azriel1rf): `_evaluate_omaha_cards` is too complex. Consider refactoring.
-# https://github.com/HenryRLee/PokerHandEvaluator/issues/92
-def _evaluate_omaha_cards(community_cards: list[int], hole_cards: list[int]) -> int:
-    value_flush = MAX_RANK_VALUE
-    suit_count_board = _count_suits(community_cards)
-    suit_count_hole = _count_suits(hole_cards)
+def _evaluate_plo_cards(
+    cards: tuple[int | str | Card, ...], expected_count: int, func_name: str
+) -> int:
+    """Convert cards and dispatch to a native PLO evaluator.
 
-    flush_suit = _determine_flush_suit(suit_count_board, suit_count_hole)
+    Args:
+        cards: The community cards followed by the hole cards.
+        expected_count: The required total number of cards.
+        func_name: The native ``_pheval`` function to call.
 
-    if flush_suit != -1:
-        value_flush = _determine_flush_value(
-            community_cards, hole_cards, suit_count_board, suit_count_hole, flush_suit
+    Raises:
+        ValueError: The number of cards is not ``expected_count``.
+        NotImplementedError: The variant was not compiled into the extension.
+
+    Returns:
+        int: The rank of the hand. Smaller is stronger.
+    """
+    if len(cards) != expected_count:
+        msg = f"The number of cards must be {expected_count}. passed size: {len(cards)}"
+        raise ValueError(msg)
+
+    func = getattr(_pheval, func_name, None)
+    if func is None:
+        msg = (
+            f"{func_name} is unavailable because the required lookup tables were "
+            "not compiled. Rebuild the package from the repository with the "
+            "PHEVALUATOR_BUILD_PLO environment variable set, e.g. "
+            "`PHEVALUATOR_BUILD_PLO=5,6 pip install .`."
         )
+        raise NotImplementedError(msg)
 
-    value_noflush = _determine_noflush_value(community_cards, hole_cards)
-
-    return min(value_flush, value_noflush)
-
-
-def _count_suits(cards: list[int]) -> list[int]:
-    suit_count = [0] * 4
-    for card in cards:
-        suit_count[card % 4] += 1
-    return suit_count
+    return func(*map(Card.to_id, cards))
 
 
-def _determine_flush_suit(
-    suit_count_board: list[int], suit_count_hole: list[int]
-) -> int:
-    for i in range(4):
-        if (
-            suit_count_board[i] >= MIN_FLUSH_COUNT_BOARD
-            and suit_count_hole[i] >= MIN_FLUSH_COUNT_HOLE
-        ):
-            return i
-    return -1
+def evaluate_plo4_cards(*cards: int | str | Card) -> int:
+    """Evaluate a Pot Limit Omaha (4 hole cards) hand.
+
+    This is equivalent to :func:`evaluate_omaha_cards`.
+
+    Args:
+        cards(int | str | Card): Five community cards followed by four hole cards.
+
+    Raises:
+        ValueError: The number of cards is not 9.
+
+    Returns:
+        int: The rank of the hand. Smaller is stronger.
+    """
+    return _evaluate_plo_cards(cards, PLO4_CARD_COUNT, "evaluate_plo4_cards")
 
 
-def _determine_flush_value(
-    community_cards: list[int],
-    hole_cards: list[int],
-    suit_count_board: list[int],
-    suit_count_hole: list[int],
-    flush_suit: int,
-) -> int:
-    flush_count_board = suit_count_board[flush_suit]
-    flush_count_hole = suit_count_hole[flush_suit]
-    suit_binary_board = 0
-    for community_card in community_cards:
-        if community_card % 4 == flush_suit:
-            suit_binary_board |= BINARIES_BY_ID[community_card]
-    suit_binary_hole = 0
-    for hole_card in hole_cards:
-        if hole_card % 4 == flush_suit:
-            suit_binary_hole |= BINARIES_BY_ID[hole_card]
-    if (
-        flush_count_board == MIN_FLUSH_COUNT_BOARD
-        and flush_count_hole == MIN_FLUSH_COUNT_HOLE
-    ):
-        return FLUSH[suit_binary_board | suit_binary_hole]
-    padding = [0x0000, 0x2000, 0x6000]
-    suit_binary_board |= padding[COMMUNITY_CARD_COUNT - flush_count_board]
-    suit_binary_hole |= padding[HOLE_CARD_COUNT - flush_count_hole]
-    board_hash = hash_binary(suit_binary_board, COMMUNITY_CARD_COUNT)
-    hole_hash = hash_binary(suit_binary_hole, HOLE_CARD_COUNT)
-    return FLUSH_OMAHA[board_hash * MAX_FLUSH_HOLE_HASH + hole_hash]
+def evaluate_plo5_cards(*cards: int | str | Card) -> int:
+    """Evaluate a 5-card Pot Limit Omaha (PLO5) hand.
+
+    Requires the package to be built with PLO5 support (see
+    ``PHEVALUATOR_BUILD_PLO``).
+
+    Args:
+        cards(int | str | Card): Five community cards followed by five hole cards.
+
+    Raises:
+        ValueError: The number of cards is not 10.
+        NotImplementedError: The package was not built with PLO5 support.
+
+    Returns:
+        int: The rank of the hand. Smaller is stronger.
+    """
+    return _evaluate_plo_cards(cards, PLO5_CARD_COUNT, "evaluate_plo5_cards")
 
 
-def _determine_noflush_value(community_cards: list[int], hole_cards: list[int]) -> int:
-    quinary_board = [0] * 13
-    quinary_hole = [0] * 13
+def evaluate_plo6_cards(*cards: int | str | Card) -> int:
+    """Evaluate a 6-card Pot Limit Omaha (PLO6) hand.
 
-    for community_card in community_cards:
-        quinary_board[community_card // 4] += 1
+    Requires the package to be built with PLO6 support (see
+    ``PHEVALUATOR_BUILD_PLO``).
 
-    for hole_card in hole_cards:
-        quinary_hole[hole_card // 4] += 1
+    Args:
+        cards(int | str | Card): Five community cards followed by six hole cards.
 
-    board_hash = hash_quinary(quinary_board, COMMUNITY_CARD_COUNT)
-    hole_hash = hash_quinary(quinary_hole, HOLE_CARD_COUNT)
+    Raises:
+        ValueError: The number of cards is not 11.
+        NotImplementedError: The package was not built with PLO6 support.
 
-    return NO_FLUSH_OMAHA[board_hash * MAX_NO_FLUSH_HOLE_HASH + hole_hash]
+    Returns:
+        int: The rank of the hand. Smaller is stronger.
+    """
+    return _evaluate_plo_cards(cards, PLO6_CARD_COUNT, "evaluate_plo6_cards")

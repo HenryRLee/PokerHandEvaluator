@@ -3,6 +3,9 @@ from __future__ import annotations
 import unittest
 
 from phevaluator import Card
+from phevaluator import evaluate_5cards
+from phevaluator import evaluate_6cards
+from phevaluator import evaluate_7cards
 from phevaluator import evaluate_cards
 
 from ._csv_fixtures import TEST_DATA_DIR
@@ -53,3 +56,15 @@ class TestEvaluator(unittest.TestCase):
         self.assertEqual(rank1, rank3)
         self.assertEqual(rank1, rank4)
         self.assertEqual(rank1, rank5)
+
+    def test_evaluate_5cards(self) -> None:
+        # Four aces with a king kicker.
+        self.assertEqual(evaluate_5cards("Ac", "Ad", "Ah", "As", "Kc"), 11)
+
+    def test_evaluate_6cards(self) -> None:
+        # The best five of the six cards is still the four aces with a king
+        # kicker, so the rank matches the five-card evaluation.
+        self.assertEqual(evaluate_6cards("Ac", "Ad", "Ah", "As", "Kc", "Kd"), 11)
+
+    def test_evaluate_7cards(self) -> None:
+        self.assertEqual(evaluate_7cards("9c", "4c", "4s", "9d", "4h", "Qc", "6c"), 292)

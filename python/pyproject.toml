@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "phevaluator"
 version = "0.5.3.1"
-requires-python = ">=3.8, <4"
+requires-python = ">=3.10, <4"
 authors = [
     {name = "Henry Lee", email = "lee0906@hotmail.com"}
 ]
@@ -26,10 +26,11 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Libraries",
 ]
 
@@ -55,16 +56,16 @@ dev = [
 [tool.setuptools]
 include-package-data = true
 
-[tool.setuptools.package-data]
-phevaluator = ["tables/*.dat"]
-
 [tool.mypy]
-exclude = ["phevaluator/tables/"]
-python_version = "3.8"
+python_version = "3.10"
+
+[[tool.mypy.overrides]]
+# setuptools is only used by the build script (setup.py) and ships no stubs.
+module = ["setuptools", "setuptools.*"]
+ignore_missing_imports = true
 
 [tool.ruff]
-exclude = ["phevaluator/tables/"]
-target-version = "py38"
+target-version = "py310"
 fix = true
 show-fixes = true
 
@@ -76,8 +77,6 @@ ignore = [
     "E741",   # ambiguous-variable-name is incompatible with N806 (non-lowercase-variable-in-function)
     "COM812", # missing-trailing-comma is incompatible with Ruff formatter
     "ISC001", # single-line-implicit-string-concatenation is incompatible with Ruff formatter
-    "ANN101", # will be deprecated
-    "ANN102", # will be deprecated
     "FIX002", # We use "TODO" comments to provide context for future work
     "PT",     # We don't use pytests and this causes false positives
     "ERA001", # False positive

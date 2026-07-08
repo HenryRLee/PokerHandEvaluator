@@ -1,0 +1,4 @@
+# Bundle the C sources and headers vendored from ../cpp by setup.py so that the
+# source distribution is self-contained and can build the phevaluator._pheval
+# extension without access to the sibling cpp directory.
+graft _pheval_csrc
