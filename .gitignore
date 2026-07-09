@@ -31,3 +31,6 @@
 # Editors
 *.swp
 .vscode
+
+# Sphinx documentation build output
+docs/**/_build/

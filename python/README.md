@@ -15,6 +15,9 @@ considerably small memory (~100kb for the 7 card evaluation). With slight
 modification, the same algorithm can be also applied to evaluating Omaha
 poker hands.
 
+The full API documentation is published at
+<https://henryrlee.github.io/PokerHandEvaluator/python>.
+
 ## Installation
 
 The library requires Python 3.10 or newer.
