@@ -36,9 +36,7 @@ classifiers = [
 
 [project.urls]
 Homepage = "https://github.com/HenryRLee/PokerHandEvaluator"
-# TODO(@azriel1rf): Add a link to documentation for Python after it's published
-# https://github.com/HenryRLee/PokerHandEvaluator/issues/105
-Documentation = "https://github.com/HenryRLee/PokerHandEvaluator/tree/master/Documentation"
+Documentation = "https://henryrlee.github.io/PokerHandEvaluator/python"
 Repository = "https://github.com/HenryRLee/PokerHandEvaluator"
 Issues = "https://github.com/HenryRLee/PokerHandEvaluator/issues"
 # TODO(@azriel1rf): Add a link to the changelog after it's published
@@ -51,6 +49,11 @@ dev = [
     "mypy",
     "ruff",
     "twine",
+]
+docs = [
+    "sphinx",
+    "furo",
+    "myst-parser",
 ]
 
 [tool.setuptools]

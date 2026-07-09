@@ -5,6 +5,8 @@
 A [Poker Hand Evaluator](https://github.com/HenryRLee/PokerHandEvaluator)
 based on a Perfect Hash Algorithm
 
+📖 Documentation: <https://henryrlee.github.io/PokerHandEvaluator>
+
 ## Overview
 
 Efficiently evaluating a poker hand has been an interesting and challenging
