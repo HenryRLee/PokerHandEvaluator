@@ -96,9 +96,7 @@ jobs:
           TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         run: |
           python -m pip install --upgrade twine
-          # --skip-existing lets the workflow be re-run without failing if this
-          # version was already uploaded to PyPI.
-          twine upload --skip-existing dist/*
+          twine upload dist/*
 
   test:
     name: Test PyPI package (py ${{ matrix.python-version }})
