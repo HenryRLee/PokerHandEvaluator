@@ -1,5 +1,5 @@
 #include "benchmark/benchmark.h"
-#include "phevaluator/card_sampler.h"
+#include "card_sampler.h"
 #include "phevaluator/phevaluator.h"
 
 using namespace phevaluator;

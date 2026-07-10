@@ -1,4 +1,3 @@
-#include <phevaluator/card_sampler.h>
 #include <phevaluator/phevaluator.h>
 #include <phevaluator/rank.h>
 
@@ -7,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include "card_sampler.h"
 #include "gtest/gtest.h"
 #include "kev/kev_eval.h"
 
