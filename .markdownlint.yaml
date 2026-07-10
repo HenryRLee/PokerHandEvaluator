@@ -8,3 +8,9 @@ MD033:
   #   [Go to section](#section)
   #   <a name="section"></a>
   allowed_elements: [a]
+
+# MD024 - Multiple headings with the same content
+MD024:
+  # Allow identical headings as long as they are not siblings. Changelogs
+  # naturally repeat section headings (e.g. "Python") under each version.
+  siblings_only: true

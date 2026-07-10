@@ -16,6 +16,7 @@ This site is organised into three sections:
 * :doc:`cpp/index` - usage and examples of the C/C++ library.
 * :doc:`python/index` - usage and API reference of the ``phevaluator`` Python
   package.
+* :doc:`changelog` - the history of notable changes across releases.
 
 .. toctree::
    :maxdepth: 2
@@ -24,6 +25,7 @@ This site is organised into three sections:
    algorithm/index
    cpp/index
    python/index
+   changelog
 
 Indices and tables
 ==================
