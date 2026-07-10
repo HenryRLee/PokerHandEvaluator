@@ -4,6 +4,9 @@ name: Publish to TestPyPI
 # source distribution, uploads it to TestPyPI with twine, and then installs the
 # freshly published package from TestPyPI and runs the test suite against it.
 #
+# Each run publishes a unique PEP 440 dev version (<base>.dev<run-number>)
+# because TestPyPI, like PyPI, does not allow overwriting an existing version.
+#
 # Requires a repository secret named TEST_PYPI_API_TOKEN holding a TestPyPI API
 # token (https://test.pypi.org/manage/account/token/).
 on:
@@ -23,13 +26,20 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Read package version
+      - name: Set a unique dev version
         id: version
+        # TestPyPI (like PyPI) does not allow overwriting an existing version,
+        # so each run publishes a unique PEP 440 dev version derived from the
+        # base version and the workflow run number. A '.devN' segment is used
+        # because local '+' version segments are rejected by PyPI/TestPyPI.
         run: |
-          version=$(grep -m1 '^version' python/pyproject.toml \
+          base=$(grep -m1 '^version' python/pyproject.toml \
             | sed -E 's/.*"([^"]+)".*/\1/')
+          version="${base}.dev${{ github.run_number }}"
+          sed -i -E "s/^version = \"[^\"]+\"/version = \"${version}\"/" \
+            python/pyproject.toml
           echo "version=${version}" >> "$GITHUB_OUTPUT"
-          echo "Building phevaluator ${version}"
+          echo "Publishing phevaluator ${version} to TestPyPI"
 
       - name: Build the source distribution
         # Only an sdist is published: the PLO4/Omaha + 5/6/7-card base package
