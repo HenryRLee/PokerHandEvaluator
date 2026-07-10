@@ -1,0 +1,149 @@
+name: Publish to PyPI
+
+# Manually triggered release of the Python package to PyPI. It mirrors the
+# TestPyPI workflow (build an sdist, upload it with twine, then install the
+# published package and run the test suite against it), but it is gated: it
+# only proceeds if the "Publish to TestPyPI" workflow has already succeeded for
+# the exact same commit. This makes TestPyPI a mandatory rehearsal for every
+# PyPI release.
+#
+# Requires a repository secret named PYPI_API_TOKEN holding a PyPI API token
+# (https://pypi.org/manage/account/token/).
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  verify-testpypi:
+    name: Require a successful TestPyPI release for this commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for a successful TestPyPI run on this SHA
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # Count successful runs of the TestPyPI workflow for this exact commit.
+          count=$(gh api \
+            "repos/${{ github.repository }}/actions/workflows/publish-testpypi.yml/runs?head_sha=${GITHUB_SHA}&per_page=100" \
+            --jq '[.workflow_runs[] | select(.conclusion == "success")] | length')
+          echo "Successful TestPyPI runs for ${GITHUB_SHA}: ${count:-0}"
+          if [ "${count:-0}" -lt 1 ]; then
+            echo "::error::No successful 'Publish to TestPyPI' run found for commit ${GITHUB_SHA}. Run and pass the TestPyPI workflow on this commit before releasing to PyPI."
+            exit 1
+          fi
+
+  build:
+    name: Build distribution
+    needs: verify-testpypi
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Read package version
+        id: version
+        run: |
+          version=$(grep -m1 '^version' python/pyproject.toml \
+            | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Building phevaluator ${version}"
+
+      - name: Build the source distribution
+        # Only an sdist is published: the PLO4/Omaha + 5/6/7-card base package
+        # builds quickly from source on any platform. PLO5/PLO6 remain an
+        # opt-in local build (PHEVALUATOR_BUILD_PLO) and are not distributed.
+        run: |
+          cd python
+          python -m pip install --upgrade build twine
+          python -m build --sdist
+          twine check dist/*
+
+      - name: Upload the distribution artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: pypi-dist
+          path: python/dist/*
+
+  publish:
+    name: Upload to PyPI
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the distribution artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: pypi-dist
+          path: dist
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Upload with twine
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+          TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
+        run: |
+          python -m pip install --upgrade twine
+          # --skip-existing lets the workflow be re-run without failing if this
+          # version was already uploaded to PyPI.
+          twine upload --skip-existing dist/*
+
+  test:
+    name: Test PyPI package (py ${{ matrix.python-version }})
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      # The test suite and its CSV fixtures (test_data/) live in the repository,
+      # so it is checked out even though phevaluator itself is installed from
+      # PyPI.
+      - uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install phevaluator from PyPI
+        # The exact version pin ensures the freshly published release is fetched.
+        # Retries cover index propagation delay right after the upload.
+        run: |
+          version="${{ needs.build.outputs.version }}"
+          for attempt in 1 2 3 4 5 6; do
+            if python -m pip install "phevaluator==${version}"; then
+              echo "Installed phevaluator ${version} from PyPI"
+              exit 0
+            fi
+            echo "phevaluator ${version} not available yet; retrying in 15s..."
+            sleep 15
+          done
+          echo "Failed to install phevaluator ${version} from PyPI" >&2
+          exit 1
+
+      - name: Run the test suite against the installed package
+        # The tests are staged into a directory that does not contain the
+        # phevaluator source tree, so imports resolve to the package installed
+        # from PyPI rather than the local checkout. The layout mirrors the
+        # repository (python/tests + test_data) so the fixtures resolve.
+        run: |
+          staging="${RUNNER_TEMP}/pkgtest"
+          mkdir -p "${staging}/python"
+          cp -r python/tests "${staging}/python/tests"
+          cp -r test_data "${staging}/test_data"
+          cd "${staging}/python"
+          python -m unittest discover -v
