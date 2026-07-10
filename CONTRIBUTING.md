@@ -130,7 +130,7 @@ changed in your Pull Request.
 
 ### CI checks
 
-The [`CI`](.github/workflows/ci.yml) workflow additionally performs:
+The [`Build and Test`](.github/workflows/build-and-test.yml) workflow additionally performs:
 
 * C++ build and unit tests
 * Python unit tests for Python 3.8 to 3.11
@@ -138,7 +138,7 @@ The [`CI`](.github/workflows/ci.yml) workflow additionally performs:
 
 See more details:
 
-* [GitHub Actions configurations](.github/workflows/ci.yml)
+* [GitHub Actions configurations](.github/workflows/build-and-test.yml)
 * [Lint & Suggest configurations](.github/workflows/lint-suggest.yml)
 
 If you have any questions, need further assistance, or want to report
