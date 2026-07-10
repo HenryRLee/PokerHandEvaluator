@@ -2,10 +2,13 @@ name: Publish to PyPI
 
 # Manually triggered release of the Python package to PyPI. It mirrors the
 # TestPyPI workflow (build an sdist, upload it with twine, then install the
-# published package and run the test suite against it), but it is gated twice:
-#   * only repository maintainers/admins may run it, and
+# published package and run the test suite against it), but the release is
+# guarded by several gates:
+#   * only repository maintainers/admins may run it,
 #   * it only proceeds if the "Publish to TestPyPI" workflow has already
-#     succeeded for the exact same commit.
+#     succeeded for the exact same commit, and
+#   * the upload runs in the protected 'pypi' GitHub Environment, so a required
+#     reviewer must approve it (configured in the repository settings).
 # This makes TestPyPI a mandatory rehearsal for every PyPI release.
 #
 # Requires a repository secret named PYPI_API_TOKEN holding a PyPI API token
@@ -100,6 +103,13 @@ jobs:
     name: Upload to PyPI
     needs: build
     runs-on: ubuntu-latest
+    # Gated by the 'pypi' GitHub Environment. Configure it in the repository
+    # settings (Settings -> Environments -> pypi) with Required reviewers so a
+    # maintainer must approve before the upload runs. The PYPI_API_TOKEN secret
+    # may also be scoped to this environment for extra isolation.
+    environment:
+      name: pypi
+      url: https://pypi.org/project/phevaluator/
     steps:
       - name: Download the distribution artifact
         uses: actions/download-artifact@v8
