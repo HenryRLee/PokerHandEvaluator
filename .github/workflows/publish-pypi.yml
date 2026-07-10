@@ -2,10 +2,11 @@ name: Publish to PyPI
 
 # Manually triggered release of the Python package to PyPI. It mirrors the
 # TestPyPI workflow (build an sdist, upload it with twine, then install the
-# published package and run the test suite against it), but it is gated: it
-# only proceeds if the "Publish to TestPyPI" workflow has already succeeded for
-# the exact same commit. This makes TestPyPI a mandatory rehearsal for every
-# PyPI release.
+# published package and run the test suite against it), but it is gated twice:
+#   * only repository maintainers/admins may run it, and
+#   * it only proceeds if the "Publish to TestPyPI" workflow has already
+#     succeeded for the exact same commit.
+# This makes TestPyPI a mandatory rehearsal for every PyPI release.
 #
 # Requires a repository secret named PYPI_API_TOKEN holding a PyPI API token
 # (https://pypi.org/manage/account/token/).
@@ -17,6 +18,28 @@ permissions:
   actions: read
 
 jobs:
+  authorize:
+    name: Authorize maintainer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require the actor to be a repository maintainer or admin
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          # workflow_dispatch already requires write access, but publishing the
+          # official package is restricted further to maintainers/admins.
+          role=$(gh api \
+            "repos/${{ github.repository }}/collaborators/${{ github.actor }}/permission" \
+            --jq '.role_name // .permission')
+          echo "Actor '${{ github.actor }}' has role '${role}'."
+          case "${role}" in
+            admin|maintain)
+              echo "Authorized to publish to PyPI." ;;
+            *)
+              echo "::error::Publishing to PyPI is restricted to repository maintainers and admins (actor '${{ github.actor }}' has role '${role}')."
+              exit 1 ;;
+          esac
+
   verify-testpypi:
     name: Require a successful TestPyPI release for this commit
     runs-on: ubuntu-latest
@@ -37,7 +60,7 @@ jobs:
 
   build:
     name: Build distribution
-    needs: verify-testpypi
+    needs: [authorize, verify-testpypi]
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.version.outputs.version }}
