@@ -84,24 +84,66 @@ jobs:
           echo "Building phevaluator ${version}"
 
       - name: Build the source distribution
-        # Only an sdist is published: the PLO4/Omaha + 5/6/7-card base package
-        # builds quickly from source on any platform. PLO5/PLO6 remain an
-        # opt-in local build (PHEVALUATOR_BUILD_PLO) and are not distributed.
+        # The base package (PLO4/Omaha + 5/6/7-card) is built. PLO5/PLO6 remain
+        # an opt-in local build (PHEVALUATOR_BUILD_PLO) and are not distributed.
+        # Binary wheels are built separately (build-wheels) from this sdist.
         run: |
           cd python
           python -m pip install --upgrade build twine
           python -m build --sdist
           twine check dist/*
 
-      - name: Upload the distribution artifact
+      - name: Upload the sdist artifact
         uses: actions/upload-artifact@v7
         with:
-          name: pypi-dist
-          path: python/dist/*
+          name: sdist
+          path: python/dist/*.tar.gz
+
+  build-wheels:
+    name: Build wheels (${{ matrix.os }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Download the sdist
+        uses: actions/download-artifact@v8
+        with:
+          name: sdist
+          path: dist
+
+      - name: Extract the sdist
+        # Wheels are built from the self-contained sdist (it bundles the
+        # vendored C sources), so the build works even where the sibling cpp/
+        # directory is unavailable, e.g. inside the manylinux container.
+        shell: bash
+        run: |
+          mkdir sdist-src
+          tar -xzf dist/*.tar.gz -C sdist-src --strip-components=1
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3
+        with:
+          package-dir: sdist-src
+          output-dir: wheelhouse
+        env:
+          # Base package only (PLO5/PLO6 stay opt-in). CPython 3.10-3.14; skip
+          # musllinux, 32-bit and PyPy to keep the matrix focused.
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_SKIP: "*-musllinux_* *_i686 *-win32"
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
+
+      - name: Upload the wheels
+        uses: actions/upload-artifact@v7
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
 
   publish:
     name: Upload to PyPI
-    needs: build
+    needs: [build, build-wheels]
     runs-on: ubuntu-latest
     # Gated by the 'pypi' GitHub Environment. Configure it in the repository
     # settings (Settings -> Environments -> pypi) with Required reviewers so a
@@ -111,11 +153,18 @@ jobs:
       name: pypi
       url: https://pypi.org/project/phevaluator/
     steps:
-      - name: Download the distribution artifact
+      - name: Download the sdist
         uses: actions/download-artifact@v8
         with:
-          name: pypi-dist
+          name: sdist
           path: dist
+
+      - name: Download the wheels
+        uses: actions/download-artifact@v8
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -129,16 +178,27 @@ jobs:
           TWINE_REPOSITORY_URL: https://upload.pypi.org/legacy/
         run: |
           python -m pip install --upgrade twine
+          twine check dist/*
           twine upload dist/*
 
   test:
-    name: Test PyPI package (py ${{ matrix.python-version }})
+    name: Test PyPI package (${{ matrix.os }}, py ${{ matrix.python-version }})
     needs: [build, publish]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        # Keep the Windows/macOS matrix lean: cover only the oldest and newest
+        # supported CPython there; Ubuntu covers every version.
+        exclude:
+          - { os: windows-latest, python-version: "3.11" }
+          - { os: windows-latest, python-version: "3.12" }
+          - { os: windows-latest, python-version: "3.13" }
+          - { os: macos-latest, python-version: "3.11" }
+          - { os: macos-latest, python-version: "3.12" }
+          - { os: macos-latest, python-version: "3.13" }
     steps:
       # The test suite and its CSV fixtures (test_data/) live in the repository,
       # so it is checked out even though phevaluator itself is installed from
@@ -153,6 +213,7 @@ jobs:
       - name: Install phevaluator from PyPI
         # The exact version pin ensures the freshly published release is fetched.
         # Retries cover index propagation delay right after the upload.
+        shell: bash
         run: |
           version="${{ needs.build.outputs.version }}"
           for attempt in 1 2 3 4 5 6; do
@@ -171,10 +232,54 @@ jobs:
         # phevaluator source tree, so imports resolve to the package installed
         # from PyPI rather than the local checkout. The layout mirrors the
         # repository (python/tests + test_data) so the fixtures resolve.
+        shell: bash
         run: |
-          staging="${RUNNER_TEMP}/pkgtest"
+          staging="$(mktemp -d)"
           mkdir -p "${staging}/python"
           cp -r python/tests "${staging}/python/tests"
           cp -r test_data "${staging}/test_data"
           cd "${staging}/python"
           python -m unittest discover -v
+
+  test-rhel:
+    name: Test PyPI package (Rocky Linux 9, py 3.11)
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    # A RHEL-family check. GitHub does not offer RHEL runners, so a Rocky Linux
+    # 9 container (a 1:1 RHEL rebuild) is used.
+    container: rockylinux:9
+    steps:
+      - name: Install prerequisites
+        # setup-python is unreliable in RHEL containers, so the distro's own
+        # Python toolchain is used. git is needed by actions/checkout; gcc and
+        # the -devel headers are only needed if pip falls back to building the
+        # sdist (the published manylinux wheel installs without a compiler).
+        run: |
+          dnf -y install python3.11 python3.11-pip python3.11-devel gcc git
+
+      - uses: actions/checkout@v7
+
+      - name: Install phevaluator from PyPI
+        run: |
+          version="${{ needs.build.outputs.version }}"
+          python3.11 -m venv /opt/venv
+          /opt/venv/bin/python -m pip install --upgrade pip
+          for attempt in 1 2 3 4 5 6; do
+            if /opt/venv/bin/python -m pip install "phevaluator==${version}"; then
+              echo "Installed phevaluator ${version} from PyPI"
+              exit 0
+            fi
+            echo "phevaluator ${version} not available yet; retrying in 15s..."
+            sleep 15
+          done
+          echo "Failed to install phevaluator ${version} from PyPI" >&2
+          exit 1
+
+      - name: Run the test suite against the installed package
+        run: |
+          staging="$(mktemp -d)"
+          mkdir -p "${staging}/python"
+          cp -r python/tests "${staging}/python/tests"
+          cp -r test_data "${staging}/test_data"
+          cd "${staging}/python"
+          /opt/venv/bin/python -m unittest discover -v
