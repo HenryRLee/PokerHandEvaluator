@@ -13,7 +13,6 @@ for passing the code review.
     * Follow the [Black code style](https://black.readthedocs.io/en/stable/the_black_code_style/current_style.html).
     * Write type hints following [PEP 484](https://www.python.org/dev/peps/pep-0484/).
     * Include docstrings following [PEP 257](https://www.python.org/dev/peps/pep-0257/).
-  * For Markdown files, follow the [markdownlint rules](https://github.com/DavidAnson/markdownlint).
   * Ensure YAML and TOML files are valid and properly formatted.
   * An [.editorconfig](.editorconfig)
     file is provided, which [most editors support natively](https://editorconfig.org/),
@@ -118,7 +117,6 @@ All checks still run and block on failure for fork Pull Requests.
 * **TOML & YAML**: validity checks.
 * **C++**: `clang-format` according to [.clang-format](cpp/.clang-format)
   (excluding the generated `cpp/src/hashtable*` and `cpp/src/tables*` files).
-* **Markdown**: `markdownlint` according to [.markdownlint.yaml](.markdownlint.yaml).
 * **Python**: `ruff check` and `ruff format` according to
   [pyproject.toml](python/pyproject.toml).
 * **Python type checking**: `mypy`.
@@ -130,7 +128,8 @@ changed in your Pull Request.
 
 ### CI checks
 
-The [`CI`](.github/workflows/ci.yml) workflow additionally performs:
+The [`Build and Test`](.github/workflows/build-and-test.yml) workflow
+additionally performs:
 
 * C++ build and unit tests
 * Python unit tests for Python 3.8 to 3.11
@@ -138,7 +137,7 @@ The [`CI`](.github/workflows/ci.yml) workflow additionally performs:
 
 See more details:
 
-* [GitHub Actions configurations](.github/workflows/ci.yml)
+* [GitHub Actions configurations](.github/workflows/build-and-test.yml)
 * [Lint & Suggest configurations](.github/workflows/lint-suggest.yml)
 
 If you have any questions, need further assistance, or want to report

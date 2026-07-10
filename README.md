@@ -1,6 +1,6 @@
 # PH Evaluator
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/CI?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/ci.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/Build%20and%20Test?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/build-and-test.yml)
 
 A [Poker Hand Evaluator](https://github.com/HenryRLee/PokerHandEvaluator)
 based on a Perfect Hash Algorithm
@@ -107,7 +107,7 @@ The memory usage is measured by `pmap`.
 
 ## Python Implementation
 
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/CI?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/ci.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/Build%20and%20Test?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/build-and-test.yml)
 [![PyPI version](https://badge.fury.io/py/phevaluator.svg)](https://badge.fury.io/py/phevaluator)
 [![PyPI downloads](https://img.shields.io/pypi/dm/phevaluator)](https://shields.io/category/downloads)
 [![Apache_2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/HenryRLee/PokerHandEvaluator/blob/master/python/LICENSE)
