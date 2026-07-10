@@ -48,13 +48,9 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: "3.x"
-      - uses: actions/setup-node@v6
-        with:
-          node-version: "20"
       - name: Install formatters
         run: |
           pip install "pre-commit-hooks==4.6.0" "clang-format==18.1.8" ruff
-          npm install -g markdownlint-cli@0.40.0
       # Runs only static formatters that do not execute project code. No secrets
       # are referenced in this step, so the App key is not present in the env here.
       - name: Run formatters on changed files
@@ -92,10 +88,6 @@ jobs:
             ruff check --fix-only $pyfiles || true
             ruff format $pyfiles || true
           fi
-
-          # markdownlint (changed Markdown).
-          mdfiles="$(echo "$changed" | grep -E '\.md$' || true)"
-          if [ -n "$mdfiles" ]; then markdownlint --fix $mdfiles || true; fi
 
           git --no-pager diff --stat || true
       - name: Suggest changes
