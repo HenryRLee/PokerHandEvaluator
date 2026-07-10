@@ -1,0 +1,128 @@
+name: Publish to TestPyPI
+
+# Manually triggered release of the Python package to TestPyPI. It builds the
+# source distribution, uploads it to TestPyPI with twine, and then installs the
+# freshly published package from TestPyPI and runs the test suite against it.
+#
+# Requires a repository secret named TEST_PYPI_API_TOKEN holding a TestPyPI API
+# token (https://test.pypi.org/manage/account/token/).
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build distribution
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Read package version
+        id: version
+        run: |
+          version=$(grep -m1 '^version' python/pyproject.toml \
+            | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "Building phevaluator ${version}"
+
+      - name: Build the source distribution
+        # Only an sdist is published: the PLO4/Omaha + 5/6/7-card base package
+        # builds quickly from source on any platform. PLO5/PLO6 remain an
+        # opt-in local build (PHEVALUATOR_BUILD_PLO) and are not distributed.
+        run: |
+          cd python
+          python -m pip install --upgrade build twine
+          python -m build --sdist
+          twine check dist/*
+
+      - name: Upload the distribution artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: testpypi-dist
+          path: python/dist/*
+
+  publish:
+    name: Upload to TestPyPI
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download the distribution artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: testpypi-dist
+          path: dist
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Upload with twine
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
+        run: |
+          python -m pip install --upgrade twine
+          # --skip-existing lets the workflow be re-run without failing if this
+          # version was already uploaded to TestPyPI.
+          twine upload --skip-existing dist/*
+
+  test:
+    name: Test TestPyPI package (py ${{ matrix.python-version }})
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+    steps:
+      # The test suite and its CSV fixtures (test_data/) live in the repository,
+      # so it is checked out even though phevaluator itself is installed from
+      # TestPyPI.
+      - uses: actions/checkout@v7
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install phevaluator from TestPyPI
+        # TestPyPI is the primary index; PyPI is used as an extra index for
+        # build dependencies (e.g. setuptools). The exact version pin ensures
+        # the package is fetched from TestPyPI. Retries cover index propagation
+        # delay right after the upload.
+        run: |
+          version="${{ needs.build.outputs.version }}"
+          for attempt in 1 2 3 4 5 6; do
+            if python -m pip install \
+                --index-url https://test.pypi.org/simple/ \
+                --extra-index-url https://pypi.org/simple/ \
+                "phevaluator==${version}"; then
+              echo "Installed phevaluator ${version} from TestPyPI"
+              exit 0
+            fi
+            echo "phevaluator ${version} not available yet; retrying in 15s..."
+            sleep 15
+          done
+          echo "Failed to install phevaluator ${version} from TestPyPI" >&2
+          exit 1
+
+      - name: Run the test suite against the installed package
+        # The tests are staged into a directory that does not contain the
+        # phevaluator source tree, so imports resolve to the package installed
+        # from TestPyPI rather than the local checkout. The layout mirrors the
+        # repository (python/tests + test_data) so the fixtures resolve.
+        run: |
+          staging="${RUNNER_TEMP}/pkgtest"
+          mkdir -p "${staging}/python"
+          cp -r python/tests "${staging}/python/tests"
+          cp -r test_data "${staging}/test_data"
+          cd "${staging}/python"
+          python -m unittest discover -v
