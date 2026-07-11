@@ -1,7 +1,7 @@
 # PH Evaluator Python package (phevaluator)
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/Build%20and%20Test?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/build-and-test.yml)
-[![PyPI version](https://badge.fury.io/py/phevaluator.svg)](https://badge.fury.io/py/phevaluator)
+[![PyPI version](https://img.shields.io/pypi/v/phevaluator)](https://pypi.org/project/phevaluator/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/phevaluator)](https://shields.io/category/downloads)
 [![Apache_2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/HenryRLee/PokerHandEvaluator/blob/master/python/LICENSE)
 
