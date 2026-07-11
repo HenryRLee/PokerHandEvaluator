@@ -55,10 +55,8 @@ Build:
 
 ```shell
 cd cpp
-mkdir -p build
-cd build
-cmake ..
-make
+cmake -B build # This will create a folder named build, and configure the Makefile
+cmake --build build # This will start the build in the new folder
 ```
 
 Test:
@@ -71,10 +69,6 @@ cd cpp/build
 ## Python development
 
 See more details: [README.md for Python](python/README.md#contributing)
-
-Requirements:
-
-* Python 3.8, [Ruff](https://docs.astral.sh/ruff/), [mypy](https://mypy-lang.org/)
 
 Code style:
 
@@ -91,7 +85,7 @@ mypy .
 Test:
 
 ```shell
-python3 -m unittest discover -v
+python -m unittest discover -v
 ```
 
 ## Continuous Integration (CI) with GitHub Actions
@@ -132,8 +126,8 @@ The [`Build and Test`](.github/workflows/build-and-test.yml) workflow
 additionally performs:
 
 * C++ build and unit tests
-* Python unit tests for Python 3.8 to 3.11
-* Python package installation for Python 3.8 to 3.11
+* Python unit tests for Python 3.10 to 3.14
+* Python package installation for Python 3.10 to 3.14
 
 See more details:
 

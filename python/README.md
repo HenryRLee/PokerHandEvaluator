@@ -1,7 +1,7 @@
 # PH Evaluator Python package (phevaluator)
 
 [![GitHub Workflow Status](https://img.shields.io/github/workflow/status/HenryRLee/PokerHandEvaluator/Build%20and%20Test?color=green&logo=github)](https://github.com/HenryRLee/PokerHandEvaluator/actions/workflows/build-and-test.yml)
-[![PyPI version](https://badge.fury.io/py/phevaluator.svg)](https://badge.fury.io/py/phevaluator)
+[![PyPI version](https://img.shields.io/pypi/v/phevaluator)](https://pypi.org/project/phevaluator/)
 [![PyPI downloads](https://img.shields.io/pypi/dm/phevaluator)](https://shields.io/category/downloads)
 [![Apache_2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://github.com/HenryRLee/PokerHandEvaluator/blob/master/python/LICENSE)
 
@@ -176,8 +176,6 @@ To ensure a smooth contribution process, please follow the guidelines below.
 
 * Python 3.10 or newer
 * A C compiler (the evaluator is built as a C extension)
-* [Ruff](https://docs.astral.sh/ruff/) for linting and formatting
-* [mypy](https://mypy-lang.org/) for type checking
 
 ### Code style
 
@@ -204,25 +202,3 @@ pip install -e .
 
 This allows the installed package to automatically reflect changes made in the `phevaluator`
 folder.
-
-### Building the Package
-
-To build the package, run the following command:
-
-```shell
-python -m build
-```
-
-This will create a `dist` folder containing the built package.
-
-Install the built package for testing:
-
-```shell
-pip install dist/*.whl
-```
-
-Check whether your distribution's long description will render correctly on PyPI:
-
-```shell
-python -m twine check dist/*
-```
