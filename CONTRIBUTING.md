@@ -126,8 +126,8 @@ The [`Build and Test`](.github/workflows/build-and-test.yml) workflow
 additionally performs:
 
 * C++ build and unit tests
-* Python unit tests for Python 3.8 to 3.11
-* Python package installation for Python 3.8 to 3.11
+* Python unit tests for Python 3.10 to 3.14
+* Python package installation for Python 3.10 to 3.14
 
 See more details:
 
