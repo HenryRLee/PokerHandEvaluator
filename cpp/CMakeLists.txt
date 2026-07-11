@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(PokerHandEvaluator VERSION 0.6.0)
+project(PokerHandEvaluator VERSION 0.6.1)
 
 set(CMAKE_BUILD_TYPE  "Release")
 
