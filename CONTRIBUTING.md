@@ -87,7 +87,7 @@ mypy .
 Test:
 
 ```shell
-python3 -m unittest discover -v
+python -m unittest discover -v
 ```
 
 ## Continuous Integration (CI) with GitHub Actions
