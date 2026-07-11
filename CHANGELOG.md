@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file.
 
-## [0.6.0] - Unreleased
+## [0.6.0] - 2026-07-11
 
 ### C/C++
 
