@@ -72,10 +72,6 @@ cd cpp/build
 
 See more details: [README.md for Python](python/README.md#contributing)
 
-Requirements:
-
-* Python 3.8, [Ruff](https://docs.astral.sh/ruff/), [mypy](https://mypy-lang.org/)
-
 Code style:
 
 * Specified in [pyproject.toml](python/pyproject.toml)
