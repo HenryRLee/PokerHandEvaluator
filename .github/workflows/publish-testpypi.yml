@@ -1,8 +1,9 @@
 name: Publish to TestPyPI
 
 # Manually triggered release of the Python package to TestPyPI. It builds the
-# source distribution, uploads it to TestPyPI with twine, and then installs the
-# freshly published package from TestPyPI and runs the test suite against it.
+# source distribution and binary wheels (cibuildwheel), uploads them to TestPyPI
+# with twine, and then installs the freshly published package from TestPyPI and
+# runs the test suite against it on several platforms.
 #
 # Each run publishes a unique PEP 440 dev version (<base>.dev<run-number>)
 # because TestPyPI, like PyPI, does not allow overwriting an existing version.
@@ -42,31 +43,80 @@ jobs:
           echo "Publishing phevaluator ${version} to TestPyPI"
 
       - name: Build the source distribution
-        # Only an sdist is published: the PLO4/Omaha + 5/6/7-card base package
-        # builds quickly from source on any platform. PLO5/PLO6 remain an
-        # opt-in local build (PHEVALUATOR_BUILD_PLO) and are not distributed.
+        # The base package (PLO4/Omaha + 5/6/7-card) is built. PLO5/PLO6 remain
+        # an opt-in local build (PHEVALUATOR_BUILD_PLO) and are not distributed.
+        # Binary wheels are built separately (build-wheels) from this sdist.
         run: |
           cd python
           python -m pip install --upgrade build twine
           python -m build --sdist
           twine check dist/*
 
-      - name: Upload the distribution artifact
+      - name: Upload the sdist artifact
         uses: actions/upload-artifact@v7
         with:
-          name: testpypi-dist
-          path: python/dist/*
+          name: sdist
+          path: python/dist/*.tar.gz
+
+  build-wheels:
+    name: Build wheels (${{ matrix.os }})
+    needs: build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Download the sdist
+        uses: actions/download-artifact@v8
+        with:
+          name: sdist
+          path: dist
+
+      - name: Extract the sdist
+        # Wheels are built from the self-contained sdist (it bundles the
+        # vendored C sources), so the build works even where the sibling cpp/
+        # directory is unavailable, e.g. inside the manylinux container.
+        shell: bash
+        run: |
+          mkdir sdist-src
+          tar -xzf dist/*.tar.gz -C sdist-src --strip-components=1
+
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3
+        with:
+          package-dir: sdist-src
+          output-dir: wheelhouse
+        env:
+          # Base package only (PLO5/PLO6 stay opt-in). CPython 3.10-3.14; skip
+          # musllinux, 32-bit and PyPy to keep the matrix focused.
+          CIBW_BUILD: "cp310-* cp311-* cp312-* cp313-* cp314-*"
+          CIBW_SKIP: "*-musllinux_* *_i686 *-win32"
+          CIBW_ARCHS_MACOS: "x86_64 arm64"
+
+      - name: Upload the wheels
+        uses: actions/upload-artifact@v7
+        with:
+          name: wheels-${{ matrix.os }}
+          path: wheelhouse/*.whl
 
   publish:
     name: Upload to TestPyPI
-    needs: build
+    needs: [build, build-wheels]
     runs-on: ubuntu-latest
     steps:
-      - name: Download the distribution artifact
+      - name: Download the sdist
         uses: actions/download-artifact@v8
         with:
-          name: testpypi-dist
+          name: sdist
           path: dist
+
+      - name: Download the wheels
+        uses: actions/download-artifact@v8
+        with:
+          pattern: wheels-*
+          path: dist
+          merge-multiple: true
 
       - name: Set up Python
         uses: actions/setup-python@v6
@@ -80,18 +130,29 @@ jobs:
           TWINE_REPOSITORY_URL: https://test.pypi.org/legacy/
         run: |
           python -m pip install --upgrade twine
+          twine check dist/*
           # --skip-existing lets the workflow be re-run without failing if this
           # version was already uploaded to TestPyPI.
           twine upload --skip-existing dist/*
 
   test:
-    name: Test TestPyPI package (py ${{ matrix.python-version }})
+    name: Test TestPyPI package (${{ matrix.os }}, py ${{ matrix.python-version }})
     needs: [build, publish]
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
         python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
+        # Keep the Windows/macOS matrix lean: cover only the oldest and newest
+        # supported CPython there; Ubuntu covers every version.
+        exclude:
+          - { os: windows-latest, python-version: "3.11" }
+          - { os: windows-latest, python-version: "3.12" }
+          - { os: windows-latest, python-version: "3.13" }
+          - { os: macos-latest, python-version: "3.11" }
+          - { os: macos-latest, python-version: "3.12" }
+          - { os: macos-latest, python-version: "3.13" }
     steps:
       # The test suite and its CSV fixtures (test_data/) live in the repository,
       # so it is checked out even though phevaluator itself is installed from
@@ -108,6 +169,7 @@ jobs:
         # build dependencies (e.g. setuptools). The exact version pin ensures
         # the package is fetched from TestPyPI. Retries cover index propagation
         # delay right after the upload.
+        shell: bash
         run: |
           version="${{ needs.build.outputs.version }}"
           for attempt in 1 2 3 4 5 6; do
@@ -129,10 +191,57 @@ jobs:
         # phevaluator source tree, so imports resolve to the package installed
         # from TestPyPI rather than the local checkout. The layout mirrors the
         # repository (python/tests + test_data) so the fixtures resolve.
+        shell: bash
         run: |
-          staging="${RUNNER_TEMP}/pkgtest"
+          staging="$(mktemp -d)"
           mkdir -p "${staging}/python"
           cp -r python/tests "${staging}/python/tests"
           cp -r test_data "${staging}/test_data"
           cd "${staging}/python"
           python -m unittest discover -v
+
+  test-rhel:
+    name: Test TestPyPI package (Rocky Linux 9, py 3.11)
+    needs: [build, publish]
+    runs-on: ubuntu-latest
+    # A RHEL-family check. GitHub does not offer RHEL runners, so a Rocky Linux
+    # 9 container (a 1:1 RHEL rebuild) is used.
+    container: rockylinux:9
+    steps:
+      - name: Install prerequisites
+        # setup-python is unreliable in RHEL containers, so the distro's own
+        # Python toolchain is used. git is needed by actions/checkout; gcc and
+        # the -devel headers are only needed if pip falls back to building the
+        # sdist (the published manylinux wheel installs without a compiler).
+        run: |
+          dnf -y install python3.11 python3.11-pip python3.11-devel gcc git
+
+      - uses: actions/checkout@v7
+
+      - name: Install phevaluator from TestPyPI
+        run: |
+          version="${{ needs.build.outputs.version }}"
+          python3.11 -m venv /opt/venv
+          /opt/venv/bin/python -m pip install --upgrade pip
+          for attempt in 1 2 3 4 5 6; do
+            if /opt/venv/bin/python -m pip install \
+                --index-url https://test.pypi.org/simple/ \
+                --extra-index-url https://pypi.org/simple/ \
+                "phevaluator==${version}"; then
+              echo "Installed phevaluator ${version} from TestPyPI"
+              exit 0
+            fi
+            echo "phevaluator ${version} not available yet; retrying in 15s..."
+            sleep 15
+          done
+          echo "Failed to install phevaluator ${version} from TestPyPI" >&2
+          exit 1
+
+      - name: Run the test suite against the installed package
+        run: |
+          staging="$(mktemp -d)"
+          mkdir -p "${staging}/python"
+          cp -r python/tests "${staging}/python/tests"
+          cp -r test_data "${staging}/test_data"
+          cd "${staging}/python"
+          /opt/venv/bin/python -m unittest discover -v
