@@ -55,10 +55,8 @@ Build:
 
 ```shell
 cd cpp
-mkdir -p build
-cd build
-cmake ..
-make
+cmake -B build # This will create a folder named build, and configure the Makefile
+cmake --build build # This will start the build in the new folder
 ```
 
 Test:
