@@ -2,7 +2,7 @@ name: Docs
 
 on:
   push:
-    branches: [develop]
+    branches: [master]
     paths:
       - "docs/**"
       - "Documentation/Algorithm.md"
@@ -11,7 +11,7 @@ on:
       - "cpp/README.md"
       - ".github/workflows/docs.yml"
   pull_request:
-    branches: [develop]
+    branches: [develop, master]
     paths:
       - "docs/**"
       - "Documentation/Algorithm.md"
@@ -52,8 +52,9 @@ jobs:
 
   deploy:
     name: Deploy to GitHub Pages
-    # Only publish from the default branch; PRs just build to catch errors.
-    if: github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
+    # Only publish when the master branch changes; PRs (and other branches)
+    # just build to catch errors.
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
     needs: build
     runs-on: ubuntu-latest
     permissions:
