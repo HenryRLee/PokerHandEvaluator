@@ -202,25 +202,3 @@ pip install -e .
 
 This allows the installed package to automatically reflect changes made in the `phevaluator`
 folder.
-
-### Building the Package
-
-To build the package, run the following command:
-
-```shell
-python -m build
-```
-
-This will create a `dist` folder containing the built package.
-
-Install the built package for testing:
-
-```shell
-pip install dist/*.whl
-```
-
-Check whether your distribution's long description will render correctly on PyPI:
-
-```shell
-python -m twine check dist/*
-```
