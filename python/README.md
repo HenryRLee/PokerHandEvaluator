@@ -176,8 +176,6 @@ To ensure a smooth contribution process, please follow the guidelines below.
 
 * Python 3.10 or newer
 * A C compiler (the evaluator is built as a C extension)
-* [Ruff](https://docs.astral.sh/ruff/) for linting and formatting
-* [mypy](https://mypy-lang.org/) for type checking
 
 ### Code style
 
