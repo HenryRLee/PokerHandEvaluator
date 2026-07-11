@@ -124,7 +124,7 @@ jobs:
           tar -xzf dist/*.tar.gz -C sdist-src --strip-components=1
 
       - name: Build wheels
-        uses: pypa/cibuildwheel@v3
+        uses: pypa/cibuildwheel@v4.1.0
         with:
           package-dir: sdist-src
           output-dir: wheelhouse
