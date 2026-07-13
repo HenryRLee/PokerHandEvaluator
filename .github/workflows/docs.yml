@@ -46,7 +46,7 @@ jobs:
       - name: Build the HTML documentation
         run: sphinx-build -b html -W --keep-going docs docs/_build/html
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: docs/_build/html
 
