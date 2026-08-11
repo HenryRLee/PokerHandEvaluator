@@ -24,6 +24,8 @@ extern const short flush[8192];
 extern const short noflush5[6175];
 extern const short noflush6[18395];
 extern const short noflush7[49205];
+extern const short noflush8[49205];
+extern const short noflush9[49205];
 extern const unsigned char suits[4609];
 
 extern const unsigned int choose[53][10];
